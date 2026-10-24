@@ -124,7 +124,7 @@ Thank you for every star.
 
 | Who | What |
 |---|---|
-| **[pingdotgg](https://github.com/pingdotgg)** ([T3 Code](https://github.com/pingdotgg/t3code)) | The app this patches. Vendored unmodified as the `upstream` submodule under its MIT license. |
+| **[pingdotgg](https://github.com/pingdotgg)** ([T3 Code](https://github.com/pingdotgg/t3code)) | The app this patches. Pinned unmodified as the `upstream` submodule under its MIT license. |
 | **[m417z](https://github.com/m417z)** ([Translucent Windows](https://windhawk.net/mods/translucent-windows)) | The optional `windhawk` material route paints the backdrop. |
 | **[ramensoftware](https://github.com/ramensoftware)** ([Windhawk](https://windhawk.net/)) | The mod engine that route rides on. |
 | **[Catppuccin](https://github.com/catppuccin/catppuccin)** | The Mocha palette the glass and highlight styles are mixed from. |
