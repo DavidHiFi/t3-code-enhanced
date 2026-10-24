@@ -1,0 +1,16 @@
+/* Toggle knobs for T3 Code. Loaded by ~/.t3/local-main.cjs after local-ui.css.
+   The stock knob is bg-background. 50-window-glass.css makes every nested
+   .bg-background transparent, so toggles would show a bare blue pill with no knob.
+   These rules match that selector's weight and load after it: a dark knob on the
+   accent track when on, a light knob on a lifted track when off. */
+html[data-window-material] [data-slot="switch"] [data-slot="switch-thumb"][data-checked] {
+	background-color: var(--primary-foreground, #11111b) !important;
+	box-shadow: 0 1px 2px rgb(0 0 0 / 0.35);
+}
+html[data-window-material] [data-slot="switch"] [data-slot="switch-thumb"][data-unchecked] {
+	background-color: var(--muted-foreground, #a6adc8) !important;
+	box-shadow: 0 1px 2px rgb(0 0 0 / 0.35);
+}
+html[data-window-material] [data-slot="switch"][data-unchecked] {
+	background-color: color-mix(in srgb, var(--foreground, #cdd6f4) 16%, transparent);
+}

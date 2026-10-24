@@ -1,0 +1,20 @@
+{
+	"_about": "T3 Code Enhanced settings. Edit, then run install.ps1 again (or restart T3 Code). Most switches also live in Settings > Appearance.",
+	"nativeTitleBar": false,
+	"localUiCss": true,
+	"windowMaterial": "acrylic",
+	"glassMenus": true,
+	"versionBadge": true,
+	"settingsUi": true,
+	"browserAppearance": "dark",
+	"serverPatches": {
+		"slowrpc": true,
+		"opencode": false,
+		"noterm-v3": true,
+		"noterm-open": true,
+		"nofloat": true,
+		"galaxy": true,
+		"scriptbuttons": true,
+		"browserdark": true
+	}
+}

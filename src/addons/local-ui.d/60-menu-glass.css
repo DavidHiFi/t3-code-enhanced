@@ -1,0 +1,54 @@
+/* Real frosted glass everywhere T3 asks for blur.
+   Chromium's blur() does nothing when the window behind is transparent, so panels only dimmed.
+   This SVG filter makes the backdrop opaque first, then blurs it and makes the result solid again
+   (otherwise the sharp backdrop shows through near the edges, which is most of a short toast).
+   It also swaps into every Tailwind backdrop-blur utility (banners, sticky headers), the
+   .surface-glass class, and a lighter variant for the composer and its slash list. */
+html[data-window-material]{
+  --t3-real-blur:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='f' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'><feComponentTransfer><feFuncA type='linear' slope='0' intercept='1'/></feComponentTransfer><feGaussianBlur stdDeviation='28' edgeMode='duplicate'/><feComponentTransfer><feFuncA type='linear' slope='0' intercept='1'/></feComponentTransfer></filter></svg>#f");
+}
+
+/* menus, popovers, selects, toasts, dialogs, alerts, and the glass right-click menu */
+html[data-window-material] .dropdown-glass,
+html[data-window-material] .dialog-glass,
+html[data-window-material] .alert-glass{
+  background:rgb(from var(--app-theme-canvas, var(--background)) r g b / var(--t3-glass-menu)) !important;
+  -webkit-backdrop-filter:var(--t3-real-blur) saturate(1.3) !important;
+  backdrop-filter:var(--t3-real-blur) saturate(1.3) !important;
+}
+html[data-window-material] .surface-glass{
+  -webkit-backdrop-filter:var(--t3-real-blur) saturate(1.3) !important;
+  backdrop-filter:var(--t3-real-blur) saturate(1.3) !important;
+}
+
+/* every backdrop-blur-* utility, including before: variants; each keeps its own tint */
+html[data-window-material] [class*="backdrop-blur"]:not([class*="backdrop-blur-none"]){
+  --tw-backdrop-blur:var(--t3-real-blur) !important;
+}
+html[data-window-material] [class*="before:backdrop-blur"]::before{
+  --tw-backdrop-blur:var(--t3-real-blur) !important;
+}
+
+/* Composer and its slash-command drawer. Most of what sits behind it is the clear window, which the
+   plain filter fills with black, so the composer went near-black (measured
+   rgb 22,22,32 against 43,43,58 around it). This variant lays the backdrop over a Mocha tone close to
+   the window acrylic before blurring, and the tint moves from crust at 75 % to surface0 (--muted) at
+   55 %, so it sits just above the chat (measured 45,44,59 at 4:57 PM). */
+html[data-window-material]{
+  --t3-real-blur-lit:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='f' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'><feFlood flood-color='%232b2b3c' result='b'/><feComposite in='SourceGraphic' in2='b' operator='over'/><feGaussianBlur stdDeviation='28' edgeMode='duplicate'/><feComponentTransfer><feFuncA type='linear' slope='0' intercept='1'/></feComponentTransfer></filter></svg>#f");
+}
+html[data-window-material] [class*="backdrop-blur"][class*="composer-surface"][class*="composer-surface"],
+html[data-window-material] [class*="before:backdrop-blur"][class*="composer-surface"][class*="composer-surface"]::before,
+html[data-window-material] [data-composer-banner-surface][class*="before:backdrop-blur"]::before{
+  --tw-backdrop-blur:var(--t3-real-blur-lit) !important;
+}
+html[data-window-material].dark [class*="composer-surface"][class*="composer-surface"]{
+  --chat-composer-glass-surface:var(--muted) !important;
+  --glass-opacity:var(--t3-glass-composer) !important;
+}
+/* the slash list, queued-message strip and banners attached above the composer (measured 23-27 grey
+   with the plain filter, 4:58 PM) */
+html[data-window-material].dark [data-composer-banner-surface]{
+  --chat-composer-attached-surface:var(--muted) !important;
+  --glass-opacity:var(--t3-glass-composer) !important;
+}

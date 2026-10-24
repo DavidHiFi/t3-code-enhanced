@@ -1,0 +1,72 @@
+/* Stronger highlights and panel edges in Catppuccin Mocha tones. In stock T3 the selected row of
+   the slash list was barely different from the others (about 1.1 : 1), and panels blended together.
+   Switch: Settings > Appearance > Local add-ons > "Stronger highlights" (html[data-t3local-contrast-off]).
+   Palette: surface1 #45475a, surface2 #585b70, overlay0 #6c7086, lavender #b4befc, blue #89b4fa, crust #11111b. */
+
+/* selected / keyboard-highlighted rows in the slash list, menus, selects and comboboxes */
+html:not([data-t3local-contrast-off]) [data-slot="command-item"][aria-selected="true"],
+html:not([data-t3local-contrast-off]) [data-slot="command-item"][data-highlighted],
+html:not([data-t3local-contrast-off]) [role="option"][data-highlighted],
+html:not([data-t3local-contrast-off]) [role="menuitem"][data-highlighted],
+html:not([data-t3local-contrast-off]) [role="menuitemcheckbox"][data-highlighted],
+html:not([data-t3local-contrast-off]) [role="menuitemradio"][data-highlighted],
+html:not([data-t3local-contrast-off]) [data-slot$="-item"]:not([data-slot^="sidebar"])[class*="rounded"][data-highlighted],
+html:not([data-t3local-contrast-off]) [data-slot$="-item"]:not([data-slot^="sidebar"])[class*="rounded"][data-open] {
+  /* the stock rows use bg-accent!, a layered !important that beats any plain rule, so the colour is swapped
+     through the variables it reads */
+  --accent: #585b70; /* surface2 */
+  --color-accent: #585b70;
+  --accent-foreground: #cdd6f4;
+  --color-accent-foreground: #cdd6f4;
+  background-color: #585b70 !important;
+  color: #cdd6f4 !important;
+  box-shadow: inset 3px 0 0 #b4befc !important;
+}
+/* mouse hover is one step lighter than resting rows but clearly below the selected row */
+html:not([data-t3local-contrast-off]) [data-slot="command-item"]:not([aria-selected="true"]):hover,
+html:not([data-t3local-contrast-off]) [data-slot$="-item"]:not([data-slot^="sidebar"])[class*="rounded"]:not([data-highlighted]):not([data-disabled]):hover {
+  background-color: rgb(69 71 90 / 0.6) !important; /* surface1 */
+}
+/* the ticked row of a select or filter list (current choice) */
+html:not([data-t3local-contrast-off]) [data-slot$="-item"]:not([data-slot^="sidebar"])[class*="rounded"][data-selected]:not([data-highlighted]) {
+  background-color: rgb(69 71 90 / 0.45) !important;
+}
+
+/* visible edges on floating panels and the composer so they stop melting into the chat behind them.
+   Only elements that carry their own corner radius get a border: the slash list nests a square listbox
+   inside a rounded panel, and a border on the inner one stuck out past the rounded corners. */
+html:not([data-t3local-contrast-off]) [data-slot$="-popup"][class*="rounded"]:not([class*="rounded-[inherit]"]),
+html:not([data-t3local-contrast-off]) [role="menu"][class*="rounded"]:not([class*="rounded-[inherit]"]) {
+  border: 1px solid rgb(108 112 134 / 0.55) !important; /* overlay0 */
+}
+html:not([data-t3local-contrast-off]) [class*="composer-surface"][class*="composer-surface"]:not([data-composer-banner-surface]) {
+  border-color: rgb(108 112 134 / 0.55) !important;
+}
+
+/* galaxy switches */
+html[data-t3local-galaxyheader-off] .sidebar-stage-backdrop {
+  display: none !important;
+}
+html[data-t3local-galaxysend-off] button[aria-label="Submit message"] > span.pointer-events-none.absolute.inset-0 {
+  display: none !important;
+}
+html[data-t3local-galaxysend-off] button[aria-label="Submit message"]:not(:disabled) {
+  background-color: #89b4fa !important;
+  color: #11111b !important;
+}
+
+/* Hover states (in stock T3 the hovered sidebar row was darker than its neighbours and
+   barely readable). Most hovers in the app are a low-alpha --accent or --muted, close to the dark
+   glass behind them. Sidebar rows read three variables, so those are swapped for translucent
+   Mocha surface2 (#585b70): hover 0.38, selected 0.7, pressed 0.55. Every other control whose own class
+   asks for a hover background gets the same surface2 tint at 0.5. Danger, primary, warning and
+   transparent hovers keep their meaning and are left alone. Switch: "Stronger highlights". */
+html:not([data-t3local-contrast-off]):not([data-t3local-x]),
+html:not([data-t3local-contrast-off]):not([data-t3local-x]) [data-app-sidebar] {
+  --sidebar-row-hover: rgb(88 91 112 / 0.38);
+  --sidebar-row-selected: rgb(88 91 112 / 0.7);
+  --sidebar-row-active: rgb(88 91 112 / 0.55);
+}
+html:not([data-t3local-contrast-off]) :is([class*="hover:bg-"], [class*="[:hover,[data-pressed]]:bg-"]):not([class*="bg-destructive"]):not([class*="bg-primary"]):not([class*="bg-secondary"]):not([class*="bg-warning"]):not([class*="bg-black"]):not([class*="hover:bg-transparent"]):not([class*="bg-sidebar-row"]):not([class*="context-chip"]):not([class*="hover:bg-background"]):not([data-slot^="sidebar"]):not([data-slot$="-item"]):hover:not(:disabled):not([aria-disabled="true"]):not([data-highlighted]):not([data-checked]) {
+  background-color: rgb(88 91 112 / 0.5);
+}

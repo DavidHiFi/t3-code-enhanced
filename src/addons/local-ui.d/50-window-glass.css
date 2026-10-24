@@ -1,0 +1,48 @@
+/* Window glass for T3 Code. Loaded by ~/.t3/local-main.cjs after local-ui.css.
+   Active only while <html data-window-material> is set, which the hook does when
+   ~/.t3/local-patches.json has "windowMaterial" set to acrylic, mica, tabbed or windhawk.
+   Each surface adds a thin layer of the theme's own color on top of the backdrop, so the
+   sidebar still reads apart from the chat and any theme works.
+
+   Two things hid the backdrop in stock T3:
+   - the chat area nests four .bg-background wrappers; four 80 % layers add up to
+     99.8 % solid, so only the outermost one paints and the inner ones stay clear;
+   - [data-app-sidebar] redefines --sidebar from the opaque theme color, so the
+     variable override never reached it; the sidebar is painted directly here. */
+
+/* The stock Settings > Appearance > Glass opacity slider writes --glass-opacity (40 to 100 %) on <html>.
+   --t3-glass-t turns that into 0..1, and each region follows its own curve so the default 75 % keeps the
+   look from before the slider drove them: window 0.20, sidebar 0.35, menus 0.80, composer 55 %.
+   100 % is fully solid, 40 % is nearly clear. The extended-window rules below stop applying when
+   Settings > Appearance has "Extend glass across the whole window" off (<html data-t3local-extendedglass-off>). */
+html {
+	--t3-glass-t: clamp(0, calc((var(--glass-opacity, 75%) - 40%) / 60%), 1);
+	--t3-glass-menu: min(100%, calc(var(--glass-opacity, 75%) + 5%));
+	--t3-glass-composer: calc(20% + 80% * pow(var(--t3-glass-t), 1.5));
+}
+
+html[data-window-material]:not([data-t3local-extendedglass-off]) {
+	--glass-canvas: rgb(from var(--app-theme-canvas, var(--background)) r g b / max(0.03, pow(var(--t3-glass-t), 3)));
+	--glass-sidebar: rgb(from var(--app-theme-sidebar, var(--sidebar)) r g b / max(0.08, pow(var(--t3-glass-t), 2)));
+	--app-chrome-background: transparent !important;
+	--toolbar-background: transparent !important;
+	--glass-blur: 24px !important;
+	--glass-saturation: 1.4 !important;
+}
+
+html[data-window-material]:not([data-t3local-extendedglass-off]),
+html[data-window-material]:not([data-t3local-extendedglass-off]) body {
+	background: transparent !important;
+}
+
+html[data-window-material]:not([data-t3local-extendedglass-off]) .bg-background {
+	background-color: var(--glass-canvas) !important;
+}
+
+html[data-window-material]:not([data-t3local-extendedglass-off]) .bg-background .bg-background {
+	background-color: transparent !important;
+}
+
+html[data-window-material]:not([data-t3local-extendedglass-off]) .bg-sidebar {
+	background-color: var(--glass-sidebar) !important;
+}
