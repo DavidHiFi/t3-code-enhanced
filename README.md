@@ -25,7 +25,7 @@ Acrylic windows, frosted glass menus, a version badge in the header, and a dark 
 ## Installation
 
 1. Install [T3 Code](https://github.com/pingdotgg/t3code) (the per-user Windows install; Nightly and Beta both work).
-2. Download `T3-Code-Enhanced-v1.0.1.zip` from the [latest release](https://github.com/DavidHiFi/t3-code-enhanced/releases/latest) and unzip it.
+2. Download `T3-Code-Enhanced-v1.0.2.zip` from the [latest release](https://github.com/DavidHiFi/t3-code-enhanced/releases/latest) and unzip it.
 3. Double-click `install.cmd` (or run `install.ps1` in PowerShell 7). The installer finds your T3 Code folder, copies the add-ons, patches both asar files, and registers the `T3CodeEnhanced-Guard` scheduled task.
 4. Restart T3 Code.
 

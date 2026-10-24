@@ -914,7 +914,7 @@ $patches = @(
     @{ Name = 'nofloat';       Fn = 'Resolve-NoFloat';       Default = $true },
     @{ Name = 'galaxy';        Fn = 'Resolve-Galaxy';        Default = $true },
     @{ Name = 'scriptbuttons'; Fn = 'Resolve-ScriptButtons'; Default = $true },
-    @{ Name = 'browserdark';   Fn = 'Resolve-BrowserDark';   Default = $true }
+    @{ Name = 'browserdark';   Fn = 'Resolve-BrowserDark';   Default = $false }
 )
 
 $wanted = $null

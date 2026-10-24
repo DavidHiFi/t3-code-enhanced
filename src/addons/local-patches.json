@@ -15,6 +15,6 @@
 		"nofloat": true,
 		"galaxy": true,
 		"scriptbuttons": true,
-		"browserdark": true
+		"browserdark": false
 	}
 }
