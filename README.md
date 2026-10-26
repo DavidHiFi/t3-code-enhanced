@@ -25,7 +25,7 @@ Acrylic windows, frosted glass menus, a version badge in the header, and a dark 
 ## Installation
 
 1. Install [T3 Code](https://github.com/pingdotgg/t3code) (the per-user Windows install; Nightly and Beta both work).
-2. Download `T3-Code-Enhanced-v1.0.2.zip` from the [latest release](https://github.com/DavidHiFi/t3-code-enhanced/releases/latest) and unzip it.
+2. Download `T3-Code-Enhanced-v1.0.3.zip` from the [latest release](https://github.com/DavidHiFi/t3-code-enhanced/releases/latest) and unzip it.
 3. Double-click `install.cmd` (or run `install.ps1` in PowerShell 7). The installer finds your T3 Code folder, copies the add-ons, patches both asar files, and registers the `T3CodeEnhanced-Guard` scheduled task.
 4. Restart T3 Code.
 
@@ -37,6 +37,7 @@ To remove everything: run `uninstall.cmd`. Your `~/.t3/local-patches.json` and y
 
 - **Windows 11 backdrop:** acrylic, mica or tabbed material behind the whole window. `windhawk` hands the backdrop to a Translucent Windows rule instead.
 - **Frosted glass menus:** right-click menus are drawn as blurred glass panels in the page instead of native Windows menus.
+- **Frosted Settings page:** the full-size Settings panel (and SnapShots) blurs the app behind it instead of only thinning its fill.
 - **Extended glass:** the stock Glass opacity slider reaches the chat area and sidebar too, with a lighter mix for the composer.
 - **Stronger highlights:** clearer selected rows in lists and menus, and visible edges on panels.
 - **Galaxy accents:** star-field artwork in the sidebar header and the send button.
