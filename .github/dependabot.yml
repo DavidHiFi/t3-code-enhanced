@@ -7,3 +7,6 @@ updates:
     groups:
       gitsubmodule-updates:
         patterns: ["*"]
+      gitsubmodule-security:
+        applies-to: security-updates
+        patterns: ["*"]
