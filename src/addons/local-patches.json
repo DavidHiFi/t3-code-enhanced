@@ -16,6 +16,7 @@
 		"galaxy": true,
 		"scriptbuttons": true,
 		"browserdark": false,
-		"sidebarsecs": true
+		"sidebarsecs": true,
+		"usageaccounts": true
 	}
 }

@@ -859,6 +859,59 @@ function Resolve-SidebarSeconds([string]$direction) {
     return @{ State = 'ORIGINAL'; Detail = "$short, minutes only (stock)"; Edits = $edits }
 }
 
+# --- every account in the thread popover's usage limits ---------------------------
+# The popover reads only the selected instance's own account. Behind CLIProxyAPI that
+# account has no limits ("Unavailable"), while the proxy usage source has one account
+# per auth file. The patch lists every account with readable limits for the instance's
+# driver (the same list the Usage page uses), each row prefixed with the first 5
+# characters of its email. Rows are keyed by label so the accounts' windows don't
+# collide. The bytes come from the Unavailable tooltip wrapper, the heading id and a
+# redundant tone:null.
+function Resolve-UsageAccounts([string]$direction) {
+    $stockT = 't=(n===null?null:@H@(n,r,i,e))?.accounts.find(e=>e.instanceId===n)?.limits??r.find(e=>e.instanceId===n)?.usageLimits;if(!t){f=null;break bb0}let p=@W@(t);o=@D@,l=`thread-details-usage-heading`,u=`Usage limits`,d=!1,s=`grid grid-cols-[auto_minmax(3rem,1fr)_auto] gap-x-3 text-xs`,c=p?(0,@J@.jsx)(@U@,{label:`Limits`,fill:null,tone:null,value:`Unavailable`,tooltip:(0,@J@.jsx)(`span`,{className:`text-foreground`,children:p})}):t.windows.map(t=>(0,@J@.jsx)(@C@,{window:t,now:e},t.id))'
+    $patchT = 'A=(@H@(n,r,i,e)?.accounts??[]).filter(e=>!@W@(e.limits)),t=A[0]?{windows:A.flatMap(a=>a.limits.windows.map(w=>({...w,label:(a.email??a.id).slice(0,5)+` `+w.label})))}:r.find(e=>e.instanceId===n)?.usageLimits;if(!t){f=null;break bb0}let p=@W@(t);o=@D@,l=`ul`,u=`Usage limits`,d=!1,s=`grid grid-cols-[auto_minmax(3rem,1fr)_auto] gap-x-3 text-xs`,c=p?(0,@J@.jsx)(@U@,{label:`Limits`,fill:null,value:`Unavailable`,tooltip:p}):t.windows.map(t=>(0,@J@.jsx)(@C@,{window:t,now:e},t.label))'
+    $keys = 'H', 'W', 'D', 'J', 'U', 'C'
+    $toRe = {
+        param($tmpl)
+        $re = [regex]::Escape($tmpl)
+        foreach ($k in $keys) {
+            $tok = '@' + $k + '@'
+            $at = $re.IndexOf($tok)
+            if ($at -lt 0) { continue }
+            $re = $re.Remove($at, $tok.Length).Insert($at, "(?<$k>$I)").Replace($tok, "\k<$k>")
+        }
+        return $re
+    }
+    $fill = {
+        param($tmpl, $m)
+        $s = $tmpl
+        foreach ($k in $keys) { $s = $s.Replace('@' + $k + '@', $m.Groups[$k].Value) }
+        return $s
+    }
+    $bq = [string]$bt
+    $cands = @($script:files | Where-Object { $_.Path -match '/client/assets/[^/]*\.js$' })
+    $hits = @()
+    foreach ($c in $cands) {
+        $t = Get-ChunkText $c.Offset $c.Size
+        if (-not $t.Contains($bq + 'Usage limits' + $bq)) { continue }
+        foreach ($pair in @(@('ORIGINAL', (& $toRe $stockT)), @('PATCHED', (& $toRe $patchT)))) {
+            foreach ($m in [regex]::Matches($t, $pair[1])) { $hits += [pscustomobject]@{ Chunk = $c; Text = $t; M = $m; State = $pair[0] } }
+        }
+    }
+    if ($hits.Count -ne 1) { return @{ State = 'UNKNOWN'; Detail = "popover usage block matched $($hits.Count) times (expected 1)"; Edits = @() } }
+    $h = $hits[0]
+    $stockText = & $fill $stockT $h.M
+    $patchText = & $fill $patchT $h.M
+    if ($stockText.Length -ne $patchText.Length) { return @{ State = 'UNKNOWN'; Detail = "usageaccounts edit would change length ($($stockText.Length) vs $($patchText.Length))"; Edits = @() } }
+    if ($h.State -eq 'ORIGINAL' -and $direction -eq 'patched') { $old = $stockText; $new = $patchText }
+    elseif ($h.State -eq 'PATCHED' -and $direction -eq 'stock') { $old = $patchText; $new = $stockText }
+    else { $old = $null }
+    $edits = @()
+    if ($null -ne $old) { $edits += @{ Kind = 'region'; Patch = 'usageaccounts'; Off = [int64]($dataOffset + $h.Chunk.Offset + $h.M.Index); Old = $old; New = $new; Chunk = $h.Chunk; ChunkText = $h.Text } }
+    $what = if ($h.State -eq 'PATCHED') { 'all accounts' } else { 'own account only (stock)' }
+    return @{ State = $h.State; Detail = "popover usage in $(Split-Path $h.Chunk.Path -Leaf), $what"; Edits = $edits }
+}
+
 # --- chunk-level write plan ------------------------------------------------------
 # Region edits are folded per chunk; the chat-chunk edit replaces the whole
 # chunk. One chunk may appear once; otherwise the two patches would interleave.
@@ -967,7 +1020,8 @@ $patches = @(
     @{ Name = 'galaxy';        Fn = 'Resolve-Galaxy';        Default = $true },
     @{ Name = 'scriptbuttons'; Fn = 'Resolve-ScriptButtons'; Default = $true },
     @{ Name = 'browserdark';   Fn = 'Resolve-BrowserDark';   Default = $false },
-    @{ Name = 'sidebarsecs';   Fn = 'Resolve-SidebarSeconds'; Default = $true }
+    @{ Name = 'sidebarsecs';   Fn = 'Resolve-SidebarSeconds'; Default = $true },
+    @{ Name = 'usageaccounts'; Fn = 'Resolve-UsageAccounts'; Default = $true }
 )
 
 $wanted = $null

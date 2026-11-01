@@ -56,6 +56,7 @@ To remove everything: run `uninstall.cmd`. Your `~/.t3/local-patches.json` and y
 - **OpenCode budget (opt-in):** short budgets for OpenCode calls. Off by default in the config.
 - **One button per script:** project scripts render as individual buttons with an arrow that runs all of them.
 - **Seconds on sidebar timers:** the sidebar shows how long a thread has been working down to the second (`Working 23m 27s`), like the open thread does. The switch works live; `sidebarsecs: false` in the config removes the patch.
+- **Every account in the Limits popover:** the thread popover lists usage for every account T3 can read for that provider, including each CLIProxyAPI account, instead of "Unavailable" when the selected instance has no limits of its own. Rows start with the first 5 characters of the account email. `usageaccounts: false` removes the patch.
 
 ### Settings and upkeep
 
