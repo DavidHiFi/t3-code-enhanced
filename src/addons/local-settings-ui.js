@@ -20,6 +20,7 @@ try {
 		{ id: "galaxyHeader", key: "t3local.galaxyHeader", title: "Galaxy in the sidebar header", desc: "The star-field artwork behind the T3 Code title at the top left." },
 		{ id: "galaxySend", key: "t3local.galaxySend", title: "Galaxy on the send button", desc: "The star-field artwork inside the round send button of the message box." },
 		{ id: "contrast", key: "t3local.contrast", title: "Stronger highlights", desc: "Clearer selected rows in lists and menus, and visible edges on panels, in Catppuccin Mocha tones." },
+		{ id: "sidebarSeconds", key: "t3local.sidebarSeconds", title: "Seconds on sidebar timers", desc: "Shows how long a thread has been working down to the second in the sidebar, like 23m 27s." },
 		{ id: "extendedGlass", key: "t3local.extendedGlass", inline: true, title: "Extend glass across the whole window", desc: "Lets the blur show through the chat area and sidebar as well as menus. Off keeps glass to menus, dialogs, and the message box." },
 		{ id: "glassMenus", config: "glassMenus", def: true, title: "Frosted glass right-click menus", desc: "Draws right-click menus as blurred glass panels. Applies after a reload (Ctrl+R)." },
 		{ id: "nativeTitleBar", config: "nativeTitleBar", def: false, title: "Native Windows title bar", desc: "Uses the Windows title bar instead of T3's own drawn one. Applies after you restart T3 Code." },
@@ -28,6 +29,42 @@ try {
 	const read = (row) => (row.config ? (CONFIG[row.config] === undefined ? row.def : CONFIG[row.config] !== false && CONFIG[row.config] !== 0) : localStorage.getItem(row.key) !== "0");
 	function mirror() {
 		for (const row of ROWS) if (!row.config) document.documentElement.toggleAttribute("data-t3local-" + row.id + "-off", !read(row));
+		// read by the server.asar "sidebarsecs" patch on every timer tick
+		self.T3S = read(ROWS.find((r) => r.id === "sidebarSeconds"));
+		applyWorkingColor();
+	}
+
+	// Color of the "Working" status (spinner icon, label and timer) in the sidebar and the
+	// thread-list status dot. localStorage t3local.workingColor: "#rrggbb", or "stock" for T3's own blue.
+	const WORKING_KEY = "t3local.workingColor";
+	const WORKING_DEFAULT = "#89b4fa"; // Catppuccin Mocha blue
+	const STYLE_ATTR = "data-t3local-working-color";
+	function normalizeHex(value) {
+		const m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(String(value || "").trim());
+		if (!m) return null;
+		const h = m[1].length === 3 ? m[1].replace(/./g, (c) => c + c) : m[1];
+		return "#" + h.toLowerCase();
+	}
+	function workingColor() {
+		const saved = localStorage.getItem(WORKING_KEY);
+		if (saved === "stock") return null;
+		return normalizeHex(saved) || WORKING_DEFAULT;
+	}
+	function applyWorkingColor() {
+		let style = document.head && document.head.querySelector("style[" + STYLE_ATTR + "]");
+		const color = workingColor();
+		if (!color) return style && style.remove();
+		if (!style) {
+			if (!document.head) return;
+			style = document.createElement("style");
+			style.setAttribute(STYLE_ATTR, "");
+			document.head.appendChild(style);
+		}
+		const css =
+			`.text-info-foreground:has(> svg.lucide-circle-dashed){color:${color}!important}` +
+			`[role="img"][aria-label="Working"]{color:${color}!important}` +
+			`[role="img"][aria-label="Working"]>span.rounded-full{background-color:${color}!important}`;
+		if (style.textContent !== css) style.textContent = css;
 	}
 	function write(row, on) {
 		if (row.config) {
@@ -65,6 +102,9 @@ try {
 		const pageTheme = makeSelectRow(template);
 		if (!pageTheme) return null;
 		newCard.appendChild(pageTheme);
+		const colorRow = makeColorRow(template);
+		if (!colorRow) return null;
+		newCard.appendChild(colorRow);
 		for (const row of ROWS.filter((r) => !r.inline)) {
 			const el = makeRow(template, row);
 			if (!el) return null;
@@ -138,6 +178,76 @@ try {
 			console.log("T3LOCAL:" + JSON.stringify({ key: "browserAppearance", value: select.value }));
 		});
 		sw.replaceWith(select);
+		return el;
+	}
+
+	// Working color: a swatch picker, a hex box, and a Reset button (back to Mocha blue). An empty
+	// hex box means T3's stock blue. Changes apply at once to every open sidebar row.
+	function makeColorRow(template) {
+		const el = template.cloneNode(true);
+		el.removeAttribute(INLINE_ATTR);
+		for (const n of el.querySelectorAll("[id]")) n.removeAttribute("id");
+		const sw = el.querySelector("[role=switch]");
+		const title = el.querySelector("h3");
+		const desc = el.querySelector("p");
+		if (!sw || !title || !desc) return null;
+		title.textContent = "Working color";
+		desc.textContent = "Color of the Working spinner, label and timer in the sidebar. Type any hex code; leave it empty for T3's own blue.";
+		for (const extra of [...title.parentElement.children].slice(1)) extra.remove();
+		const box = document.createElement("div");
+		box.setAttribute("data-t3local-workingcolor", "");
+		box.style.cssText = "display:flex;align-items:center;gap:0.5rem;flex-shrink:0";
+		const field = "height:2rem;border-radius:0.5rem;border:1px solid var(--border, rgba(255,255,255,.15));background:var(--background, transparent);color:inherit;font:inherit;font-size:0.875rem";
+		const picker = document.createElement("input");
+		picker.type = "color";
+		picker.setAttribute("aria-label", "Pick working color");
+		picker.style.cssText = field + ";width:2.25rem;padding:0.15rem;cursor:pointer";
+		const hex = document.createElement("input");
+		hex.type = "text";
+		hex.maxLength = 7;
+		hex.spellcheck = false;
+		hex.placeholder = "T3 blue";
+		hex.setAttribute("aria-label", "Working color hex code");
+		hex.style.cssText = field + ";width:6.5rem;padding:0 0.6rem;font-family:ui-monospace,monospace";
+		const reset = document.createElement("button");
+		reset.type = "button";
+		reset.textContent = "Reset";
+		reset.title = "Back to Catppuccin Mocha blue " + WORKING_DEFAULT;
+		reset.style.cssText = field + ";padding:0 0.75rem;cursor:pointer";
+		const sync = () => {
+			const color = workingColor();
+			picker.value = color || "#3b82f6";
+			if (document.activeElement !== hex) hex.value = color || "";
+			hex.style.borderColor = "";
+		};
+		const save = (value) => {
+			localStorage.setItem(WORKING_KEY, value);
+			applyWorkingColor();
+			sync();
+		};
+		picker.addEventListener("input", () => save(picker.value));
+		hex.addEventListener("input", () => {
+			const v = hex.value.trim();
+			const color = normalizeHex(v);
+			if (color) {
+				localStorage.setItem(WORKING_KEY, color);
+				applyWorkingColor();
+				picker.value = color;
+				hex.style.borderColor = "";
+			} else if (v === "") {
+				localStorage.setItem(WORKING_KEY, "stock");
+				applyWorkingColor();
+				hex.style.borderColor = "";
+			} else hex.style.borderColor = "var(--destructive, #f38ba8)";
+		});
+		hex.addEventListener("blur", sync);
+		hex.addEventListener("keydown", (event) => {
+			if (event.key === "Enter") hex.blur();
+		});
+		reset.addEventListener("click", () => save(WORKING_DEFAULT));
+		box.append(picker, hex, reset);
+		sync();
+		sw.replaceWith(box);
 		return el;
 	}
 

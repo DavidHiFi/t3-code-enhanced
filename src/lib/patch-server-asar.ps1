@@ -807,6 +807,55 @@ function Resolve-BrowserDark([string]$direction) {
     return @{ State = $h.State; Detail = "default appearance $($h.State) in $(Split-Path $h.Chunk.Path -Leaf)"; Edits = $edits }
 }
 
+# --- seconds on the sidebar working timer ------------------------------------------
+# The sidebar row timer ("Working 23m") re-renders every second (1 s clock store) but
+# its formatter drops seconds after the first minute. The call site gets a suffix
+# that adds " 27s" when the page flag self.T3S is true; local-settings-ui.js sets that
+# flag from the Settings switch (localStorage t3local.sidebarSeconds), so the switch
+# works live with no reload. Under 60 s the stock text already shows seconds.
+# The extra bytes come from the chunk's source-map trailer, which becomes spaces;
+# -Revert restores the exact bytes.
+function Resolve-SidebarSeconds([string]$direction) {
+    $bq = [string]$bt
+    $reCall = ('(?<pre>(?<n>@I@)=@I@\(\)-@I@\.startedMs,(?<r>@I@);@I@\[0\]===\k<n>\?\k<r>=@I@\[1\]:\(\k<r>=@I@\(\k<n>\))').Replace('@I@', $I)
+    $cands = @($script:files | Where-Object { $_.Path -match '/client/assets/[^/]*\.js$' })
+    $hits = @()
+    foreach ($c in $cands) {
+        $t = Get-ChunkText $c.Offset $c.Size
+        if (-not $t.Contains('.startedMs,')) { continue }
+        foreach ($m in [regex]::Matches($t, $reCall)) { $hits += [pscustomobject]@{ Chunk = $c; Text = $t; M = $m } }
+    }
+    if ($hits.Count -ne 1) { return @{ State = 'UNKNOWN'; Detail = "sidebar timer call matched $($hits.Count) times (expected 1)"; Edits = @() } }
+    $h = $hits[0]
+    $text = $h.Text
+    $n = $h.M.Groups['n'].Value
+    $ins = '+(self.T3S&&' + $n + '>=6e4?' + $bq + ' ${' + $n + '/1e3%60|0}s' + $bq + ':' + $bq + $bq + ')'
+    $name = Split-Path $h.Chunk.Path -Leaf
+    $tail = $nl + '//# sourceMappingURL=' + $name + '.map'
+    $at = $h.M.Index + $h.M.Length
+    $patched = ($text.Length -ge $at + $ins.Length) -and ($text.Substring($at, $ins.Length) -ceq $ins)
+    $short = "timer call in $name"
+    if ($patched) {
+        if (-not $text.EndsWith(' ')) { return @{ State = 'UNKNOWN'; Detail = "$short is patched but the trailer pad is missing"; Edits = @() } }
+        $edits = @()
+        if ($direction -eq 'stock') {
+            $restored = $text.Remove($at, $ins.Length).TrimEnd(' ') + $tail
+            if ($restored.Length -ne $text.Length) { return @{ State = 'UNKNOWN'; Detail = "$short revert would change length ($($restored.Length) vs $($text.Length))"; Edits = @() } }
+            $edits = @(@{ Kind = 'chunk'; Patch = 'sidebarsecs'; Chunk = $h.Chunk; ChunkText = $text; NewChunkText = $restored })
+        }
+        return @{ State = 'PATCHED'; Detail = "$short, seconds suffix"; Edits = $edits }
+    }
+    if (-not $text.EndsWith($tail)) { return @{ State = 'UNKNOWN'; Detail = "$short is stock but the chunk has no source-map trailer to make room"; Edits = @() } }
+    if ($ins.Length -gt $tail.Length) { return @{ State = 'UNKNOWN'; Detail = "seconds suffix ($($ins.Length)) is longer than the trailer ($($tail.Length))"; Edits = @() } }
+    $edits = @()
+    if ($direction -eq 'patched') {
+        $newText = $text.Substring(0, $text.Length - $tail.Length).Insert($at, $ins)
+        $newText = $newText + (' ' * ($text.Length - $newText.Length))
+        $edits = @(@{ Kind = 'chunk'; Patch = 'sidebarsecs'; Chunk = $h.Chunk; ChunkText = $text; NewChunkText = $newText })
+    }
+    return @{ State = 'ORIGINAL'; Detail = "$short, minutes only (stock)"; Edits = $edits }
+}
+
 # --- chunk-level write plan ------------------------------------------------------
 # Region edits are folded per chunk; the chat-chunk edit replaces the whole
 # chunk. One chunk may appear once; otherwise the two patches would interleave.
@@ -914,7 +963,8 @@ $patches = @(
     @{ Name = 'nofloat';       Fn = 'Resolve-NoFloat';       Default = $true },
     @{ Name = 'galaxy';        Fn = 'Resolve-Galaxy';        Default = $true },
     @{ Name = 'scriptbuttons'; Fn = 'Resolve-ScriptButtons'; Default = $true },
-    @{ Name = 'browserdark';   Fn = 'Resolve-BrowserDark';   Default = $false }
+    @{ Name = 'browserdark';   Fn = 'Resolve-BrowserDark';   Default = $false },
+    @{ Name = 'sidebarsecs';   Fn = 'Resolve-SidebarSeconds'; Default = $true }
 )
 
 $wanted = $null

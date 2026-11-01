@@ -15,6 +15,7 @@
 		"nofloat": true,
 		"galaxy": true,
 		"scriptbuttons": true,
-		"browserdark": false
+		"browserdark": false,
+		"sidebarsecs": true
 	}
 }

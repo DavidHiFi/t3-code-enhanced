@@ -41,6 +41,7 @@ To remove everything: run `uninstall.cmd`. Your `~/.t3/local-patches.json` and y
 - **Extended glass:** the stock Glass opacity slider reaches the chat area and sidebar too, with a lighter mix for the composer.
 - **Stronger highlights:** clearer selected rows in lists and menus, and visible edges on panels.
 - **Galaxy accents:** star-field artwork in the sidebar header and the send button.
+- **Working color:** pick the color of the sidebar's Working spinner, label and timer with a swatch or any hex code. Defaults to Catppuccin Mocha blue `#89b4fa`; clear the box for T3's own blue.
 
 ### Browser and window
 
@@ -54,6 +55,7 @@ To remove everything: run `uninstall.cmd`. Your `~/.t3/local-patches.json` and y
 - **Slower RPC budget:** slow backend calls get 60 seconds instead of 15, so long operations do not abort.
 - **OpenCode budget (opt-in):** short budgets for OpenCode calls. Off by default in the config.
 - **One button per script:** project scripts render as individual buttons with an arrow that runs all of them.
+- **Seconds on sidebar timers:** the sidebar shows how long a thread has been working down to the second (`Working 23m 27s`), like the open thread does. The switch works live; `sidebarsecs: false` in the config removes the patch.
 
 ### Settings and upkeep
 
