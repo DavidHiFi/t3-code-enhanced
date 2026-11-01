@@ -605,8 +605,11 @@ function Resolve-NoFloat([string]$direction) {
 #      (~/.t3/local-version-badge.js) sit on top of the galaxy.
 function Resolve-Galaxy([string]$direction) {
     $bq = [string]$bt
-    $reAStock = '(?<a>[\w$]+)\.paletteThemeActive&&!\k<a>\.paletteThemeAllowsArtwork&&(?=\k<a>\.mode===' + $bq + 'artwork' + $bq + '\?' + $bq + 'pill' + $bq + ':\k<a>\.mode)'
-    $reAPatch = '!1&&(?<pad> +)(?=(?<a>[\w$]+)\.mode===' + $bq + 'artwork' + $bq + '\?' + $bq + 'pill' + $bq + ':\k<a>\.mode)'
+    # the guard after the cut is `e.mode===`artwork`` (builds to 0.1.6) or a local flag
+    # `t` (= mode is neither pill nor none, 0.1.7-nightly.20261101+); both are accepted
+    $guard = '(?:[\w$]+\.mode===' + $bq + 'artwork' + $bq + '|[\w$]+)\?' + $bq + 'pill' + $bq + ':'
+    $reAStock = '(?<a>[\w$]+)\.paletteThemeActive&&!\k<a>\.paletteThemeAllowsArtwork&&(?=' + $guard + '\k<a>\.mode(?![\w$]))'
+    $reAPatch = '!1&&(?<pad> +)(?=' + $guard + '(?<a>[\w$]+)\.mode(?![\w$]))'
     $reBStock = '(?<=[(,][\w$]+=)(?<i>[\w$]+)===' + $bq + 'pill' + $bq + '\?(?<k>[\w$]+\([\w$]+\)):null(?=,)'
     $reBPatch = '(?<=[(,][\w$]+=)(?<i>[\w$]+)!=' + $bq + 'none' + $bq + ' \?(?<k>[\w$]+\([\w$]+\)):null(?=,)'
     $cands = @($script:files | Where-Object { $_.Path -match '/client/assets/[^/]*\.js$' })

@@ -170,8 +170,16 @@ try {
 		select.setAttribute("data-t3local-pagetheme", "");
 		const trigger = document.querySelector("[data-slot=select-trigger]");
 		if (trigger) select.className = trigger.className;
-		select.style.cssText = "min-width:10rem;padding:0.35rem 0.6rem;border-radius:0.5rem;border:1px solid var(--border, rgba(255,255,255,.15));background:var(--background, transparent);color:inherit;font:inherit;font-size:0.875rem;color-scheme:dark light;cursor:pointer";
-		for (const [value, label] of PAGE_THEMES) select.add(new Option(label, value));
+		select.style.cssText = "min-width:10rem;padding:0.35rem 0.6rem;border-radius:0.5rem;border:1px solid var(--border, rgba(255,255,255,.15));background:var(--background, transparent);color:inherit;font:inherit;font-size:0.875rem;cursor:pointer";
+		// The open list is drawn by Chromium, not the page: "dark light" let it pick a white
+		// list. Follow T3's own theme and paint the options like T3's popovers.
+		const dark = document.documentElement.classList.contains("dark");
+		select.style.colorScheme = dark ? "dark" : "light";
+		for (const [value, label] of PAGE_THEMES) {
+			const option = new Option(label, value);
+			option.style.cssText = "background-color:var(--popover);color:var(--popover-foreground)";
+			select.add(option);
+		}
 		select.value = PAGE_THEMES.some(([v]) => v === CONFIG.browserAppearance) ? CONFIG.browserAppearance : "system";
 		select.addEventListener("change", () => {
 			CONFIG.browserAppearance = select.value;
@@ -197,7 +205,7 @@ try {
 		const box = document.createElement("div");
 		box.setAttribute("data-t3local-workingcolor", "");
 		box.style.cssText = "display:flex;align-items:center;gap:0.5rem;flex-shrink:0";
-		const field = "height:2rem;border-radius:0.5rem;border:1px solid var(--border, rgba(255,255,255,.15));background:var(--background, transparent);color:inherit;font:inherit;font-size:0.875rem";
+		const field = "height:2rem;border-radius:0.5rem;border:1px solid var(--border, rgba(255,255,255,.15));background:var(--background, transparent);color:inherit;font:inherit;font-size:0.875rem;color-scheme:" + (document.documentElement.classList.contains("dark") ? "dark" : "light");
 		const picker = document.createElement("input");
 		picker.type = "color";
 		picker.setAttribute("aria-label", "Pick working color");
