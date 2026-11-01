@@ -52,3 +52,12 @@ html[data-window-material].dark [data-composer-banner-surface]{
   --chat-composer-attached-surface:var(--muted) !important;
   --glass-opacity:var(--t3-glass-composer) !important;
 }
+
+/* The slash-command drawer draws its whole panel (tint, rounded border, blur) on ::before. Since
+   build 0.1.7 (2026-10-31) T3 portals it to <body> as a fixed layer, so nothing else covers for a
+   missing frame: if any rule turns that ::before off, the list floats as bare text over the page.
+   Two attribute selectors outrank a broad [data-composer-banner-surface]::before rule from a later
+   file. The drawer is a stock T3 frame, so this holds with or without a window material. */
+[data-composer-banner-surface][data-composer-command-drawer]::before{
+  content:"" !important;
+}
