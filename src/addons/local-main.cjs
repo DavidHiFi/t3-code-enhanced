@@ -295,5 +295,7 @@ module.exports = function onMainWindowLoad(window) {
 		log(`material: ${error.message}`);
 	}
 	const flag = material ? `document.documentElement.dataset.windowMaterial=${JSON.stringify(material)}` : "delete document.documentElement.dataset.windowMaterial";
-	contents.executeJavaScript(`${flag};0`).catch((error) => log(`flag: ${error.message}`));
+	// accountNames: { email: name } labels the Limits popover rows (server.asar usageaccounts patch)
+	const names = `self.T3N=${JSON.stringify(config.accountNames || {})}`;
+	contents.executeJavaScript(`${flag};${names};0`).catch((error) => log(`flag: ${error.message}`));
 };

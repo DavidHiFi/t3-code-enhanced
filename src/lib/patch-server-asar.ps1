@@ -864,12 +864,14 @@ function Resolve-SidebarSeconds([string]$direction) {
 # account has no limits ("Unavailable"), while the proxy usage source has one account
 # per auth file. The patch lists every account with readable limits for the instance's
 # driver (the same list the Usage page uses), each row prefixed with the first 5
-# characters of its email. Rows are keyed by label so the accounts' windows don't
-# collide. The bytes come from the Unavailable tooltip wrapper, the heading id and a
+# characters of its email, or the name set for that email in local-patches.json
+# accountNames (the loader passes it to the page as self.T3N). Rows are keyed by label so the accounts' windows don't
+# collide. When no account has limits, the first account's reason shows. The bytes come from the Unavailable tooltip wrapper, the heading id and a
 # redundant tone:null.
 function Resolve-UsageAccounts([string]$direction) {
     $stockT = 't=(n===null?null:@H@(n,r,i,e))?.accounts.find(e=>e.instanceId===n)?.limits??r.find(e=>e.instanceId===n)?.usageLimits;if(!t){f=null;break bb0}let p=@W@(t);o=@D@,l=`thread-details-usage-heading`,u=`Usage limits`,d=!1,s=`grid grid-cols-[auto_minmax(3rem,1fr)_auto] gap-x-3 text-xs`,c=p?(0,@J@.jsx)(@U@,{label:`Limits`,fill:null,tone:null,value:`Unavailable`,tooltip:(0,@J@.jsx)(`span`,{className:`text-foreground`,children:p})}):t.windows.map(t=>(0,@J@.jsx)(@C@,{window:t,now:e},t.id))'
-    $patchT = 'A=(@H@(n,r,i,e)?.accounts??[]).filter(e=>!@W@(e.limits)),t=A[0]?{windows:A.flatMap(a=>a.limits.windows.map(w=>({...w,label:(a.email??a.id).slice(0,5)+` `+w.label})))}:r.find(e=>e.instanceId===n)?.usageLimits;if(!t){f=null;break bb0}let p=@W@(t);o=@D@,l=`ul`,u=`Usage limits`,d=!1,s=`grid grid-cols-[auto_minmax(3rem,1fr)_auto] gap-x-3 text-xs`,c=p?(0,@J@.jsx)(@U@,{label:`Limits`,fill:null,value:`Unavailable`,tooltip:p}):t.windows.map(t=>(0,@J@.jsx)(@C@,{window:t,now:e},t.label))'
+    $patchT = 'B=@H@(n,r,i,e)?.accounts??[],A=B.filter(e=>!@W@(e.limits)),t=A[0]?{windows:A.flatMap(a=>a.limits.windows.map(w=>({...w,label:(self.T3N?.[a.email]??(a.email??a.id).slice(0,5))+` `+w.label})))}:B[0]?.limits;   if(!t){f=null;break bb0}let p=@W@(t);o=@D@,l=`ul`,u=`Usage limits`,d=!1,s=`grid grid-cols-[auto_minmax(3rem,1fr)_auto] gap-x-3 text-xs`,c=p?(0,@J@.jsx)(@U@,{label:`Limits`,fill:null,value:`Unavailable`,tooltip:p}):t.windows.map(t=>(0,@J@.jsx)(@C@,{window:t,now:e},t.label))'
+    $oldT   = 'A=(@H@(n,r,i,e)?.accounts??[]).filter(e=>!@W@(e.limits)),t=A[0]?{windows:A.flatMap(a=>a.limits.windows.map(w=>({...w,label:(a.email??a.id).slice(0,5)+` `+w.label})))}:r.find(e=>e.instanceId===n)?.usageLimits;if(!t){f=null;break bb0}let p=@W@(t);o=@D@,l=`ul`,u=`Usage limits`,d=!1,s=`grid grid-cols-[auto_minmax(3rem,1fr)_auto] gap-x-3 text-xs`,c=p?(0,@J@.jsx)(@U@,{label:`Limits`,fill:null,value:`Unavailable`,tooltip:p}):t.windows.map(t=>(0,@J@.jsx)(@C@,{window:t,now:e},t.label))'
     $keys = 'H', 'W', 'D', 'J', 'U', 'C'
     $toRe = {
         param($tmpl)
@@ -894,7 +896,7 @@ function Resolve-UsageAccounts([string]$direction) {
     foreach ($c in $cands) {
         $t = Get-ChunkText $c.Offset $c.Size
         if (-not $t.Contains($bq + 'Usage limits' + $bq)) { continue }
-        foreach ($pair in @(@('ORIGINAL', (& $toRe $stockT)), @('PATCHED', (& $toRe $patchT)))) {
+        foreach ($pair in @(@('ORIGINAL', (& $toRe $stockT)), @('PATCHED', (& $toRe $patchT)), @('OLD', (& $toRe $oldT)))) {
             foreach ($m in [regex]::Matches($t, $pair[1])) { $hits += [pscustomobject]@{ Chunk = $c; Text = $t; M = $m; State = $pair[0] } }
         }
     }
@@ -902,6 +904,14 @@ function Resolve-UsageAccounts([string]$direction) {
     $h = $hits[0]
     $stockText = & $fill $stockT $h.M
     $patchText = & $fill $patchT $h.M
+    if ($h.State -eq 'OLD') {
+        # the first version (email prefixes) is live: upgrade it, or put stock back
+        $oldText = & $fill $oldT $h.M
+        $edits = @()
+        $new = if ($direction -eq 'patched') { $patchText } elseif ($direction -eq 'stock') { $stockText } else { $null }
+        if ($null -ne $new) { $edits += @{ Kind = 'region'; Patch = 'usageaccounts'; Off = [int64]($dataOffset + $h.Chunk.Offset + $h.M.Index); Old = $oldText; New = $new; Chunk = $h.Chunk; ChunkText = $h.Text } }
+        return @{ State = 'ORIGINAL'; Detail = "popover usage in $(Split-Path $h.Chunk.Path -Leaf), first version (email prefixes)"; Edits = $edits }
+    }
     if ($stockText.Length -ne $patchText.Length) { return @{ State = 'UNKNOWN'; Detail = "usageaccounts edit would change length ($($stockText.Length) vs $($patchText.Length))"; Edits = @() } }
     if ($h.State -eq 'ORIGINAL' -and $direction -eq 'patched') { $old = $stockText; $new = $patchText }
     elseif ($h.State -eq 'PATCHED' -and $direction -eq 'stock') { $old = $patchText; $new = $stockText }
