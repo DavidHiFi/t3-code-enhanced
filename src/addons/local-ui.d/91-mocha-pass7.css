@@ -1,0 +1,71 @@
+/* T3 Mocha rice, pass 7 (2026-11-02): skill and mention tokens, the "Editing in the composer"
+   row, and the composer hover glow brought up to the standard dock glow.
+
+   Evidence (server.asar probe, 2026-11-02): the composer renders skill/file mentions as Tiptap
+   node views - [data-node-view-wrapper] holding a chip that paints --muted (the bright #585b70
+   grey) with a neon pink skill accent (--context-chip-skill: oklch(0.62 0.16 322)). The queued
+   message header row (timestamp + "Editing in the composer" + Cancel) floats undocked; the
+   composer frame goes blue on hover but its glow is weaker than every other dock.
+
+   Rollback: delete this file, reload. Notes: notes\2026-11-02-t3-mocha-docks.md */
+
+/* ---- skill accent: neon pink to muted mocha mauve ---- */
+html.dark { --context-chip-skill: #b7a5e3 !important; }
+
+/* ---- context chips outside the composer (message bodies, previews): docked pill ---- */
+html.dark [data-slot="context-chip"] {
+	background-color: var(--t6-pill) !important;
+	box-shadow: inset 0 0 0 1px var(--t6-edge), var(--t6-sheen) !important;
+	border-radius: 9px !important;
+	transition: var(--t6-ease) !important;
+}
+html.dark [data-slot="context-chip"]:hover {
+	background-color: var(--t6-pill-hi) !important;
+	box-shadow: var(--t6-ring), var(--t6-glow) !important;
+}
+
+/* ---- composer mention/skill tokens: one dock per token, inner chrome cleared ---- */
+html.dark [data-node-view-wrapper] {
+	background-color: var(--t6-pill) !important;
+	box-shadow: inset 0 0 0 1px var(--t6-edge), var(--t6-sheen) !important;
+	border-radius: 999px !important;
+	padding: 0 5px !important;
+	transition: var(--t6-ease) !important;
+}
+html.dark [data-node-view-wrapper]:hover {
+	background-color: var(--t6-pill-hi) !important;
+	box-shadow: var(--t6-ring), var(--t6-glow) !important;
+}
+html.dark [data-node-view-wrapper] :is([data-slot="context-chip"], [data-composer-mention-chip="true"], [class*="bg-muted"], [class*="bg-secondary"]) {
+	background-color: transparent !important;
+	box-shadow: none !important;
+}
+
+/* ---- "Editing in the composer" row: a dock, not floating text ----
+   The header row is the li's last child (LB renders bubble then header). The editing row
+   keeps its dock at rest; plain queued rows dock on hover to match their hover-revealed
+   actions. The timestamp span stays hidden until hover as T3 draws it. */
+[data-thread-queue] li[aria-label^="Queued message"][aria-current="true"] > div:last-child,
+[data-thread-queue] li[aria-label^="Queued message"]:not([aria-current="true"]):hover > div:last-child {
+	width: fit-content !important;
+	margin-left: auto !important;
+	padding: 3px 10px !important;
+	border-radius: 999px !important;
+	background-color: var(--t6-pill) !important;
+	box-shadow: inset 0 0 0 1px var(--t6-edge), var(--t6-sheen) !important;
+	transition: var(--t6-ease) !important;
+}
+[data-thread-queue] li[aria-label^="Queued message"][aria-current="true"] > div:last-child:hover,
+[data-thread-queue] li[aria-label^="Queued message"]:not([aria-current="true"]):hover > div:last-child:hover {
+	background-color: var(--t6-pill-hi) !important;
+	box-shadow: var(--t6-ring), var(--t6-glow) !important;
+}
+
+/* ---- composer hover glow: same strength as every other dock ---- */
+html.dark [data-chat-composer-main-surface][data-chat-composer-main-surface][data-chat-composer-main-surface]:is(:hover, :focus-within) {
+	--chat-composer-outline: rgb(137 180 250 / 0.95) !important;
+}
+[class*="before:bg-(--chat-composer-glass-surface)"]:is(:hover, :focus-within)::before {
+	box-shadow: 0 0 16px -2px rgb(137 180 250 / 0.55), 0 0 30px -8px rgb(137 180 250 / 0.35),
+		0 12px 30px -14px rgb(17 17 27 / 0.85) !important;
+}

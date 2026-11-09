@@ -1,0 +1,223 @@
+/* T3 Mocha rice, pass 13 (2026-11-04): diff side panel + thread provider-error/meta docks.
+   Owner brief: the right-hand diff panel needs the dock treatment (docks + hover), and in the
+   thread the provider-error boxes float text, and the time/copy/branch rows under messages are
+   undocked in build 0.1.7-nightly.20261104.4151 (pass 5's `p.tabular-nums + div > button`
+   selector matches nothing any more - the row is now [copy][branch][time] inside
+   div.flex.items-center.gap-2.text-xs.tabular-nums).
+   Shadow-DOM diff internals (diffs-container, file-tree-container) are docked by 97-diff-docks.js.
+   Rollback: delete this file and 97-diff-docks.js, reload.
+   Notes: notes\2026-11-02-t3-mocha-docks.md */
+
+/* ================= thread: provider error turn ================= */
+/* The whole error turn (heading row + body) becomes one dark card; the body p.ms-7 no longer floats. */
+div[data-v2-item-type="error"][data-v2-item-type="error"] {
+	background: var(--t5-solid) !important;
+	border-radius: 14px !important;
+	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+	padding: 4px 10px 3px 4px !important;
+	position: relative;
+	z-index: 5;
+	transition: var(--t5-ease) !important;
+}
+div[data-v2-item-type="error"][data-v2-item-type="error"]:hover {
+	box-shadow: inset 0 0 0 1px var(--t5-edge), var(--t5-ring), var(--t5-glow) !important;
+}
+/* the error body keeps its indent but loses the raw look */
+div[data-v2-item-type="error"] p.ms-7 {
+	color: var(--t5-blue) !important;
+	opacity: 0.92;
+}
+/* timestamp chip at the end of the error heading: always-visible resting dock */
+div[data-v2-item-type="error"] > div > span[data-slot="tooltip-trigger"].whitespace-nowrap {
+	background: var(--t5-pill) !important;
+	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+	border-radius: 7px !important;
+	padding: 1px 7px !important;
+	transition: var(--t5-ease) !important;
+}
+div[data-v2-item-type="error"] > div > span[data-slot="tooltip-trigger"].whitespace-nowrap:hover {
+	box-shadow: var(--t5-ring), var(--t5-glow) !important;
+}
+
+/* ================= thread: message meta row (copy, branch, time) ================= */
+/* Pass 5 docked `p.tabular-nums + div > button`; this build renders [copy][branch][time] inside
+   div.flex.items-center.gap-2.text-xs.tabular-nums under div.px-1. Same dock, new selector. */
+div[data-timeline-row-id^="assistant-meta"] div.px-1 > div:has(> p.tabular-nums):has(> button) {
+	padding: 2px 3px 2px 9px !important;
+	border-radius: 10px !important;
+	background: var(--t5-pill) !important;
+	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+	transition: var(--t5-ease) !important;
+	position: relative;
+	z-index: 5;
+	/* pass 20: the block element spanned the full 728px column as a ghost pill;
+	   hug the [copy][branch][time] content instead */
+	width: fit-content !important;
+}
+div[data-timeline-row-id^="assistant-meta"] div.px-1 > div:has(> p.tabular-nums):has(> button):hover {
+	box-shadow: var(--t5-ring), var(--t5-glow) !important;
+}
+div[data-timeline-row-id^="assistant-meta"] div.px-1 > div:has(> p.tabular-nums):has(> button) > button {
+	border-radius: 7px !important;
+	transition: var(--t5-ease) !important;
+}
+div[data-timeline-row-id^="assistant-meta"] div.px-1 > div:has(> p.tabular-nums):has(> button) > button:hover {
+	background-color: var(--t5-pill-hi) !important;
+	box-shadow: var(--t5-ring) !important;
+}
+div[data-timeline-row-id^="assistant-meta"] div.px-1 > div:has(> p.tabular-nums):has(> button) > p.tabular-nums {
+	padding-right: 4px;
+}
+
+/* ================= thread: dynamic tool rows ("Background activity updated", tool lines) ================= */
+div.group\/timeline-row[data-v2-item-type="dynamic_tool"] {
+	background: var(--t5-pill) !important;
+	border-radius: 10px !important;
+	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+	padding: 2px 6px !important;
+	transition: var(--t5-ease) !important;
+	position: relative;
+	z-index: 5;
+}
+div.group\/timeline-row[data-v2-item-type="dynamic_tool"]:hover {
+	box-shadow: var(--t5-ring), var(--t5-glow) !important;
+}
+/* the hover-revealed timestamp reads as a chip while the row is hovered */
+div.group\/timeline-row[data-v2-item-type="dynamic_tool"]:hover > div > span[data-slot="tooltip-trigger"] {
+	background: var(--t5-pill-hi) !important;
+	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+	border-radius: 7px !important;
+	padding: 1px 7px !important;
+}
+
+/* ================= thread: pinned API-error alert ================= */
+/* The variant attribute repeats: T3's own .alert-glass rules and the pass-5/60 glass chain sit at
+   (0,2,x)-(0,3,x) important; the fill must outrank them or the alert keeps a 75% canvas glass. */
+div[data-slot="alert"][data-variant="error"][data-variant="error"][data-variant="error"] {
+	background-color: var(--t5-solid) !important;
+	background-image: none !important;
+	border-color: var(--t5-edge) !important;
+	transition: var(--t5-ease) !important;
+}
+div[data-slot="alert"][data-variant="error"][data-variant="error"][data-variant="error"]:hover {
+	box-shadow: var(--t5-ring), var(--t5-glow) !important;
+}
+div[data-slot="alert"][data-variant="error"] [data-slot="inline-button"][data-slot="inline-button"] {
+	background: var(--t5-pill) !important;
+	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+	border-radius: 8px !important;
+	padding: 2px 8px !important;
+	transition: var(--t5-ease) !important;
+}
+div[data-slot="alert"] [data-slot="inline-button"]:hover {
+	box-shadow: var(--t5-ring), var(--t5-glow) !important;
+	background-color: var(--t5-pill-hi) !important;
+}
+
+/* ================= diff panel: tab bar ================= */
+div[data-right-panel-tabbar="true"] {
+	background: var(--t5-pill) !important;
+	box-shadow: inset 0 -1px 0 var(--t5-edge) !important;
+	transition: var(--t5-ease) !important;
+}
+div[data-right-panel-tabbar] div.group\/tab {
+	border-radius: 8px !important;
+	padding: 2px 8px !important;
+	background: transparent !important;
+	transition: var(--t5-ease) !important;
+}
+div[data-right-panel-tabbar] div.group\/tab[data-active-tab="true"] {
+	background: var(--t5-pill-hi) !important;
+	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+}
+div[data-right-panel-tabbar] div.group\/tab:hover {
+	box-shadow: var(--t5-ring), var(--t5-glow) !important;
+}
+div[data-right-panel-tabbar] button.group\/close > span {
+	border-radius: 6px !important;
+	transition: var(--t5-ease) !important;
+}
+div[data-right-panel-tabbar] div.group\/tab:hover button.group\/close > span {
+	background-color: var(--t5-pill-hi) !important;
+}
+/* the two icon buttons at the right end of the tab bar */
+div[data-right-panel-tabbar] button[data-slot="button"] {
+	border-radius: 8px !important;
+	padding: 3px !important;
+	transition: var(--t5-ease) !important;
+}
+div[data-right-panel-tabbar] button[data-slot="button"]:hover {
+	background-color: var(--t5-pill-hi) !important;
+	box-shadow: var(--t5-ring) !important;
+}
+
+/* ================= diff panel: Changes/Automatic subheader ================= */
+/* the ref cluster (Changes / master / vs / Automatic) is one dock pill */
+div[data-right-panel-surface-content] [data-surface-subheader] > div[class*="diff-refs"] {
+	background: var(--t5-pill) !important;
+	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+	border-radius: 10px !important;
+	padding: 2px 8px !important;
+	transition: var(--t5-ease) !important;
+}
+div[data-right-panel-surface-content] [data-surface-subheader] > div[class*="diff-refs"]:hover {
+	box-shadow: var(--t5-ring), var(--t5-glow) !important;
+}
+div[data-right-panel-surface-content] [data-surface-subheader] > div[class*="diff-refs"] :is([data-slot="menu-trigger"], [data-slot="combobox-trigger"], span[data-slot="tooltip-trigger"]) {
+	border-radius: 7px !important;
+	padding: 1px 5px !important;
+	transition: var(--t5-ease) !important;
+}
+div[data-right-panel-surface-content] [data-surface-subheader] > div[class*="diff-refs"] :is([data-slot="menu-trigger"], [data-slot="combobox-trigger"]):hover,
+div[data-right-panel-surface-content] [data-surface-subheader] > div[class*="diff-refs"] span[data-slot="tooltip-trigger"]:hover {
+	background-color: var(--t5-pill-hi) !important;
+	box-shadow: var(--t5-ring) !important;
+}
+/* the right cluster (stats, refresh, layout toggles, filters) is one dock pill */
+div[data-right-panel-surface-content] [data-surface-subheader] > div.flex.shrink-0.items-center.gap-1 {
+	background: var(--t5-pill) !important;
+	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+	border-radius: 10px !important;
+	padding: 2px 6px !important;
+	transition: var(--t5-ease) !important;
+}
+div[data-right-panel-surface-content] [data-surface-subheader] > div.flex.shrink-0.items-center.gap-1:hover {
+	box-shadow: var(--t5-ring), var(--t5-glow) !important;
+}
+div[data-right-panel-surface-content] [data-surface-subheader] > div.flex.shrink-0.items-center.gap-1 button {
+	border-radius: 7px !important;
+	transition: var(--t5-ease) !important;
+}
+div[data-right-panel-surface-content] [data-surface-subheader] > div.flex.shrink-0.items-center.gap-1 button:hover {
+	background-color: var(--t5-pill-hi) !important;
+	box-shadow: var(--t5-ring) !important;
+}
+div[data-right-panel-surface-content] [data-surface-subheader] > div.flex.shrink-0.items-center.gap-1 button[data-pressed="true"] {
+	background-color: var(--t5-pill-hi) !important;
+	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+}
+
+/* ================= diff panel: file tree aside ================= */
+div[data-right-panel-surface-content] aside {
+	border-left: 1px solid var(--t5-edge) !important;
+}
+/* the "Files 82" header band inside the aside */
+div[data-right-panel-surface-content] aside [data-surface-subheader] {
+	background: var(--t5-pill) !important;
+	box-shadow: inset 0 -1px 0 var(--t5-edge) !important;
+	transition: var(--t5-ease) !important;
+}
+div[data-right-panel-surface-content] aside [data-surface-subheader] button {
+	border-radius: 7px !important;
+	transition: var(--t5-ease) !important;
+}
+div[data-right-panel-surface-content] aside [data-surface-subheader] button:hover {
+	background-color: var(--t5-pill-hi) !important;
+	box-shadow: var(--t5-ring) !important;
+}
+
+/* ================= diff viewer host: soften the +/- indicator bars ================= */
+div[data-right-panel-surface-content] .diff-render-surface {
+	--diffs-addition-base: rgb(166 227 161 / 0.55);
+	--diffs-deletion-base: rgb(243 139 168 / 0.55);
+}

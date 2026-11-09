@@ -1,0 +1,81 @@
+/* ============================================================================
+   99-mocha-pass18.css — pass 18 (2026-11-06), tower build 0.1.8-nightly.20261106.4275.
+   Owner defect: settings-nav search box. Build .4275 wraps the search input in
+   span[data-slot="input-control"], so the input stopped filling the row: its own
+   crust pill shrank to ~151px, the leading icon sat outside it and the "/" kbd
+   floated outside the pill's right edge. The WRAPPER becomes the dock pill
+   (Mocha surface + inset edge, fully rounded); the input goes transparent and
+   fills the space between icon and kbd; the kbd sits inside, right, centred.
+   Loads last. Rollback: delete this file and reload.
+   Notes: notes\2026-11-02-t3-mocha-docks.md "Pass 18".
+   ========================================================================== */
+
+html nav[data-workspace-area="settings-nav"] div.flex.h-8.items-center.gap-2:has(> [data-slot="input-control"]) {
+	background-color: var(--t15-dock-in) !important;
+	box-shadow: inset 0 0 0 1px var(--t15-edge) !important;
+	border-radius: 9999px !important;
+	color: var(--t15-subtext) !important;
+	transition: var(--t15-ease) !important;
+}
+html nav[data-workspace-area="settings-nav"] div.flex.h-8.items-center.gap-2:has(> [data-slot="input-control"]):hover {
+	box-shadow: inset 0 0 0 1px var(--t15-edge-hi) !important;
+}
+html nav[data-workspace-area="settings-nav"] div.flex.h-8.items-center.gap-2:has(> [data-slot="input-control"]):focus-within {
+	box-shadow: var(--t15-ring), var(--t15-glow) !important;
+}
+nav[data-workspace-area="settings-nav"] span[data-slot="input-control"] {
+	flex: 1 1 auto !important;
+	min-width: 0 !important;
+	background: transparent !important;
+	box-shadow: none !important;
+}
+nav[data-workspace-area="settings-nav"] span[data-slot="input-control"] input {
+	background: transparent !important;
+	box-shadow: none !important;
+	border: 0 !important;
+	color: var(--t15-text) !important;
+	height: auto !important;
+	min-height: 0 !important;
+	line-height: 20px !important;
+}
+nav[data-workspace-area="settings-nav"] span[data-slot="input-control"] input::placeholder {
+	color: var(--t15-subtext) !important;
+	opacity: 1 !important;
+}
+nav[data-workspace-area="settings-nav"] div.flex.h-8.items-center.gap-2 kbd {
+	background: rgb(166 173 200 / 0.12) !important;
+	color: var(--t15-subtext) !important;
+	border-radius: 6px !important;
+	box-shadow: inset 0 0 0 1px var(--t15-edge) !important;
+	flex: none !important;
+	align-self: center !important;
+}
+
+/* ---- pass 20: retention / amount steppers (Settings, one coherent control) ----
+   The wrapper is a bordered 8px-radius flex, but its number input carried its
+   own near-black 0.45 pill at radius 10 inside - the inset dark pill with
+   unequal geometry the owner screenshotted. Keyed on the Decrease/Increase
+   button siblings so only true steppers match (no overbroad input styling). */
+html [data-slot="dialog-popup"] div.relative.flex.justify-between:has(> button[aria-label="Decrease"]):has(> button[aria-label="Increase"]) {
+	background-color: var(--t15-dock-in) !important;
+	border: 0 !important;
+	box-shadow: inset 0 0 0 1px var(--t15-edge) !important;
+	transition: var(--t15-ease) !important;
+}
+html [data-slot="dialog-popup"] div.relative.flex.justify-between:has(> button[aria-label="Decrease"]):has(> button[aria-label="Increase"]):focus-within {
+	box-shadow: var(--t15-ring), var(--t15-glow) !important;
+}
+html [data-slot="dialog-popup"] div.relative.flex.justify-between:has(> button[aria-label="Decrease"]):has(> button[aria-label="Increase"]) > input {
+	background-color: transparent !important;
+	box-shadow: none !important;
+	border: 0 !important;
+	color: var(--t15-text) !important;
+	font-weight: 500 !important;
+}
+html [data-slot="dialog-popup"] div.relative.flex.justify-between:has(> button[aria-label="Decrease"]):has(> button[aria-label="Increase"]) > button {
+	background-color: transparent !important;
+	transition: var(--t15-ease) !important;
+}
+html [data-slot="dialog-popup"] div.relative.flex.justify-between:has(> button[aria-label="Decrease"]):has(> button[aria-label="Increase"]) > button:hover {
+	background-color: var(--t15-hover) !important;
+}

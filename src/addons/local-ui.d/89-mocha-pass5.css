@@ -1,0 +1,193 @@
+/* T3 Mocha rice, pass 5 (2026-11-02).
+   Why surfaces got near-solid: T3's window is transparent (the desktop acrylic shows through), and
+   in a transparent window Chromium draws the blurred backdrop on top of the sharp original, so text
+   stays readable through every CSS blur unless the surface itself is close to opaque (measured with
+   test boxes: blur hid text only over an opaque backdrop). Floating surfaces that sit over text now
+   use a 95% Mocha fill; in-flow docks keep the tint plus the window acrylic.
+   Rule for every control: a resting dock (dark pill, 1px edge) and a hover glow (blue edge + glow).
+   Rollback: delete this file and reload. Notes: notes\2026-11-02-t3-mocha-docks.md */
+
+:root {
+	--t5-solid: rgb(24 24 37 / 0.95);
+	--t5-pill: rgb(17 17 27 / 0.58);
+	--t5-pill-hi: rgb(49 50 68 / 0.6);
+	--t5-edge: rgb(108 112 134 / 0.4);
+	--t5-blue: #89b4fa;
+	--t5-ring: inset 0 0 0 1px rgb(137 180 250 / 0.75);
+	--t5-glow: 0 0 14px -3px rgb(137 180 250 / 0.5);
+	--t5-ease: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ================= text-proof floating surfaces ================= */
+html[data-window-material] :is(.t3gm, .dropdown-glass, .dialog-glass, .alert-glass, [data-slot$="-popup"]):not([class*="rounded-none"]),
+html[data-window-material] [data-thread-details-card][data-thread-details-card][data-thread-details-card],
+html[data-window-material] [data-scroll-to-end][data-scroll-to-end],
+html[data-window-material] [data-composer-shoulder-tab] [data-prompt-stash-badge][data-prompt-stash-badge],
+html[data-window-material] [data-composer-stash-drawer][data-composer-stash-drawer],
+html[data-window-material] [data-chat-thread-status-line][data-chat-thread-status-line],
+html[data-window-material] nav[aria-label$="breadcrumb"] > ol,
+html[data-window-material] [data-panel-layout-controls][data-panel-layout-controls] {
+	background-color: var(--t5-solid) !important;
+	background-image: none !important;
+}
+/* the composer: the timeline scrolls behind it */
+html.dark [class*="composer-surface"][class*="composer-surface"][class*="composer-surface"][class*="composer-surface"],
+html.dark [data-chat-composer-main-surface][data-chat-composer-main-surface][data-chat-composer-main-surface],
+html.dark [data-composer-banner-surface][data-composer-banner-surface][data-composer-banner-surface] {
+	--glass-opacity: 95% !important;
+}
+
+/* ================= model / agent picker: darker panes ================= */
+[data-slot="popover-popup"]:has([data-model-picker-content]) {
+	--t4-pane: rgb(17 17 27 / 0.62);
+}
+
+/* ================= stash drawer: raised with the tab so it clears the composer ================= */
+[data-composer-stash-drawer] {
+	position: relative !important;
+	z-index: 30 !important;
+	transform: translateY(-14px) !important;
+	border: 1px solid var(--t5-edge) !important;
+	border-radius: 14px !important;
+	box-shadow: 0 14px 32px -14px rgb(17 17 27 / 0.9) !important;
+	transition: var(--t5-ease) !important;
+}
+[data-composer-stash-drawer]:hover {
+	border-color: var(--t5-blue) !important;
+	box-shadow: var(--t5-glow), 0 14px 32px -14px rgb(17 17 27 / 0.9) !important;
+}
+
+/* ================= brand dock: collapse button + T3 Code + version in their own pill ================= */
+[data-slot="sidebar-inner"] div:has(> div > div > a[aria-label="T3 Code home"]) > div.relative.z-10.flex.h-8 {
+	flex: 0 0 auto !important;
+	width: fit-content !important;
+	height: 36px !important;
+	margin-left: 4px !important;
+	padding: 0 5px 0 0 !important;
+	align-content: center !important;
+	border-radius: 12px !important;
+	background: rgb(17 17 27 / 0.66) !important;
+	box-shadow: inset 0 0 0 1px var(--t5-edge), 0 4px 12px -6px rgb(17 17 27 / 0.8) !important;
+	transition: var(--t5-ease) !important;
+}
+[data-slot="sidebar-inner"] div:has(> div > div > a[aria-label="T3 Code home"]) > div.relative.z-10.flex.h-8:hover {
+	box-shadow: var(--t5-ring), var(--t5-glow) !important;
+}
+/* the build pill: dark, softer corners */
+[data-slot="sidebar-inner"] [data-environment-identification="pill"][data-environment-identification="pill"],
+[data-slot="sidebar-inner"] div:has(> div > div > a[aria-label="T3 Code home"]) div.ml-1 > span {
+	background: rgb(17 17 27 / 0.75) !important;
+	border: 1px solid rgb(108 112 134 / 0.32) !important;
+	color: #a6adc8 !important;
+	border-radius: 7px !important;
+	padding: 1px 7px !important;
+	transition: var(--t5-ease) !important;
+}
+[data-slot="sidebar-inner"] div:has(> div > div > a[aria-label="T3 Code home"]) div.ml-1 > span:hover {
+	border-color: rgb(180 190 254 / 0.7) !important;
+	color: #cdd6f4 !important;
+}
+
+/* ================= details card (top right): glow it actually gets, styled rows ================= */
+html [data-thread-details-card][data-thread-details-card][data-thread-details-card]:hover {
+	border-color: var(--t5-blue) !important;
+	box-shadow: var(--t5-glow), 0 18px 40px -12px rgb(17 17 27 / 0.8) !important;
+}
+/* split rows (Open in VS Code + chevron) light as one; other buttons on their own */
+[data-thread-details-card] :is([role="group"][class*="details-split"], :not([role="group"]) > button:not([disabled]), :not([role="group"]) > a[href]) {
+	border-radius: 9px !important;
+	transition: var(--t5-ease) !important;
+}
+[data-thread-details-card] :is([role="group"][class*="details-split"], :not([role="group"]) > button:not([disabled]), :not([role="group"]) > a[href]):hover {
+	background-color: var(--t5-pill-hi) !important;
+	box-shadow: var(--t5-ring), var(--t5-glow) !important;
+}
+[data-thread-details-card] [role="group"][class*="details-split"] button:hover {
+	background-color: transparent !important;
+	box-shadow: none !important;
+}
+/* usage and context rows: subgrid rows, so the pill is drawn with spread shadows (no layout shift) */
+[data-thread-details-card] [data-slot="tooltip-trigger"][class*="grid-cols-subgrid"] {
+	border-radius: 6px !important;
+	transition: var(--t5-ease) !important;
+}
+[data-thread-details-card] [data-slot="tooltip-trigger"][class*="grid-cols-subgrid"]:hover {
+	background-color: var(--t5-pill-hi) !important;
+	box-shadow: 0 0 0 4px var(--t5-pill-hi), 0 0 0 5px rgb(137 180 250 / 0.75), 0 0 16px 2px rgb(137 180 250 / 0.35) !important;
+}
+
+/* ================= composer footer: resting pills, glow on hover ================= */
+[data-chat-composer-footer] :is(button[aria-label="Attach files"], button[aria-label="More composer controls"], [data-chat-provider-model-picker]) {
+	background-color: var(--t5-pill) !important;
+	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+	border-radius: 10px !important;
+	transition: var(--t5-ease) !important;
+}
+[data-chat-composer-footer] [data-chat-provider-model-picker] { padding-inline: 8px !important; }
+[data-chat-composer-footer] :is(button[aria-label="Attach files"], button[aria-label="More composer controls"], [data-chat-provider-model-picker]):not([disabled]):is(:hover, [aria-expanded="true"]) {
+	background-color: var(--t5-pill-hi) !important;
+	box-shadow: var(--t5-ring), var(--t5-glow) !important;
+}
+
+/* ================= queued message: darker box, docked actions ================= */
+[data-thread-queue] [class*="border-dashed"][class*="border-dashed"] {
+	background: var(--t5-solid) !important;
+	border-color: rgb(180 190 254 / 0.38) !important;
+	transition: var(--t5-ease) !important;
+}
+[data-thread-queue] [class*="border-dashed"][class*="border-dashed"]:hover {
+	border-color: var(--t5-blue) !important;
+	box-shadow: var(--t5-glow) !important;
+}
+[data-thread-queue] button:not([disabled]) {
+	background-color: var(--t5-pill) !important;
+	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+	border-radius: 8px !important;
+	transition: var(--t5-ease) !important;
+}
+[data-thread-queue] button:not([disabled]):hover {
+	background-color: var(--t5-pill-hi) !important;
+	box-shadow: var(--t5-ring), var(--t5-glow) !important;
+}
+
+/* ================= message meta row (time, copy, link) ================= */
+[data-timeline-row-kind] div.justify-end:has(> p.tabular-nums[data-slot="tooltip-trigger"] + div > button) {
+	padding: 2px 3px 2px 9px !important;
+	border-radius: 10px !important;
+	background: var(--t5-pill) !important;
+	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+	transition: var(--t5-ease) !important;
+}
+[data-timeline-row-kind] div.justify-end:has(> p.tabular-nums[data-slot="tooltip-trigger"] + div > button):hover {
+	box-shadow: var(--t5-ring), var(--t5-glow) !important;
+}
+p.tabular-nums[data-slot="tooltip-trigger"] ~ div > button {
+	border-radius: 7px !important;
+	transition: var(--t5-ease) !important;
+}
+p.tabular-nums[data-slot="tooltip-trigger"] ~ div > button:hover {
+	background-color: var(--t5-pill-hi) !important;
+	box-shadow: var(--t5-ring) !important;
+}
+
+/* ================= sidebar: a header pill on top of every section dock ================= */
+/* Working / Settled: T3's own toggle becomes a resting pill; room below so the glow clears the rows */
+ul[role="tree"][aria-label="Threads"] > :is([data-testid="sidebar-working-header"], [data-testid="sidebar-settled-header"]) {
+	height: auto !important;
+	padding-bottom: 6px !important;
+}
+[data-slot="sidebar-inner"] button[data-sidebar-row^="shelf:"][data-sidebar-row^="shelf:"] {
+	height: 28px !important;
+	border-radius: 10px !important;
+	background-color: var(--t5-pill) !important;
+	box-shadow: inset 0 0 0 1px var(--sh-e, var(--t5-edge)) !important;
+	transition: var(--t5-ease) !important;
+}
+[data-slot="sidebar-inner"] button[data-sidebar-row="shelf:working"] { --sh-e: rgb(137 180 250 / 0.38); }
+[data-slot="sidebar-inner"] button[data-sidebar-row="shelf:settled"] { --sh-e: rgb(108 112 134 / 0.42); }
+[data-slot="sidebar-inner"] button[data-sidebar-row^="shelf:"][data-sidebar-row^="shelf:"]:hover {
+	background-color: var(--t5-pill-hi) !important;
+	box-shadow: var(--t5-ring), var(--t5-glow) !important;
+	border-radius: 10px !important;
+}
+/* Drafts / Pinned / Active headers: 90-section-shelves.js + 90-mocha-pass6.css */

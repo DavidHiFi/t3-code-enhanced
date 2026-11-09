@@ -1,0 +1,150 @@
+/* T3 Mocha rice, pass 15 worker C (2026-11-04): SHARED TOKENS + global material.
+   Worker C owns the tokens. Workers A (thread output) and B (sidebar/chrome) consume them;
+   nobody else redefines --t15-* or the --t5-* and --t3* aliases in their layers.
+
+   Material ladder (contrast steps, lightest -> darkest, hover lightest of all):
+     panel < dock < inner dock < hover
+   Catppuccin Mocha hues: base #1e1e2e, mantle #181825, crust #11111b, surface0 #313244,
+   overlay0 #6c7086 edges, blue #89b4fa accent. Blur is real backdrop-filter; MochaCord
+   uses 20px. Floating surfaces that sit over text stay ~95% (pass 5 rule).
+
+   Rollback: delete this file and reload. Notes: notes\2026-11-02-t3-mocha-docks.md pass 15. */
+
+:root {
+	/* ---- PASS 15 SHARED TOKENS (worker C) ---- */
+	/* surfaces */
+	--t15-panel: rgb(30 30 46 / 0.48);        /* Mocha base, panel material */
+	--t15-panel-deep: rgb(24 24 37 / 0.56);   /* Mocha mantle, panel material */
+	--t15-dock: rgb(17 17 27 / 0.62);         /* Mocha crust, dock pill */
+	--t15-dock-in: rgb(17 17 27 / 0.72);      /* Mocha crust, inner dock */
+	--t15-hover: rgb(49 50 68 / 0.55);        /* Mocha surface0, hover */
+	--t15-hover-hi: rgb(58 60 76 / 0.66);
+	/* floating over text (flyouts, tooltips, menus): near-opaque + blur */
+	--t15-solid: rgb(30 30 46 / 0.95);
+	--t15-solid-deep: rgb(24 24 37 / 0.96);
+	/* accents */
+	--t15-blue: #89b4fa;
+	--t15-lavender: #b4befe;
+	--t15-mauve: #cba6f7;
+	--t15-green: #a6e3a1;
+	--t15-red: #f38ba8;
+	--t15-peach: #fab387;
+	--t15-text: #cdd6f4;
+	--t15-subtext: #a6adc8;
+	--t15-overlay: #6c7086;
+	--t15-edge: rgb(108 112 134 / 0.4);       /* overlay0 edge, resting */
+	--t15-edge-hi: rgb(108 112 134 / 0.55);
+	--t15-ring: inset 0 0 0 1px rgb(137 180 250 / 0.75);
+	--t15-glow: 0 0 14px -3px rgb(137 180 250 / 0.5);
+	--t15-blur: blur(20px) saturate(1.25);
+	--t15-blur-deep: blur(26px) saturate(1.3);
+	--t15-ease: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+
+	/* legacy aliases: every earlier --t5-* rule now inherits the pass-15 material */
+	--t5-solid: var(--t15-solid);
+	--t5-pill: var(--t15-dock);
+	--t5-pill-hi: var(--t15-hover);
+	--t5-edge: var(--t15-edge);
+	--t5-blue: var(--t15-blue);
+	--t5-ring: var(--t15-ring);
+	--t5-glow: var(--t15-glow);
+	--t5-ease: var(--t15-ease);
+}
+
+/* 86-mocha-glass tokens re-pointed at the ladder. Same selector shape as 86
+   (html[data-window-material] outranks :root) and later load order wins the tie. */
+html[data-window-material] {
+	--t3d-tint: var(--t15-dock);
+	--t3g-panel: var(--t15-panel-deep);
+	--t3-real-blur: var(--t15-blur-deep) !important;
+	--t3-real-blur-lit: var(--t15-blur-deep) !important;
+	--t3d-blur: var(--t15-blur-deep);
+	--t3g-blur: var(--t15-blur);
+}
+html:not([data-window-material]) {
+	--t3g-panel: #181825;
+	--t3g-blur: none;
+}
+
+/* ============================================================
+   ITEM 1 - GLOBAL MATERIAL: every panel and dock gets Mocha
+   translucency + real backdrop blur (material feel), not flat
+   near-black static fills. Layering: panel < dock < inner dock.
+   ============================================================ */
+
+/* big panel containers: base material */
+html[data-window-material] main[data-slot="sidebar-inset"],
+html[data-window-material] [data-right-panel-surface-content="true"],
+html[data-window-material] [data-thread-details-card],
+html[data-window-material] [data-right-panel-tabbar="true"] {
+	-webkit-backdrop-filter: var(--t15-blur) !important;
+	backdrop-filter: var(--t15-blur) !important;
+}
+
+/* in-flow docks keep the window acrylic through a crust tint + blur */
+html[data-window-material] [data-t3l-ba-row],
+html[data-window-material] [data-chat-composer-footer],
+html[data-window-material] [data-slot="composer-context-strip"],
+html[data-window-material] [data-chat-thread-status-line],
+html[data-window-material] [data-scroll-to-end] {
+	-webkit-backdrop-filter: var(--t15-blur) !important;
+	backdrop-filter: var(--t15-blur) !important;
+}
+
+/* container strips that hold docks but carry no 1px edge of their own:
+   the workspace topbar (brand row sits inside), the sidebar search row
+   wrapper and the sidebar footer strip (audit leftovers, item 5) */
+html[data-window-material] div.relative.flex[class*="workspace-topbar-height"],
+html[data-window-material] div.flex.items-center.gap-1:has(> div [aria-label="Search threads"]),
+html[data-window-material] div.flex.flex-col.gap-2[class*="sidebar-content-inset"] {
+	-webkit-backdrop-filter: var(--t15-blur) !important;
+	backdrop-filter: var(--t15-blur) !important;
+}
+
+/* ============================================================
+   ITEM 2 - FLYOUTS / TOOLTIPS / MENUS: readable over text.
+   Near-opaque Mocha fill + real backdrop-filter on the popup
+   element itself (the positioner parent clips; never blur that).
+   ============================================================ */
+html[data-window-material] [data-slot$="-popup"],
+html[data-window-material] [role="tooltip"],
+html[data-window-material] .dropdown-glass,
+html[data-window-material] .dialog-glass,
+html[data-window-material] .alert-glass {
+	background-color: var(--t15-solid) !important;
+	-webkit-backdrop-filter: var(--t15-blur-deep) !important;
+	backdrop-filter: var(--t15-blur-deep) !important;
+	color: var(--t15-text) !important;
+}
+html[data-window-material] [data-slot$="-popup"]:not([class*="rounded-none"]),
+html[data-window-material] [role="tooltip"] {
+	border: 1px solid var(--t15-edge-hi) !important;
+	box-shadow: 0 16px 40px -16px rgb(17 17 27 / 0.92), inset 0 1px 0 rgb(205 214 244 / 0.08) !important;
+}
+
+/* ============================================================
+   ITEM 3 - DETAILS-CARD ROWS (top-right info panel bottom rows:
+   Context bar, Changes, branch, commit): replace the flat
+   dark:hover:bg-white/[0.08] overlay with the standard
+   dock hover: surface0 tint + Mocha blue edge + glow, following
+   the row's own rounded-lg.
+   ============================================================ */
+[data-thread-details-card] .group\/details-split,
+[data-thread-details-card] .group\/details-items div.cursor-default {
+	transition: var(--t15-ease) !important;
+}
+[data-thread-details-card] .group\/details-split:hover,
+[data-thread-details-card] .group\/details-items div.cursor-default:hover {
+	background-color: var(--t15-hover) !important;
+	box-shadow: var(--t15-ring), var(--t15-glow) !important;
+}
+
+/* ============================================================
+   ITEM 4 - DIFF PANEL TOP DOCKS: the Changes-vs-refs selector and
+   the stats/refresh/toggles toolbar share the subheader row and
+   touch the panel ceiling; lower both to the other docks' margins.
+   (Child-path scope so the file-tree aside band is untouched.)
+   ============================================================ */
+div[data-right-panel-surface-content] > div > [data-surface-subheader] {
+	margin-top: 5px !important;
+}

@@ -1,0 +1,110 @@
+/* ============================================================================
+   99-mocha-pass17.css — pass 17 (2026-11-06), tower build 0.1.8-nightly.20261106.4262.
+   Owner defect list items 1, 2 (tints), 4 (separators) + 6 (consolidation):
+   - single authority for the sidebar dock tints (85 pass-2, 92 pass-8, 94
+     pass-10 crusts stripped; everything reads the pass-16 ladder via --t15-*),
+   - legacy --t6-* token aliases re-pointed at the ladder,
+   - embedded browser chrome: omnibox aligned down inside its chrome, toolbar
+     buttons rounded (no squared hover artifacts),
+   - soft divider hairlines, reduced-motion fallbacks, keyboard focus rings.
+   JS siblings edited this pass: 99-mocha-pass15a-run.js (no ghost frames),
+   99-mocha-pass15-material.js (no nested blur, no polling), 97-diff-docks.js
+   (scoped scans), 90-section-shelves.js (bounded callback),
+   99-mocha-pass15-b.css (minimap chevrons), 88-mocha-pass4.css (minimap dock).
+   Rollback: delete this file, restore the .bak-20261106-2210 copies, reload.
+   Notes: notes\2026-11-02-t3-mocha-docks.md "Pass 17".
+   ========================================================================== */
+
+/* ---- legacy token aliases: the --t6-* ladder now reads the pass-15 system ---- */
+:root {
+	--t6-pill: var(--t15-dock);
+	--t6-pill-hi: var(--t15-hover);
+	--t6-edge: var(--t15-edge);
+	--t6-ring: var(--t15-ring);
+	--t6-glow: var(--t15-glow);
+	--t6-ease: var(--t15-ease);
+}
+
+/* ---- 1. sidebar dock tint authority (one source, no more stacking crusts) ----
+   Pass 20: the brand dock paints on the LINK (a[aria-label="T3 Code home"]),
+   not on any ancestor container. On build .4275 the old container selector
+   :has(> div > div > a) also matched the 52px workspace topbar, which painted
+   the tint/border/blur as a tall dark backing behind the collapse button.
+   The topbar and the h-8 row stay clean; the link is the single dock. */
+html [data-slot="sidebar-inner"] :is(
+	div.flex.items-center.gap-1:has(> div [aria-label="Search threads"]),
+	[data-slot="sidebar-footer"]
+) {
+	background-color: var(--t15-dock) !important;
+}
+/* the brand row and footer lost their material when 85 killed backdrop-filter:
+   restore the real blur (search row already has it via tokens) */
+html [data-slot="sidebar-inner"] a[aria-label="T3 Code home"] {
+	background-color: var(--t15-dock) !important;
+	-webkit-backdrop-filter: var(--t15-blur) !important;
+	backdrop-filter: var(--t15-blur) !important;
+}
+html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] {
+	-webkit-backdrop-filter: var(--t15-blur) !important;
+	backdrop-filter: var(--t15-blur) !important;
+}
+html [data-slot="sidebar-inner"] div.flex.items-center.gap-1:has(> div [aria-label="Search threads"]) > div {
+	background-color: var(--t15-dock-in) !important;
+	box-shadow: inset 0 0 0 1px var(--t15-edge) !important;
+}
+html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] button {
+	background-color: var(--t15-dock-in) !important;
+}
+
+/* ---- 2. embedded browser chrome (dashboard-view, main-window DOM) ----
+   The omnibox is vertically centred in a 40px chrome row; pass 20 drops it a
+   touch further from the top edge, and every chrome button gets the 8px radius
+   (the three toolbar buttons ship with none, so any hover/focus paint showed
+   as a square slab). */
+.browser-chrome {
+	height: auto !important;
+	min-height: 40px !important;
+	padding-top: 10px !important;
+	padding-bottom: 6px !important;
+}
+.omnibox-wrap {
+	padding-top: 2px !important;
+}
+.browser-chrome button {
+	border-radius: 8px !important;
+}
+.browser-chrome .toolbar-button,
+.browser-chrome .nav-btn {
+	border-radius: 8px !important;
+}
+
+/* ---- 3. run divider hairlines: soften the harsh full-contrast lines ---- */
+[data-timeline-root] div.flex.min-w-0.items-center.gap-2 > .h-px {
+	background-color: rgb(108 112 134 / 0.22) !important;
+}
+
+/* ---- 4. keyboard focus: a visible Mocha ring on the docks we restyle ---- */
+[data-panel-layout-controls] button:focus-visible,
+div[data-workspace-titlebar-controls="true"] button:focus-visible,
+.browser-chrome button:focus-visible {
+	outline: 2px solid var(--t15-blue) !important;
+	outline-offset: -2px !important;
+}
+
+/* ---- 5. reduced motion: no looping progress animation, no dock transitions ---- */
+@media (prefers-reduced-motion: reduce) {
+	html [data-timeline-row-kind="context-compaction"] [role="separator"] > span.relative::before {
+		animation: none !important;
+	}
+	[data-testid="timeline-minimap"] div[class*="top-1/2"][class*="left-3"]::before,
+	[data-testid="timeline-minimap"] div[class*="top-1/2"][class*="left-3"] {
+		transition: none !important;
+	}
+	.t3l-shelf-btn,
+	.t3l-shelf-chev {
+		transition: none !important;
+	}
+	.messages-timeline-row-frame[data-t15a-run] {
+		transition: none !important;
+	}
+}

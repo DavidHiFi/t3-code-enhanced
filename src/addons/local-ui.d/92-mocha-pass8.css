@@ -1,0 +1,193 @@
+/* =====================================================================
+   92-mocha-pass8.css (2026-11-02, afternoon)
+   Sidebar collapse-together support, timeline docks for fold rows and
+   "Load earlier turns", compacting progress bar, search/footer tint,
+   row hover accent, active-thread gradient, media grid cleanup,
+   breadcrumb full path, update-button ring, corner artifact fixes.
+   ===================================================================== */
+
+/* ============ 1. message docks: only the bubble (no square corner slivers) ============ */
+html [data-timeline-row-kind="message"] > div {
+	background-color: transparent !important;
+	box-shadow: none !important;
+	padding: 0 !important;
+	border-radius: 0 !important;
+}
+html [data-timeline-row-kind="message"][data-message-role="assistant"] > div:has(.chat-markdown),
+html [data-timeline-row-kind="message"][data-message-role="user"] > div[class*="bg-message"] {
+	padding: 12px 16px !important;
+	border-radius: 14px !important;
+	background-color: rgb(24 24 37 / 0.45) !important;
+	box-shadow: inset 0 0 0 1px rgb(108 112 134 / 0.3), var(--t6-sheen) !important;
+	margin-inline: 10px !important;
+	transition: var(--t6-ease) !important;
+}
+html [data-timeline-row-kind="message"][data-message-role="assistant"] > div:has(.chat-markdown):hover,
+html [data-timeline-row-kind="message"][data-message-role="user"] > div[class*="bg-message"]:hover {
+	box-shadow: inset 0 0 0 1px rgb(137 180 250 / 0.7), var(--t6-glow) !important;
+}
+/* pass 20: inside a marked run the lane dock is the one surface - the bubble's
+   own fill/edge here is the inner ~716px duplicate frame the owner screenshotted.
+   Spacing (padding) stays; only the paint goes. Messages outside a run keep it. */
+html .messages-timeline-row-frame[data-t15a-run] [data-timeline-row-kind="message"][data-message-role="assistant"] > div:has(.chat-markdown) {
+	background-color: transparent !important;
+	box-shadow: none !important;
+}
+html .messages-timeline-row-frame[data-t15a-run] [data-timeline-row-kind="message"][data-message-role="assistant"] > div:has(.chat-markdown):hover {
+	box-shadow: none !important;
+}
+
+/* ============ 2. turn folds ("Worked for", "Continued for", "Superseded attempt") ============ */
+html [data-timeline-row-kind="turn-fold"] button,
+html [data-timeline-row-kind="attempt-fold"] button {
+	width: fit-content !important;
+	padding: 3px 12px !important;
+	border: 0 !important;
+	border-radius: 999px !important;
+	background-color: var(--t6-pill) !important;
+	box-shadow: inset 0 0 0 1px var(--t6-edge) !important;
+	transition: var(--t6-ease) !important;
+}
+html [data-timeline-row-kind="turn-fold"] button:hover,
+html [data-timeline-row-kind="attempt-fold"] button:hover {
+	background-color: var(--t6-pill-hi) !important;
+	box-shadow: var(--t6-ring), var(--t6-glow) !important;
+}
+
+/* "Load earlier turns": the label gets the pill, the rules stay hairlines */
+html button[aria-label="Load earlier turns"] > span.shrink-0 {
+	padding: 3px 12px !important;
+	border-radius: 999px !important;
+	background-color: var(--t6-pill) !important;
+	box-shadow: inset 0 0 0 1px var(--t6-edge) !important;
+	transition: var(--t6-ease) !important;
+}
+html button[aria-label="Load earlier turns"]:hover > span.shrink-0 {
+	background-color: var(--t6-pill-hi) !important;
+	box-shadow: var(--t6-ring), var(--t6-glow) !important;
+}
+html button[aria-label="Load earlier turns"] > span[aria-hidden] {
+	opacity: 0.5 !important;
+}
+
+/* ============ 3. compacting context: a real progress bar ============ */
+html [data-timeline-row-kind="context-compaction"] [role="separator"] > span.relative {
+	position: relative !important;
+	isolation: isolate !important;
+}
+html [data-timeline-row-kind="context-compaction"] [role="separator"] > span.relative:has(svg[class*="animate-spin"])::before {
+	content: "" !important;
+	position: absolute !important;
+	inset: 0 !important;
+	z-index: -1 !important;
+	border-radius: inherit !important;
+	background: linear-gradient(90deg, #89b4fa, #cba6f7) !important;
+	transform-origin: left center !important;
+	animation: t8-compaction-fill 2.8s ease-in-out infinite !important;
+}
+@keyframes t8-compaction-fill {
+	0% { transform: scaleX(0); opacity: 0.95; }
+	55% { transform: scaleX(1); opacity: 0.95; }
+	80% { transform: scaleX(1); opacity: 0.6; }
+	100% { transform: scaleX(1); opacity: 0; }
+}
+
+/* ============ 4. search bar, its three icons, sidebar footer ============
+   Pass 17: the dock tint for the search row, its inner field and the footer is
+   owned by 99-mocha-pass17.css (pass-15/16 ladder); the hover states here and
+   the icon-button pills stay, re-pointed through the --t6-* aliases in pass 17. */
+html [data-slot="sidebar-inner"] div.flex.items-center.gap-1:has(> div [aria-label="Search threads"]) > button {
+	background-color: var(--t6-pill) !important;
+	box-shadow: inset 0 0 0 1px var(--t6-edge) !important;
+	border-radius: 8px !important;
+	color: #9399b2 !important;
+	transition: var(--t6-ease) !important;
+}
+html [data-slot="sidebar-inner"] div.flex.items-center.gap-1:has(> div [aria-label="Search threads"]) > button:hover {
+	background-color: var(--t6-pill-hi) !important;
+	box-shadow: var(--t6-ring), var(--t6-glow) !important;
+	color: #cdd6f4 !important;
+}
+
+/* row hover: accent, never darker than rest */
+html [data-slot="sidebar-inner"] {
+	--sidebar-row-hover: rgb(49 50 68 / 0.6) !important;
+	--color-sidebar-row-hover: rgb(49 50 68 / 0.6) !important;
+}
+
+/* ============ 5. opened thread: blue -> mauve gradient edge ============ */
+html [data-slot="sidebar-inner"] [class~="bg-sidebar-row-active"],
+html [data-slot="sidebar-inner"] [class~="bg-sidebar-row-selected"] {
+	position: relative !important;
+	box-shadow: 0 0 14px -4px rgb(137 180 250 / 0.45) !important;
+}
+html [data-slot="sidebar-inner"] [class~="bg-sidebar-row-active"]::after,
+html [data-slot="sidebar-inner"] [class~="bg-sidebar-row-selected"]::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: 0 !important;
+	border-radius: 12px !important;
+	padding: 1px !important;
+	background: linear-gradient(100deg, rgb(137 180 250 / 0.9), rgb(203 166 247 / 0.9)) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	pointer-events: none !important;
+}
+
+/* ============ 6. media grids: no grey base, glow stays inside ============ */
+html div[class*="aspect-"][class*="rounded-lg"][class*="border-border/80"] {
+	background-color: transparent !important;
+	border-color: rgb(108 112 134 / 0.32) !important;
+	transition: var(--t6-ease) !important;
+}
+html div[class*="aspect-"][class*="rounded-lg"][class*="border-border/80"]:hover {
+	box-shadow: inset 0 0 0 1px rgb(137 180 250 / 0.9) !important;
+}
+html [data-thread-queue] [class*="bg-muted/60"] {
+	background-color: transparent !important;
+}
+
+/* ============ 7. sidebar container: clip square corners, kill stray rules ============ */
+html [data-slot="sidebar-inner"][data-slot="sidebar-inner"] {
+	overflow: hidden !important;
+}
+html [data-slot="sidebar-inner"] :is([role="separator"], [data-sidebar="separator"], hr) {
+	border: 0 !important;
+	background-color: transparent !important;
+	box-shadow: none !important;
+}
+html ul[role="tree"][aria-label="Threads"] > li[data-testid$="-header"] {
+	border: 0 !important;
+}
+html li.t3l-shelf[data-t3l-docked] {
+	border-radius: 12px !important;
+}
+
+/* ============ 8. content pane: rounded like every other dock ============ */
+html main.bg-background[data-slot="sidebar-inset"] {
+	border-radius: 16px !important;
+}
+
+/* ============ 9. breadcrumb: show the full path, ellipsis only when tight ============ */
+html nav[aria-label$="breadcrumb"] {
+	max-width: none !important;
+	min-width: 0 !important;
+}
+html nav[aria-label$="breadcrumb"] span.w-0 {
+	width: auto !important;
+}
+html nav[aria-label$="breadcrumb"] [data-parent-breadcrumb-ellipsis] {
+	display: none !important;
+}
+html nav[aria-label$="breadcrumb"] :is([class*="max-w-"], span.truncate, [data-slot="workspace-breadcrumb-text"]) {
+	max-width: none !important;
+}
+
+/* ============ 10. update button: progress ring follows the dock radius ============ */
+html [data-slot="sidebar-footer"] button::after {
+	border-radius: 10px !important;
+}
+html [data-slot="sidebar-footer"] button [class*="absolute"][class*="rounded-full"] {
+	border-radius: 10px !important;
+}

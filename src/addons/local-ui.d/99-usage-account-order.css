@@ -1,0 +1,4 @@
+/* Fixed account order across connected environments. */
+div.grid > div.col-span-3[aria-label^="Max "] { order: 0 !important; }
+div.grid > div.col-span-3[aria-label^="Pro 1 "] { order: 1 !important; }
+div.grid > div.col-span-3[aria-label^="Pro 2 "] { order: 2 !important; }

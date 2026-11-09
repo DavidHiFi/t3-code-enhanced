@@ -1,0 +1,76 @@
+/* T3 Mocha rice, pass 14 (2026-11-04): diff panel top-right controls, all-tab docks, floating
+   Files band, background-activity row dock, search slab radius.
+   Owner review of pass 13: the Maximize panel button and the scroll-tab arrows next to it had no
+   dock, the inactive panel tabs (Pull requests / #12 / HaloCord ...) were transparent instead of
+   resting docks, the Files band was an edge-to-edge square band, "Background activity updated"
+   had no dock (its row is a classless virtualized div with no data attributes - 97-diff-docks.js
+   now marks it data-t3l-ba-row), and the icon-button group right of the sidebar search field kept
+   pass 10's square field slab (r=0).
+   Rollback: delete this file, remove the pass-14 block from 97-diff-docks.js, reload.
+   Notes: notes\2026-11-02-t3-mocha-docks.md */
+
+/* ================= workspace titlebar controls (Maximize panel, drawer/panel toggles) ================= */
+div[data-workspace-titlebar-controls="true"] button {
+	background: var(--t5-pill) !important;
+	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+	border-radius: 9px !important;
+	padding: 3px !important;
+	transition: var(--t5-ease) !important;
+	position: relative;
+	z-index: 5;
+}
+div[data-workspace-titlebar-controls="true"] button:hover {
+	background-color: var(--t5-pill-hi) !important;
+	box-shadow: var(--t5-ring), var(--t5-glow) !important;
+}
+
+/* ================= tab bar right end (scroll arrows, add panel surface) ================= */
+div[data-right-panel-tabbar] button[data-slot="button"],
+div[data-right-panel-tabbar] button[data-slot="menu-trigger"] {
+	background: var(--t5-pill) !important;
+	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+	border-radius: 9px !important;
+	transition: var(--t5-ease) !important;
+}
+div[data-right-panel-tabbar] button[data-slot="button"]:hover,
+div[data-right-panel-tabbar] button[data-slot="menu-trigger"]:hover {
+	background-color: var(--t5-pill-hi) !important;
+	box-shadow: var(--t5-ring), var(--t5-glow) !important;
+}
+
+/* ================= every panel tab is a resting dock (not just the active one) ================= */
+div[data-right-panel-tabbar] div.group\/tab {
+	background: var(--t5-pill) !important;
+	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+}
+div[data-right-panel-tabbar] div.group\/tab > button[data-slot="tooltip-trigger"] {
+	border-radius: 7px !important;
+	transition: var(--t5-ease) !important;
+}
+div[data-right-panel-tabbar] div.group\/tab:hover > button[data-slot="tooltip-trigger"] {
+	background-color: var(--t5-pill-hi) !important;
+}
+
+/* ================= Files band: floating rounded dock instead of an edge-to-edge band ================= */
+div[data-right-panel-surface-content] aside [data-surface-subheader] {
+	margin: 2px 4px !important;
+	border-radius: 10px !important;
+	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+}
+
+/* ================= background activity row (marked data-t3l-ba-row by 97-diff-docks.js) ================= */
+[data-t3l-ba-row] {
+	background: var(--t5-pill-hi) !important;
+	border-radius: 10px !important;
+	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+	padding: 3px 8px !important;
+	transition: var(--t5-ease) !important;
+}
+div[data-t3l-ba-row]:hover {
+	box-shadow: var(--t5-ring), var(--t5-glow) !important;
+}
+
+/* ================= search row icon-button slab: round pass 10's square field ================= */
+html [data-slot="sidebar-inner"] div.flex.items-center.gap-1:has(> div [aria-label="Search threads"]) > div.flex.shrink-0.items-center {
+	border-radius: 10px !important;
+}

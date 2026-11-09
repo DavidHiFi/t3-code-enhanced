@@ -1,0 +1,37 @@
+/* Composer banners and the stash ticket (owner, 2026-10-29, v3 - static, no in-between).
+
+   The attached banner root (AO) draws its box only through itself ::before: rounded border,
+   tint, blur and shadow. On the stash drawer that frame was the ugly double box behind the
+   pill rows, so it is removed. The shoulder-tab pill keeps a plain outline instead.
+
+   With the frame gone the drawer would be see-through, so the drawer panel is filled with a
+   solid opaque Mocha base: no blur, no translucency, nothing behind it (owner rule: static
+   color or real blur, never a mix). The fill also lands on the attached wrapper that hosts
+   the drawer, so the whole drawer area is covered even if the drawer is narrower than the
+   wrapper.
+
+   Every property carries !important on purpose: these files load through Electron's
+   insertCSS, which lands as user CSS, and author CSS in the app bundle beats plain user
+   rules in the cascade regardless of selectors.
+   Selectors checked in the served chunk inside server.asar (2026-10-29): the drawer root
+   carries data-composer-stash-drawer="true", the pill row carries data-prompt-stash-badge,
+   and PO renders the attached banner surface. Rollback: delete this file and reload. */
+/* Scoped to the banner that hosts the stash drawer (2026-11-01). The unscoped version also removed
+   the frame from the slash-command drawer and the queued-message strip, which left them see-through. */
+[data-composer-banner-surface='attached']:has([data-composer-stash-drawer])::before {
+	content: none !important;
+}
+
+[data-composer-shoulder-tab] [data-prompt-stash-badge] {
+	border: 1px solid var(--chat-composer-attached-outline, var(--app-theme-toolbar-border, color-mix(in srgb, currentColor 25%, transparent)));
+}
+
+[data-composer-banner-surface='attached']:has([data-composer-stash-drawer]),
+[data-composer-stash-drawer] {
+	background-color: #1e1e2e !important;
+	background-image: none !important;
+	border: 0 solid transparent !important;
+	border-radius: 12px !important;
+	box-shadow: 0 4px 16px rgb(0 0 0 / 35%) !important;
+	overflow: hidden !important;
+}

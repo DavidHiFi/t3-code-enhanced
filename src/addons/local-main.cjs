@@ -5,7 +5,8 @@
 // so T3 updates keep it; the guard task puts the one-line call back after each update.
 //
 // What it does, driven by ~/.t3/local-patches.json:
-//   localUiCss: true        inject ~/.t3/local-ui.css, then ~/.t3/local-ui.d/*.css (name order)
+//   localUiCss: true        inject ~/.t3/local-ui.css, then ~/.t3/local-ui.d/*.css (name order),
+//                           and run ~/.t3/local-ui.d/*.js (small page add-ons that go with the CSS)
 //   windowMaterial: "acrylic" | "mica" | "tabbed" | "windhawk" | "none"
 //                           Windows 11 backdrop behind the whole window. "windhawk" leaves the
 //                           backdrop color to a Windhawk Translucent Windows rule for this exe.
@@ -21,6 +22,9 @@
 //   settingsUi: true        (default) Settings > Appearance > Local add-ons card (local-settings-ui.js)
 //   browserAppearance: "dark" | "light" | "system"
 //                           default theme for pages in the built-in browser, see installBrowserAppearance()
+//   enhancedUpdates: { check, install, intervalHours }
+//                           the Enhanced update button and its Settings card: see local-enhanced-update.cjs
+//   evalBridge: true        (off by default) debug channel for development, see startEvalBridge()
 // Edits here load at the next window reload. Errors are written to ~/.t3/local-main.log.
 
 const fs = require("fs");
@@ -46,12 +50,65 @@ function readConfig() {
 }
 
 function cssFiles() {
-	const files = [path.join(dir, "local-ui.css")];
+	return [path.join(dir, "local-ui.css"), ...layerFiles(".css")].filter((file) => fs.existsSync(file));
+}
+
+function layerFiles(ext) {
 	try {
 		const extra = path.join(dir, "local-ui.d");
-		for (const name of fs.readdirSync(extra).sort()) if (name.endsWith(".css")) files.push(path.join(extra, name));
-	} catch {}
-	return files.filter((file) => fs.existsSync(file));
+		return fs.readdirSync(extra).sort().filter((name) => name.endsWith(ext)).map((name) => path.join(extra, name));
+	} catch {
+		return [];
+	}
+}
+
+// Debug channel for development (off unless "evalBridge": true): a script dropped at
+// ~/.t3/local-eval/request.js runs in the page and its JSON result lands in result.json.
+function startEvalBridge(mainWindow) {
+	const folder = path.join(dir, "local-eval");
+	clearInterval(mainWindow.__t3EvalTimer);
+	mainWindow.__t3EvalTimer = setInterval(() => {
+		const request = path.join(folder, "request.js");
+		if (mainWindow.isDestroyed()) return clearInterval(mainWindow.__t3EvalTimer);
+		if (!fs.existsSync(request)) return;
+		let code = "";
+		try {
+			code = fs.readFileSync(request, "utf8");
+			fs.unlinkSync(request);
+		} catch {
+			return;
+		}
+		const write = (value) => fs.writeFileSync(path.join(folder, "result.json"), JSON.stringify(value, null, 1));
+		mainWindow.webContents
+			.executeJavaScript(code, true)
+			.then((value) => write({ ok: true, at: new Date().toISOString(), value }))
+			.catch((error) => write({ ok: false, at: new Date().toISOString(), error: String(error && error.message) }));
+	}, 1000);
+}
+
+// The Enhanced update button and Settings card (local-enhanced-update.js) talk to the updater with
+// console.log("T3ENH:{...}"). Like the settings listener below, each load replaces the old listener.
+function installUpdater(window) {
+	const file = path.join(dir, "local-enhanced-update.cjs");
+	if (!fs.existsSync(file)) return;
+	delete require.cache[file];
+	const updater = require(file);
+	const contents = window.webContents;
+	for (const old of contents.listeners("console-message")) {
+		if (String(old).includes("T3ENH:")) contents.removeListener("console-message", old);
+	}
+	contents.on("console-message", (...args) => {
+		const message = args[0] && typeof args[0] === "object" && "message" in args[0] ? args[0].message : args[2];
+		if (typeof message !== "string" || !message.startsWith("T3ENH:")) return;
+		try {
+			updater.handle(JSON.parse(message.slice(6)), window);
+		} catch (error) {
+			log(`updater: ${error.message}`);
+		}
+	});
+	updater.attach(window);
+	const ui = path.join(dir, "local-enhanced-update.js");
+	if (fs.existsSync(ui)) contents.executeJavaScript(fs.readFileSync(ui, "utf8")).catch((error) => log(`update ui: ${error.message}`));
 }
 
 function applyMaterial(window, material) {
@@ -237,6 +294,32 @@ function listenForSettings(window) {
 	});
 }
 
+// Rendered reply cards and HTML previews sit in sandboxed frames that the theme CSS cannot reach, so
+// their selected text kept Chromium's default bright blue. Each such frame gets the same Mocha blue
+// highlight as the app (rgb(137 180 250 / .32)) when it loads. Listener marker: "T3SEL".
+const FRAME_SELECTION_CSS = "::selection{background-color:rgb(137 180 250 / 0.32) !important}";
+function installFrameSelection(window) {
+	const { webFrameMain } = require("electron");
+	const contents = window.webContents;
+	const paint = (frame) => {
+		if (!frame || frame === contents.mainFrame || !/\/api\/assets\//.test(frame.url || "")) return;
+		// a constructed sheet, so a strict style-src policy in the frame cannot block it
+		const code = `(()=>{/*T3SEL*/if(window.__t3sel)return;window.__t3sel=1;const s=new CSSStyleSheet();s.replaceSync(${JSON.stringify(FRAME_SELECTION_CSS)});document.adoptedStyleSheets=[...document.adoptedStyleSheets,s]})()`;
+		frame.executeJavaScript(code).then(() => log("frameSelection: card frame painted")).catch((error) => log(`frameSelection: ${error.message}`));
+	};
+	for (const old of contents.listeners("did-frame-finish-load")) {
+		if (String(old).includes("T3SEL")) contents.removeListener("did-frame-finish-load", old);
+	}
+	contents.on("did-frame-finish-load", (_event, isMainFrame, processId, routingId) => {
+		/* T3SEL */
+		if (isMainFrame) return;
+		try {
+			paint(webFrameMain.fromId(processId, routingId));
+		} catch {}
+	});
+	for (const frame of contents.mainFrame.framesInSubtree) paint(frame);
+}
+
 module.exports = function onMainWindowLoad(window) {
 	// the patch require()s this file on every load; dropping it from the cache makes
 	// edits here apply at the next window reload instead of the next T3 start
@@ -251,7 +334,20 @@ module.exports = function onMainWindowLoad(window) {
 				log(`read ${file}: ${error.message}`);
 			}
 		}
+		for (const file of layerFiles(".js")) {
+			try {
+				contents.executeJavaScript(fs.readFileSync(file, "utf8")).catch((error) => log(`layer ${file}: ${error.message}`));
+			} catch (error) {
+				log(`read ${file}: ${error.message}`);
+			}
+		}
 	}
+	try {
+		installUpdater(window);
+	} catch (error) {
+		log(`updater: ${error.message}`);
+	}
+	if (config.evalBridge === true) startEvalBridge(window);
 	if (config.versionBadge !== false) {
 		try {
 			const script = fs.readFileSync(path.join(dir, "local-version-badge.js"), "utf8").replace("__T3_VERSION__", JSON.stringify(require("electron").app.getVersion()));
@@ -287,6 +383,11 @@ module.exports = function onMainWindowLoad(window) {
 		installBrowserAppearance(config.browserAppearance);
 	} catch (error) {
 		log(`browserAppearance: ${error.message}`);
+	}
+	try {
+		installFrameSelection(window);
+	} catch (error) {
+		log(`frameSelection: ${error.message}`);
 	}
 	let material = null;
 	try {

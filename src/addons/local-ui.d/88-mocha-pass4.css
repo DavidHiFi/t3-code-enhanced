@@ -1,0 +1,255 @@
+/* Mocha pass 4 (2026-11-02): sidebar section docks, timeline minimap dock, thread status pill,
+   scroll-to-end pill, stronger changed-files card, darker Mocha base behind the chat, and a full
+   pass over the model/provider picker. Rollback: delete this file and reload (Ctrl+Shift+R). */
+
+:root {
+	--t4-edge: rgb(108 112 134 / 0.34);
+	--t4-tint: rgb(17 17 27 / 0.34);
+	--t4-pane: rgb(17 17 27 / 0.42);
+	--t4-blue: #89b4fa;
+	--t4-ring-blue: inset 0 0 0 1px rgb(137 180 250 / 0.7);
+	--t4-ring-lav: inset 0 0 0 1px rgb(180 190 254 / 0.38);
+	--t4-glow: 0 0 14px -3px rgb(137 180 250 / 0.45);
+}
+
+/* ---------- main area: slightly darker, Mocha base, window acrylic still shows ---------- */
+html[data-window-material]:not([data-t3local-extendedglass-off]) main.bg-background[data-slot="sidebar-inset"] {
+	background-color: rgb(30 30 46 / 0.5) !important;
+}
+
+/* ---------- sidebar: one dock per section (drafts, pinned, recent, working, settled) ----------
+   T3 renders every section into one flat <ul>, so each section's <li>s are painted as one
+   continuous dock: shared tint, side edges on every item, top/bottom edge and radius on the ends. */
+ul[role="tree"][aria-label="Threads"] { gap: 0 !important; }
+
+ul[role="tree"][aria-label="Threads"] > :is(
+	li:has([data-sidebar-row^="draft:"]),
+	[data-testid="sidebar-pinned-header"] ~ li[data-thread-item]:not([data-testid="sidebar-pinned-divider"] ~ li),
+	[data-testid="sidebar-active-placeholder"] ~ li[data-thread-item]:not([data-testid="sidebar-working-header"] ~ li, [data-testid="sidebar-settled-header"] ~ li),
+	[data-testid="sidebar-working-header"],
+	[data-testid="sidebar-working-header"] ~ li:not([data-testid="sidebar-settled-header"], [data-testid="sidebar-settled-header"] ~ li),
+	[data-testid="sidebar-settled-header"],
+	[data-testid="sidebar-settled-header"] ~ li
+) {
+	margin-inline: 0 !important;
+	padding-inline: 4px !important;
+	background-color: var(--sd-fill, var(--t4-tint)) !important;
+	box-shadow:
+		inset 1px 0 0 var(--sd-e, var(--t4-edge)),
+		inset -1px 0 0 var(--sd-e, var(--t4-edge)),
+		inset 0 var(--sd-t, 0px) 0 var(--sd-e, var(--t4-edge)),
+		inset 0 calc(-1 * var(--sd-b, 0px)) 0 var(--sd-e, var(--t4-edge)) !important;
+}
+
+/* per-section accent on the dock edge */
+ul[role="tree"][aria-label="Threads"] > li:has([data-sidebar-row^="draft:"]) { --sd-e: rgb(249 226 175 / 0.22); }
+ul[role="tree"][aria-label="Threads"] > [data-testid="sidebar-pinned-header"] ~ li[data-thread-item]:not([data-testid="sidebar-pinned-divider"] ~ li) { --sd-e: rgb(203 166 247 / 0.3); }
+ul[role="tree"][aria-label="Threads"] > [data-testid="sidebar-active-placeholder"] ~ li[data-thread-item]:not([data-testid="sidebar-working-header"] ~ li, [data-testid="sidebar-settled-header"] ~ li) { --sd-e: rgb(180 190 254 / 0.24); }
+ul[role="tree"][aria-label="Threads"] > :is([data-testid="sidebar-working-header"], [data-testid="sidebar-working-header"] ~ li) { --sd-e: rgb(137 180 250 / 0.32); --sd-fill: rgb(24 24 37 / 0.4); }
+ul[role="tree"][aria-label="Threads"] > :is([data-testid="sidebar-settled-header"], [data-testid="sidebar-settled-header"] ~ li) { --sd-e: rgb(108 112 134 / 0.3); --sd-fill: rgb(17 17 27 / 0.28); }
+
+/* dock tops */
+ul[role="tree"][aria-label="Threads"] > :is(
+	li:first-child:has([data-sidebar-row^="draft:"]),
+	[data-testid="sidebar-pinned-header"] + li[data-thread-item],
+	[data-testid="sidebar-active-placeholder"] + li[data-thread-item],
+	[data-testid="sidebar-working-header"],
+	[data-testid="sidebar-settled-header"]
+) {
+	--sd-t: 1px;
+	padding-top: 4px !important;
+	border-top-left-radius: 14px !important;
+	border-top-right-radius: 14px !important;
+}
+
+/* dock bottoms */
+ul[role="tree"][aria-label="Threads"] > :is(
+	li:has([data-sidebar-row^="draft:"]):has(+ [data-testid="sidebar-draft-divider"]),
+	[data-testid="sidebar-pinned-header"] ~ li[data-thread-item]:has(+ [data-testid="sidebar-pinned-divider"]),
+	[data-testid="sidebar-active-placeholder"] ~ li[data-thread-item]:not([data-testid="sidebar-working-header"] ~ li, [data-testid="sidebar-settled-header"] ~ li):has(+ :is([data-testid="sidebar-working-header"], [data-testid="sidebar-settled-header"])),
+	[data-testid="sidebar-working-header"]:has(+ [data-testid="sidebar-settled-header"]),
+	[data-testid="sidebar-working-header"] ~ li:not([data-testid="sidebar-settled-header"], [data-testid="sidebar-settled-header"] ~ li):has(+ [data-testid="sidebar-settled-header"]),
+	[data-testid="sidebar-working-header"] ~ li:not([data-testid="sidebar-settled-header"] ~ li):last-child,
+	[data-testid="sidebar-settled-header"]:has(+ [data-testid="sidebar-settled-placeholder"]:last-child),
+	[data-testid="sidebar-settled-header"] ~ li:last-child
+) {
+	--sd-b: 1px;
+	padding-bottom: 4px !important;
+	margin-bottom: 8px !important;
+	border-bottom-left-radius: 14px !important;
+	border-bottom-right-radius: 14px !important;
+}
+/* a collapsed settled shelf ends at its header; the zero-height placeholder carries no edge */
+ul[role="tree"][aria-label="Threads"] > [data-testid="sidebar-settled-placeholder"]:last-child { box-shadow: none !important; background: none !important; }
+
+/* the draft divider becomes the gap between docks */
+ul[role="tree"][aria-label="Threads"] > [data-testid="sidebar-draft-divider"] {
+	background: transparent !important;
+	height: 0 !important;
+	margin: 4px 0 !important;
+}
+
+/* section labels take the dock's accent */
+[data-sidebar-row="shelf:working"] { color: #89b4fa !important; }
+[data-sidebar-row="shelf:settled"] { color: #a6adc8 !important; }
+[data-sidebar-row^="shelf:"] { padding-inline: 8px !important; }
+
+/* ---------- timeline minimap (turn dashes, middle left) ----------
+   Pass 17 (owner steering): the tick lines scale RIGHTWARD from origin-left and
+   reach w-6 (24px) when the current turn is at/near them (rest scales are
+   distance-based, 8-24px). The outer dock now expands rightward on pill
+   hover/focus-within to fit the expanded lines plus padding - never clipped,
+   left edge anchored, smooth width transition (reduced-motion: none). The
+   chevrons are pinned inside the pill by 99-mocha-pass15-b.css, so the old
+   hover height growth (-27px) is gone; the width covers them instead. */
+[data-testid="timeline-minimap"] div[class*="top-1/2"][class*="left-3"] { isolation: isolate; }
+[data-testid="timeline-minimap"] div[class*="top-1/2"][class*="left-3"]::before {
+	content: "";
+	position: absolute;
+	z-index: -1;
+	left: -8px;
+	width: 29px;
+	top: -10px;
+	bottom: -10px;
+	border-radius: 999px;
+	background: rgb(24 24 37 / 0.62);
+	border: 1px solid var(--t4-edge);
+	box-shadow: inset 0 1px 0 rgb(180 190 254 / 0.08), 0 8px 20px -12px rgb(17 17 27 / 0.9);
+	backdrop-filter: blur(16px) saturate(1.3);
+	pointer-events: none;
+	transition: top 0.2s ease, bottom 0.2s ease, width 0.18s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+[data-testid="timeline-minimap"] div[class*="top-1/2"][class*="left-3"]:hover::before,
+[data-testid="timeline-minimap"] div[class*="top-1/2"][class*="left-3"]:focus-within::before {
+	width: 46px;
+	border-color: var(--t4-blue);
+	box-shadow: var(--t4-glow), inset 0 1px 0 rgb(180 190 254 / 0.08);
+}
+[data-testid="timeline-minimap"] div[class*="top-1/2"][class*="left-3"]:hover > [data-slot="tooltip-trigger"] { opacity: 1 !important; }
+[data-testid="timeline-minimap"] [data-minimap-strip] { background-color: rgb(166 173 200 / 0.5) !important; }
+[data-testid="timeline-minimap"] [data-minimap-strip][data-in-view="true"] { background-color: var(--t4-blue) !important; box-shadow: 0 0 6px rgb(137 180 250 / 0.6); }
+[data-testid="timeline-minimap"] button > div[class*="bg-border"] { opacity: 0.6; }
+
+/* ---------- thread status line ("Waiting on ...  Stop", goals, side-chat prompts) ---------- */
+[data-chat-thread-status-line] {
+	width: fit-content !important;
+	max-width: min(100%, var(--chat-content-max-width)) !important;
+	margin-left: max(0px, calc((100% - var(--chat-content-max-width)) / 2)) !important;
+	margin-right: auto !important;
+	margin-bottom: 8px !important;
+	padding: 4px 5px 4px 11px !important;
+	border-radius: 999px !important;
+	background: rgb(24 24 37 / 0.72) !important;
+	border: 1px solid var(--t4-edge) !important;
+	box-shadow: inset 0 1px 0 rgb(180 190 254 / 0.08), 0 8px 22px -14px rgb(17 17 27 / 0.9) !important;
+	backdrop-filter: blur(18px) saturate(1.3) !important;
+	color: #bac2de !important;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+[data-chat-thread-status-line]:hover { border-color: var(--t4-blue) !important; box-shadow: var(--t4-glow), inset 0 1px 0 rgb(180 190 254 / 0.08) !important; }
+[data-chat-thread-status-line] button {
+	border-radius: 999px !important;
+	padding-inline: 9px !important;
+	background: rgb(49 50 68 / 0.55) !important;
+	border: 1px solid var(--t4-edge) !important;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease !important;
+}
+[data-chat-thread-status-line] button:hover { border-color: var(--t4-blue) !important; box-shadow: var(--t4-ring-blue) !important; background: rgb(49 50 68 / 0.85) !important; }
+
+/* ---------- "Scroll to end" pill ---------- */
+[data-scroll-to-end] {
+	border-radius: 999px !important;
+	background: rgb(24 24 37 / 0.78) !important;
+	border: 1px solid var(--t4-edge) !important;
+	box-shadow: inset 0 1px 0 rgb(180 190 254 / 0.08), 0 8px 22px -12px rgb(17 17 27 / 0.9) !important;
+	backdrop-filter: blur(18px) saturate(1.3) !important;
+	color: #cdd6f4 !important;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+[data-scroll-to-end]:hover { border-color: var(--t4-blue) !important; box-shadow: var(--t4-glow), inset 0 1px 0 rgb(180 190 254 / 0.08) !important; }
+
+/* ---------- changed-files card: stands off the background ---------- */
+html[data-window-material] [data-changed-files-state][data-changed-files-state] {
+	background: rgb(24 24 37 / 0.74) !important;
+	border: 1px solid rgb(108 112 134 / 0.5) !important;
+	box-shadow: inset 0 1px 0 rgb(180 190 254 / 0.08), 0 10px 26px -16px rgb(17 17 27 / 0.95) !important;
+	backdrop-filter: blur(20px) saturate(1.3) !important;
+}
+
+/* ---------- model / provider picker ---------- */
+[data-slot="popover-popup"]:has([data-model-picker-content]) { border-radius: 16px !important; }
+
+/* inner docks: provider rail, model list, effort list, bottom bar */
+[data-model-picker-sidebar],
+[data-model-picker-content] > div[class*="bg-muted/40"],
+[data-model-picker-effort],
+[data-slot="popover-popup"] div[class*="border-t"][class*="bg-muted/40"]:has([aria-label="Fast Mode"]) {
+	background: var(--t4-pane) !important;
+	border: 1px solid var(--t4-edge) !important;
+	border-radius: 12px !important;
+	box-shadow: inset 0 1px 0 rgb(180 190 254 / 0.06) !important;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+[data-model-picker-sidebar] { margin: 6px 0 6px 6px !important; }
+[data-model-picker-content] > div[class*="bg-muted/40"] { margin: 6px !important; }
+[data-model-picker-effort] { margin: 6px 6px 6px 0 !important; }
+[data-slot="popover-popup"] div[class*="border-t"][class*="bg-muted/40"]:has([aria-label="Fast Mode"]) { margin: 0 6px 6px !important; }
+:is([data-model-picker-sidebar], [data-model-picker-content] > div[class*="bg-muted/40"], [data-model-picker-effort], [data-slot="popover-popup"] div[class*="border-t"][class*="bg-muted/40"]:has([aria-label="Fast Mode"])):hover {
+	border-color: rgb(137 180 250 / 0.75) !important;
+	box-shadow: var(--t4-glow), inset 0 1px 0 rgb(180 190 254 / 0.06) !important;
+}
+/* header rules inside the panes */
+:is([data-model-picker-content], [data-model-picker-effort]) [class*="border-b"] { border-color: var(--t4-edge) !important; }
+
+/* provider rail */
+[data-model-picker-provider] button {
+	border-radius: 10px !important;
+	transition: background-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+[data-model-picker-provider] button:not([disabled]):hover { background: rgb(49 50 68 / 0.6) !important; box-shadow: var(--t4-ring-blue), var(--t4-glow) !important; }
+[data-model-picker-provider] button[aria-pressed="true"]:not(:hover) { background: rgb(49 50 68 / 0.75) !important; box-shadow: var(--t4-ring-lav) !important; }
+[data-model-picker-selected-indicator] { background: var(--t4-blue) !important; box-shadow: 0 0 8px rgb(137 180 250 / 0.7); }
+
+/* search field */
+[data-model-picker-content] div[class*="border-b"]:has([data-slot="combobox-input"]) {
+	border: 1px solid var(--t4-edge) !important;
+	border-radius: 10px !important;
+	padding: 3px 8px !important;
+	background: rgb(17 17 27 / 0.5) !important;
+	transform: none !important;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+[data-model-picker-content] div[class*="border-b"]:has([data-slot="combobox-input"]):is(:hover, :focus-within) { border-color: rgb(137 180 250 / 0.8) !important; box-shadow: var(--t4-glow) !important; }
+[data-model-picker-content] div[class*="border-b"]:has([data-slot="combobox-input"]) > svg { left: 9px !important; top: 50% !important; transform: translateY(-50%); }
+
+/* model rows */
+[data-model-picker-content] [role="option"] { border-radius: 8px !important; transition: background-color 0.2s ease, box-shadow 0.2s ease !important; }
+[data-model-picker-content] [role="option"]:is(:hover, [data-highlighted]) { background: rgb(49 50 68 / 0.7) !important; box-shadow: var(--t4-ring-blue), var(--t4-glow) !important; }
+[data-model-picker-content] [role="option"][data-selected]:not(:hover):not([data-highlighted]) { background: rgb(49 50 68 / 0.5) !important; box-shadow: var(--t4-ring-lav) !important; }
+[data-model-picker-content] [data-slot="kbd"] {
+	background: rgb(49 50 68 / 0.55) !important;
+	border: 1px solid var(--t4-edge) !important;
+	border-radius: 6px !important;
+	color: #a6adc8 !important;
+}
+
+/* reasoning rows */
+[data-model-picker-effort] [data-effort-row] { border-radius: 8px !important; transition: background-color 0.2s ease, box-shadow 0.2s ease !important; }
+[data-model-picker-effort] [data-effort-row]:is(:hover, :focus-visible) { background: rgb(49 50 68 / 0.7) !important; box-shadow: var(--t4-ring-blue), var(--t4-glow) !important; }
+[data-model-picker-effort] [data-effort-row][aria-checked="true"]:not(:hover):not(:focus-visible) { background: rgb(49 50 68 / 0.5) !important; box-shadow: var(--t4-ring-lav) !important; }
+
+/* bottom bar: Standard/Fast switch and access button */
+[data-slot="popover-popup"] [aria-label="Fast Mode"] {
+	background: rgb(17 17 27 / 0.55) !important;
+	border: 1px solid var(--t4-edge) !important;
+	border-radius: 9px !important;
+}
+[data-slot="popover-popup"] [aria-label="Fast Mode"] button { border-radius: 7px !important; transition: background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease !important; }
+[data-slot="popover-popup"] [aria-label="Fast Mode"] button[data-checked] { background: rgb(49 50 68 / 0.85) !important; box-shadow: var(--t4-ring-lav) !important; color: #cdd6f4 !important; }
+[data-slot="popover-popup"] [aria-label="Fast Mode"] button:hover { box-shadow: var(--t4-ring-blue) !important; color: #cdd6f4 !important; }
+[data-composer-permissions-trigger] {
+	border: 1px solid var(--t4-edge) !important;
+	border-radius: 8px !important;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease !important;
+}
+[data-composer-permissions-trigger]:hover { border-color: var(--t4-blue) !important; box-shadow: var(--t4-ring-blue), var(--t4-glow) !important; background: rgb(49 50 68 / 0.6) !important; }

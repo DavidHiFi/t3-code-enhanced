@@ -1,0 +1,26 @@
+/* =====================================================================
+   95-mocha-pass11.css (2026-11-03 morning) - global audit pass
+   Findings from the full sweep (23 settings routes, thread view, diff
+   view, viewer): everything already on the Mocha dock system except
+   - the diagnostics process table painted its INT/KILL column outside
+     the card (no scroll container on the table); it now scrolls inside
+     its own box
+   - settings content panes kept T3's bottom fade masks that fade text
+     (the providers complaint, generalized); sidebar and nav-rail fades
+     stay as designed
+   Rollback: delete this file and reload. Notes: notes\2026-11-02-t3-mocha-docks.md
+   ===================================================================== */
+
+/* diagnostics + any wide settings table: scroll inside the card, never paint out */
+[data-slot="settings-group"] table {
+	display: block !important;
+	max-width: 100% !important;
+	overflow-x: auto !important;
+}
+
+/* no text-fading masks inside settings cards (log excerpts, detail panes) */
+[data-slot="settings-group"] [data-slot="scroll-area-viewport"],
+[data-slot="settings-group"] [data-slot="scroll-area-viewport"] * {
+	mask-image: none !important;
+	-webkit-mask-image: none !important;
+}

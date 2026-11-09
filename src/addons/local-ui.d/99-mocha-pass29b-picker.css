@@ -1,0 +1,198 @@
+/* Pass 29b (2026-11-09): model picker popup.
+   1. Provider rail, model list and Reasoning list each sit in their own rounded dock (crust fill,
+      grey 1px edge at rest, blue to mauve frame on hover), 6px apart and 6px from the popup edge,
+      so no frame is cut by the popup's clip or radius.
+   2. Rows inside (models, Show more, reasoning levels, provider icons) get the shared hover and
+      selected look: lifted fill plus the same 1px gradient frame.
+   3. Footer pills (Standard / Fast, Ultracode, Full access) and the search box: darker fill, grey
+      edge at rest, gradient frame on hover; footer pills line up with the docks.
+   4. The rail's blue side bar is hidden: the active provider wears the selected frame instead.
+   One 1px frame per element, drawn on ::after inside the box (nothing outside to clip).
+   Rollback: delete this file and reload T3. */
+
+@property --p29b-a { syntax: "<color>"; inherits: false; initial-value: transparent; }
+@property --p29b-b { syntax: "<color>"; inherits: false; initial-value: transparent; }
+
+/* room for three docks: popup 672 = 2 border + 6 + rail 44 + 6 + list 392 + 6 + reasoning 210 + 6 */
+html [data-slot="popover-popup"][data-chat-composer-floating-layer]:has([data-model-picker-content]) {
+	width: min(672px, calc(100vw - 32px)) !important;
+}
+
+@layer theme {
+	html [data-model-picker-content] {
+		width: min(448px, 62vw) !important;
+		max-width: min(448px, 62vw) !important;
+	}
+	html [data-model-picker-effort] {
+		width: min(210px, 30vw) !important;
+	}
+
+	/* ---- the three docks ---- */
+	html :is([data-model-picker-sidebar], [data-model-picker-content] > div[class*="bg-muted/40"], [data-model-picker-effort]) {
+		position: relative !important;
+		isolation: isolate !important;
+		box-sizing: border-box !important;
+		background: var(--t15-dock-in, rgb(17 17 27 / .72)) !important;
+		border: 0 !important;
+		border-radius: 12px !important;
+		box-shadow: none !important;
+		padding: 0 !important;
+		overflow: hidden !important;
+		transition: none !important;
+	}
+	html [data-model-picker-sidebar] { margin: 6px 0 6px 6px !important; }
+	html [data-model-picker-content] > div[class*="bg-muted/40"] { margin: 6px 0 6px 6px !important; }
+	html [data-model-picker-effort] { margin: 6px !important; }
+
+	/* the active provider now wears the selected frame; its old side bar overlapped that frame */
+	html [data-model-picker-selected-indicator] {
+		display: none !important;
+	}
+
+	/* the list inside the model dock paints nothing of its own */
+	html [data-model-picker-content] [data-slot="combobox-list"] {
+		background: transparent !important;
+		box-shadow: none !important;
+	}
+
+	/* ---- footer: pills line up with the docks, 6px under them ---- */
+	html [data-slot="popover-viewport"] div[class*="h-86.5"] + div {
+		margin: 0 6px 6px !important;
+		padding: 0 !important;
+		border: 0 !important;
+		border-radius: 0 !important;
+		background: transparent !important;
+		box-shadow: none !important;
+	}
+	/* Standard / Fast and Ultracode groups: darker, edge at rest */
+	html [data-slot="popover-viewport"] div[class*="h-86.5"] + div > div[class*="bg-input/40"] {
+		position: relative !important;
+		background: var(--t15-dock-in, rgb(17 17 27 / .72)) !important;
+		border: 0 !important;
+		border-radius: 10px !important;
+		box-shadow: none !important;
+		padding: 2px !important;
+		transition: none !important;
+	}
+	html [data-slot="popover-viewport"] div[class*="h-86.5"] + div > div[class*="bg-input/40"] > button {
+		border-radius: 8px !important;
+		background: transparent !important;
+		box-shadow: none !important;
+		transition: background-color .22s ease, color .22s ease !important;
+	}
+	html [data-slot="popover-viewport"] div[class*="h-86.5"] + div > div[class*="bg-input/40"] > button:is([data-checked], [aria-checked="true"], [aria-pressed="true"]) {
+		background: rgb(49 50 68 / .85) !important;
+		color: #cdd6f4 !important;
+	}
+	html [data-slot="popover-viewport"] div[class*="h-86.5"] + div > div[class*="bg-input/40"] > button:hover {
+		color: #cdd6f4 !important;
+	}
+	/* Full access */
+	html [data-slot="popover-viewport"] [data-composer-permissions-trigger] {
+		position: relative !important;
+		background: var(--t15-dock-in, rgb(17 17 27 / .72)) !important;
+		border: 0 !important;
+		border-radius: 10px !important;
+		box-shadow: none !important;
+		transition: background-color .22s ease, color .22s ease !important;
+	}
+
+	/* ---- search box ---- */
+	html [data-model-picker-content] > div[class*="bg-muted/40"] > div[class*="pt-2.5"] > div[class*="border-b"] {
+		position: relative !important;
+		transform: none !important;
+		border: 0 !important;
+		border-radius: 10px !important;
+		padding: 4px 9px !important;
+		background: rgb(17 17 27 / .5) !important;
+		box-shadow: none !important;
+		transition: none !important;
+	}
+	html [data-model-picker-content] > div[class*="bg-muted/40"] > div[class*="pt-2.5"] > div[class*="border-b"] input {
+		background: transparent !important;
+		box-shadow: none !important;
+	}
+
+	/* ---- rows: models, Show more, reasoning levels, provider icons, row stars ---- */
+	html :is(
+		[data-model-picker-content] [data-slot="combobox-item"],
+		[data-model-picker-effort] [data-effort-row],
+		[data-model-picker-provider] > button,
+		[data-model-picker-content] [data-slot="combobox-item"] button[aria-label*="avorite"]
+	) {
+		position: relative !important;
+		background: transparent !important;
+		box-shadow: none !important;
+		transition: background-color .22s ease, color .22s ease !important;
+	}
+	html [data-model-picker-content] [data-slot="combobox-item"] button[aria-label*="avorite"] {
+		border-color: transparent !important;
+	}
+	html :is(
+		[data-model-picker-content] [data-slot="combobox-item"]:is(:hover, [data-highlighted], [data-selected], [aria-selected="true"], [data-audit-hover]),
+		[data-model-picker-effort] [data-effort-row]:is(:hover, :focus-visible, [aria-checked="true"], [data-audit-hover]),
+		[data-model-picker-provider] > button:not([disabled]):is(:hover, :focus-visible, [aria-pressed="true"], [data-audit-hover])
+	) {
+		background: rgb(36 36 54 / .9) !important;
+		color: #cdd6f4 !important;
+	}
+}
+
+/* ---- the one frame: 1px ring on ::after, grey at rest, blue to mauve on hover ---- */
+html :is(
+	[data-model-picker-sidebar],
+	[data-model-picker-content] > div[class*="bg-muted/40"],
+	[data-model-picker-effort],
+	[data-slot="popover-viewport"] div[class*="h-86.5"] + div > div[class*="bg-input/40"],
+	[data-slot="popover-viewport"] [data-composer-permissions-trigger],
+	[data-model-picker-content] > div[class*="bg-muted/40"] > div[class*="pt-2.5"] > div[class*="border-b"],
+	[data-model-picker-content] [data-slot="combobox-item"],
+	[data-model-picker-effort] [data-effort-row],
+	[data-model-picker-provider] > button,
+	[data-model-picker-content] [data-slot="combobox-item"] button[aria-label*="avorite"]
+)::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: 0 !important;
+	z-index: 1 !important;
+	padding: 1px !important;
+	border-radius: inherit !important;
+	background: linear-gradient(100deg, var(--p29b-a), var(--p29b-b)) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	box-shadow: none !important;
+	pointer-events: none !important;
+	transition: --p29b-a .22s ease, --p29b-b .22s ease !important;
+}
+/* grey edge at rest on docks, pills and the search box (rows stay clear until hovered) */
+html :is(
+	[data-model-picker-sidebar],
+	[data-model-picker-content] > div[class*="bg-muted/40"],
+	[data-model-picker-effort],
+	[data-slot="popover-viewport"] div[class*="h-86.5"] + div > div[class*="bg-input/40"],
+	[data-slot="popover-viewport"] [data-composer-permissions-trigger],
+	[data-model-picker-content] > div[class*="bg-muted/40"] > div[class*="pt-2.5"] > div[class*="border-b"]
+)::after {
+	--p29b-a: rgb(108 112 134 / .4);
+	--p29b-b: rgb(108 112 134 / .4);
+}
+/* dock frames sit above anything scrolled to the dock's edge */
+html :is([data-model-picker-sidebar], [data-model-picker-content] > div[class*="bg-muted/40"], [data-model-picker-effort])::after {
+	z-index: 40 !important;
+}
+html :is(
+	[data-model-picker-sidebar]:is(:hover, [data-audit-hover]),
+	[data-model-picker-content] > div[class*="bg-muted/40"]:is(:hover, [data-audit-hover]),
+	[data-model-picker-effort]:is(:hover, [data-audit-hover]),
+	[data-slot="popover-viewport"] div[class*="h-86.5"] + div > div[class*="bg-input/40"]:is(:hover, :focus-within, [data-audit-hover]),
+	[data-slot="popover-viewport"] [data-composer-permissions-trigger]:is(:hover, :focus-visible, [aria-expanded="true"], [data-audit-hover]),
+	[data-model-picker-content] > div[class*="bg-muted/40"] > div[class*="pt-2.5"] > div[class*="border-b"]:is(:hover, :focus-within, [data-audit-hover]),
+	[data-model-picker-content] [data-slot="combobox-item"]:is(:hover, [data-highlighted], [data-selected], [aria-selected="true"], [data-audit-hover]),
+	[data-model-picker-effort] [data-effort-row]:is(:hover, :focus-visible, [aria-checked="true"], [data-audit-hover]),
+	[data-model-picker-provider] > button:not([disabled]):is(:hover, :focus-visible, [aria-pressed="true"], [data-audit-hover]),
+	[data-model-picker-content] [data-slot="combobox-item"] button[aria-label*="avorite"]:is(:hover, [data-audit-hover])
+)::after {
+	--p29b-a: #89b4fa;
+	--p29b-b: #cba6f7;
+}

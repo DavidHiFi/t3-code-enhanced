@@ -1,0 +1,16 @@
+/* Undo notice under the sidebar shelf header ("Settled 1 thread, Ctrl+Z to undo").
+   T3 draws it absolutely above the header row (bottom-full), so it covered the thread row above it,
+   and its sidebar tint was about 34 % alpha, so the rows showed straight through.
+   This puts it in the header's flow so the list moves up instead of being covered, and gives it the
+   same frosted menu glass as 60-menu-glass.css. Keyed on the header's data-testid and the notice's
+   bottom-full class, which stay put across T3 builds. Loads after 60 and 65 by name order. */
+html[data-window-material] [data-testid^="sidebar-"]:has(> [role="group"].bottom-full) {
+	height: auto !important;
+}
+html[data-window-material] [data-testid^="sidebar-"] > [role="group"].bottom-full {
+	position: static !important;
+	inset: auto !important;
+	background: rgb(from var(--app-theme-sidebar, var(--sidebar)) r g b / var(--t3-glass-menu)) !important;
+	-webkit-backdrop-filter: var(--t3-real-blur) saturate(1.3) !important;
+	backdrop-filter: var(--t3-real-blur) saturate(1.3) !important;
+}

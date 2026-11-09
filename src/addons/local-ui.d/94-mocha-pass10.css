@@ -1,0 +1,111 @@
+/* =====================================================================
+   94-mocha-pass10.css (2026-11-02, evening) - owner round 10
+   - sidebar footer dock + search dock darker (they were still on the light
+     pass-2 surface0 tint)
+   - brand dock fills the row, version pill pushed right into the free space
+   - Drafts/Active/Pinned always grouped at the bottom with Working/Settled
+     (90-section-shelves.js marks the first visible section start and gives
+     the list the scroller's free height; margin-top:auto pulls the group down)
+   - every section is a standalone rounded dock; the row dock under each
+     gets its own rounded top again (no more square-corner seams)
+   - glows paint above neighbouring docks (turn folds, queue pills) and row
+     cards clip their image previews so a glow cannot be cut square
+   - providers settings pane: width-independent clamps on top of pass 9
+   Rollback: delete this file, restore 90-section-shelves.js from its .bak,
+   reload. Notes: notes\2026-11-02-t3-mocha-docks.md
+   ===================================================================== */
+
+/* ---- 1. footer dock and search dock: darker crust tint like the rest ----
+   Pass 17: REMOVED - the tint authority moved to 99-mocha-pass17.css (pass-15/16
+   ladder). These hardcoded 0.58/0.62 crusts made the brand row, search dock and
+   footer read too dark next to the lightened pass-16 docks. The footer hover
+   state lives in 92-mocha-pass8.css (re-pointed), the icons in 92, the borders
+   in 85.
+
+/* ---- 2. brand dock: fill the row, version pill at the right end ---- */
+[data-slot="sidebar-inner"] div:has(> div > div > a[aria-label="T3 Code home"]) > div.relative.z-10.flex.h-8 {
+	width: auto !important;
+	flex: 1 1 auto !important;
+}
+[data-slot="sidebar-inner"] div:has(> div > div > a[aria-label="T3 Code home"]) div.ml-1 {
+	margin-left: auto !important;
+}
+
+/* ---- 3. the four categories live together at the bottom ---- */
+ul[role="tree"][aria-label="Threads"] {
+	min-height: var(--t3l-list-min, auto) !important;
+}
+ul[role="tree"][aria-label="Threads"] > li[data-t3l-lead] {
+	margin-top: auto !important;
+}
+/* every section header/shelf is its own rounded dock with a gap below */
+ul[role="tree"][aria-label="Threads"] > li.t3l-shelf {
+	border-radius: 14px !important;
+	margin-bottom: 8px !important;
+	box-shadow: inset 0 0 0 1px var(--sd-e, rgb(108 112 134 / 0.4)) !important;
+}
+ul[role="tree"][aria-label="Threads"] > li:is(
+	[data-testid="sidebar-working-header"],
+	[data-testid="sidebar-settled-header"],
+	[data-testid="sidebar-pinned-header"]
+) {
+	border-radius: 14px !important;
+	margin-bottom: 8px !important;
+}
+/* the row dock under a header/shelf starts fresh with its own rounded top */
+ul[role="tree"][aria-label="Threads"] > li.t3l-shelf + li:is(
+	[data-thread-item],
+	li:has([data-sidebar-row^="draft:"])
+) {
+	--sd-t: 1px !important;
+	padding-top: 4px !important;
+	border-top-left-radius: 14px !important;
+	border-top-right-radius: 14px !important;
+}
+ul[role="tree"][aria-label="Threads"] > li[data-testid="sidebar-working-header"] + li[data-thread-item],
+ul[role="tree"][aria-label="Threads"] > li[data-testid="sidebar-settled-header"] + li[data-thread-item] {
+	--sd-t: 1px !important;
+	padding-top: 4px !important;
+	border-top-left-radius: 14px !important;
+	border-top-right-radius: 14px !important;
+}
+
+/* ---- 4. glows must paint above neighbouring docks, never be cut by them ---- */
+html [data-timeline-row-kind="turn-fold"] button,
+html [data-timeline-row-kind="attempt-fold"] button,
+[data-thread-queue] button:not([disabled]),
+[data-thread-queue] div.flex.items-center.gap-1:has([aria-label="Remove queued message"]),
+[data-slot="sidebar-inner"] button[data-sidebar-row^="shelf:"],
+ul[role="tree"][aria-label="Threads"] > li.t3l-shelf {
+	position: relative !important;
+	z-index: 5 !important;
+}
+html [data-timeline-row-kind="turn-fold"] button:hover,
+html [data-timeline-row-kind="attempt-fold"] button:hover {
+	box-shadow: var(--t6-ring), 0 0 16px -2px rgb(137 180 250 / 0.55) !important;
+}
+/* image previews inside a row stay inside the card: no square slivers over the glow */
+[data-slot="sidebar-inner"] [data-testid="sidebar-row-card"] {
+	overflow: hidden !important;
+}
+
+/* ---- 5. model/agent picker: room for full names (94-picker-fit.js shrinks the rest) ---- */
+[data-slot="popover-popup"]:has([data-model-picker-content]) {
+	width: min(660px, calc(100vw - 32px)) !important;
+}
+[data-model-picker-content] {
+	width: min(444px, 62vw) !important;
+	max-width: min(444px, 62vw) !important;
+}
+[data-model-picker-effort] {
+	width: min(216px, 30vw) !important;
+}
+
+/* ---- 6. providers settings pane: clamps that hold at any window width ---- */
+[data-slot="settings-group"] div[class*="/providers:min-h-0"] {
+	min-width: 0 !important;
+}
+[data-slot="settings-group"] div[class*="/providers:min-h-0"] [data-slot="settings-row"] {
+	min-width: 0 !important;
+	max-width: 100% !important;
+}

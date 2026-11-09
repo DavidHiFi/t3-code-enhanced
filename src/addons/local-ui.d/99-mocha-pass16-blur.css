@@ -1,0 +1,33 @@
+/* Pass 16 (2026-11-06): give the window acrylic back. The page stacked html 0.24 + main 0.68
+   (pass 6) + docks 0.62-0.72 (pass 15) over the window blur, so the main area read as a flat fill
+   (stripe test: ~2% see-through). This layer thins those fills to a light Mocha tint and keeps
+   every backdrop-filter. Floating popups (--t15-solid) stay near-opaque on purpose.
+   Rollback: delete this file and reload the T3 window. Notes: notes\2026-11-02-t3-mocha-docks.md */
+
+html[data-window-material][data-window-material][data-window-material] {
+	background-color: rgb(30 30 46 / 0.08) !important;
+	--t15-panel: rgb(30 30 46 / 0.26);
+	--t15-panel-deep: rgb(24 24 37 / 0.32);
+	--t15-dock: rgb(17 17 27 / 0.36);
+	--t15-dock-in: rgb(17 17 27 / 0.44);
+	--t15-hover: rgb(49 50 68 / 0.42);
+	--t15-hover-hi: rgb(58 60 76 / 0.52);
+	--t3d-tint: rgb(17 17 27 / 0.62);   /* floating details card stays at its pass-15 tint (AGENTS rule: floaters over text stay dense) */
+	--t3g-panel: var(--t15-panel-deep);
+	--t5-pill: var(--t15-dock);
+	--t5-pill-hi: var(--t15-hover);
+}
+
+/* main area: light Mocha base tint over the window acrylic */
+html[data-window-material]:not([data-t3local-extendedglass-off]) main.bg-background[data-slot="sidebar-inset"][data-slot="sidebar-inset"][data-slot="sidebar-inset"] {
+	background-color: rgb(30 30 46 / 0.2) !important;
+}
+
+/* sidebar stack: thinner mantle + section tint */
+html[data-window-material] [data-slot="sidebar"] [data-slot="sidebar-inner"][data-slot="sidebar-inner"][data-slot="sidebar-inner"] {
+	background-color: rgb(24 24 37 / 0.14) !important;
+}
+html[data-window-material][data-window-material] ul[role="tree"][aria-label="Threads"][aria-label="Threads"] > li {
+	--t4-tint: rgb(17 17 27 / 0.16);
+	--sd-fill: rgb(17 17 27 / 0.16);
+}

@@ -1,0 +1,295 @@
+/* Mocha docks for T3 Code (2026-11-02). Loaded by ~/.t3/local-main.cjs after 80-contrast.css.
+   Puts a bordered Catppuccin Mocha dock behind the loose control groups, so nothing sits on bare
+   window: the chat title (with the back/forward arrows moved in by 85-title-nav.js), the three
+   panel buttons at top right, the sidebar search row, the sidebar footer, the composer context
+   strip, the queued-message actions, and the floating thread details card.
+   Material: opaque. With a window material the backdrop is blurred over a mantle flood (nothing
+   shows through sharp); without one the dock is a solid mantle fill. Owner rule: static colour or
+   real blur, never see-through.
+   Selectors are T3's own data attributes and aria labels, read from the served bundle of build
+   0.1.7-nightly.20261101.4035. Every property is !important because insertCSS lands as user CSS.
+   Palette (Mocha): crust #11111b, mantle #181825, base #1e1e2e, surface0 #313244, surface1 #45475a,
+   surface2 #585b70, overlay0 #6c7086, subtext0 #a6adc8, subtext1 #bac2de, text #cdd6f4,
+   blue #89b4fa, mauve #cba6f7, lavender #b4befe.
+   Rollback: delete this file and 85-title-nav.js, then reload the window (Ctrl+R). */
+
+html {
+	--t3d-fill: #181825;
+	--t3d-tint: rgb(24 24 37 / 0.62);
+	--t3d-edge: rgb(108 112 134 / 0.45);
+	--t3d-edge-strong: rgb(127 132 156 / 0.6);
+	--t3d-sheen: rgb(180 190 254 / 0.09);
+	--t3d-shadow: 0 6px 18px -8px rgb(17 17 27 / 0.75), inset 0 1px 0 var(--t3d-sheen);
+	--t3d-radius: 12px;
+	--t3d-blur: none;
+}
+html[data-window-material] {
+	--t3d-blur: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='f' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'><feFlood flood-color='%23181825' result='b'/><feComposite in='SourceGraphic' in2='b' operator='over'/><feGaussianBlur stdDeviation='18' edgeMode='duplicate'/><feComponentTransfer><feFuncA type='linear' slope='0' intercept='1'/></feComponentTransfer></filter></svg>#f") saturate(1.35);
+}
+
+/* ---- the shared dock surface ----
+   Pass 17: the background tint of the sidebar docks (brand, search, footer) is
+   owned by 99-mocha-pass17.css from the pass-15/16 ladder; the border and sheen
+   stay here. */
+nav[aria-label$="breadcrumb"] > ol,
+[data-panel-layout-controls]:has(button),
+div.flex.items-center.gap-1:has(> div [aria-label="Search threads"]),
+[data-slot="sidebar-footer"],
+[data-slot="composer-context-strip"]:has([data-composer-context-control]),
+[data-thread-queue] div.flex.items-center.gap-1:has([aria-label="Remove queued message"]) {
+	border: 1px solid var(--t3d-edge) !important;
+	border-radius: var(--t3d-radius) !important;
+	box-shadow: var(--t3d-shadow) !important;
+	-webkit-backdrop-filter: var(--t3d-blur) !important;
+	backdrop-filter: var(--t3d-blur) !important;
+}
+html:not([data-window-material]) :is(
+	nav[aria-label$="breadcrumb"] > ol,
+	[data-panel-layout-controls]:has(button),
+	div.flex.items-center.gap-1:has(> div [aria-label="Search threads"]),
+	[data-slot="sidebar-footer"],
+	[data-slot="composer-context-strip"]:has([data-composer-context-control]),
+	[data-thread-queue] div.flex.items-center.gap-1:has([aria-label="Remove queued message"])
+) {
+	background: var(--t3d-fill) !important;
+}
+/* pass 17: with a window material the tint comes from 99-mocha-pass17.css */
+
+/* ---- chat title: hug the text, room for the moved arrows ---- */
+nav[aria-label$="breadcrumb"] {
+	overflow-clip-margin: 14px !important;
+}
+nav[aria-label$="breadcrumb"] > ol {
+	width: fit-content !important;
+	max-width: 100% !important;
+	height: 30px !important;
+	padding: 0 12px 0 10px !important;
+	gap: 8px !important;
+}
+nav[aria-label$="breadcrumb"] > ol:has(> [data-t3local-titlenav]) {
+	padding-left: 3px !important;
+}
+nav[aria-label$="breadcrumb"] > ol > li[aria-hidden="true"] {
+	color: rgb(108 112 134 / 0.9) !important;
+}
+[data-t3local-titlenav] {
+	display: flex !important;
+	align-items: center;
+	gap: 1px;
+	padding-right: 7px;
+	margin-right: 1px;
+	border-right: 1px solid rgb(108 112 134 / 0.35);
+	flex-shrink: 0;
+	list-style: none;
+}
+[data-t3local-titlenav] button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	padding: 0;
+	border: 0;
+	border-radius: 8px;
+	background: transparent;
+	color: #a6adc8;
+	cursor: pointer;
+	-webkit-app-region: no-drag;
+}
+[data-t3local-titlenav] button svg {
+	width: 14px;
+	height: 14px;
+}
+[data-t3local-titlenav] button:hover:not(:disabled) {
+	background: rgb(88 91 112 / 0.55);
+	color: #cdd6f4;
+}
+[data-t3local-titlenav] button:focus-visible {
+	outline: 2px solid #89b4fa;
+	outline-offset: -2px;
+}
+[data-t3local-titlenav] button:disabled {
+	opacity: 0.35;
+	cursor: default;
+}
+/* the stock pair next to "T3 Code" in the sidebar header; the proxies click these. The pair is
+   div.hidden.md:flex > button x2. Only that wrapper may match: one level up holds the "T3 Code" link. */
+html[data-t3local-titlenav-on] div:has(> button[aria-label="Go back"]):has(> button[aria-label="Go forward"]) {
+	display: none !important;
+}
+
+/* ---- panel buttons at top right ---- */
+[data-panel-layout-controls]:has(button) {
+	height: 32px !important;
+	align-self: center !important;
+	padding: 0 3px !important;
+	gap: 2px !important;
+}
+[data-panel-layout-controls] button {
+	height: 26px !important;
+	min-width: 26px !important;
+	border-radius: 8px !important;
+	color: #a6adc8 !important;
+}
+[data-panel-layout-controls] button:hover:not(:disabled) {
+	background: rgb(88 91 112 / 0.55) !important;
+	color: #cdd6f4 !important;
+}
+[data-panel-layout-controls] button:is([data-pressed], [aria-pressed="true"]) {
+	background: rgb(203 166 247 / 0.16) !important;
+	color: #cba6f7 !important;
+}
+
+/* ---- sidebar search row ---- */
+div.flex.items-center.gap-1:has(> div [aria-label="Search threads"]) {
+	padding: 2px 3px 2px 2px !important;
+}
+div.flex.items-center.gap-1:has(> div [aria-label="Search threads"]) > div:has([aria-label="Search threads"]) {
+	border-radius: 9px !important;
+}
+
+/* ---- sidebar footer ---- */
+[data-slot="sidebar-footer"] {
+	margin: 0 8px 8px !important;
+	padding: 4px 6px !important;
+	border-radius: 14px !important;
+}
+
+/* ---- composer context strip (environment, checkout, branch, access) ---- */
+[data-slot="composer-context-strip"]:has([data-composer-context-control]) {
+	margin-top: 6px !important;
+	padding: 2px 6px !important;
+	min-height: 32px !important;
+	border-radius: 999px !important;
+}
+[data-slot="composer-context-strip"] [data-composer-context-control]:is(button, [role="combobox"]):hover {
+	background: rgb(88 91 112 / 0.5) !important;
+	border-radius: 999px !important;
+}
+
+/* ---- queued message: Mocha bubble, docked actions ---- */
+[data-thread-queue] [class*="border-dashed"] {
+	background: #313244 !important;
+	border-color: rgb(180 190 254 / 0.45) !important;
+}
+[data-thread-queue] div.flex.items-center.gap-1:has([aria-label="Remove queued message"]) {
+	padding: 2px 4px !important;
+	border-radius: 999px !important;
+}
+[data-thread-queue] div.flex.items-center.gap-1:has([aria-label="Remove queued message"]) button {
+	border-radius: 999px !important;
+}
+
+/* ---- floating thread details card ---- */
+html [data-thread-details-card][data-thread-details-card][data-thread-details-card] {
+	background: var(--t3d-tint) !important;
+	border: 1px solid var(--t3d-edge-strong) !important;
+	border-radius: 16px !important;
+	box-shadow: 0 18px 40px -12px rgb(17 17 27 / 0.8), inset 0 1px 0 var(--t3d-sheen) !important;
+	-webkit-backdrop-filter: var(--t3d-blur) !important;
+	backdrop-filter: var(--t3d-blur) !important;
+}
+html:not([data-window-material]) [data-thread-details-card][data-thread-details-card][data-thread-details-card] {
+	background: var(--t3d-fill) !important;
+}
+
+/* ---- calmer pills: environment/stage badge ("Nightly 0.1.7...") and secondary badges ---- */
+[data-environment-identification="pill"],
+[data-slot="badge"][class*="bg-secondary"] {
+	background: #313244 !important;
+	border: 1px solid #45475a !important;
+	color: #bac2de !important;
+}
+/* user message bubbles: surface0 with an edge instead of the bright surface1 block */
+html.dark {
+	--app-theme-message-surface: #313244;
+}
+html.dark .bg-message {
+	box-shadow: inset 0 0 0 1px rgb(108 112 134 / 0.4);
+}
+
+/* ======== pass 2 (owner, 2026-11-02 10:30 am) ======== */
+
+/* ---- threads sidebar as a rounded floating dock ----
+   [data-slot=sidebar] carries data-state (expanded|collapsed) and slides off-canvas by moving the fixed
+   sidebar-container left by its own width. The padding sits inside that width, so collapsing still hides
+   all of it. The stock right border on the container is dropped; the inner panel draws the edge. */
+[data-slot="sidebar"][data-side="left"] [data-slot="sidebar-container"] {
+	padding: 8px 2px 8px 8px !important;
+	border: 0 !important;
+}
+[data-slot="sidebar"] [data-slot="sidebar-inner"] {
+	background: var(--t3d-tint) !important;
+	border: 1px solid var(--t3d-edge) !important;
+	border-radius: 16px !important;
+	box-shadow: 0 16px 36px -14px rgb(17 17 27 / 0.85), inset 0 1px 0 var(--t3d-sheen) !important;
+	-webkit-backdrop-filter: var(--t3d-blur) !important;
+	backdrop-filter: var(--t3d-blur) !important;
+	overflow: hidden !important;
+}
+html:not([data-window-material]) [data-slot="sidebar"] [data-slot="sidebar-inner"] {
+	background: var(--t3d-fill) !important;
+}
+
+/* ---- brand row: collapse button, "T3 Code", version badge in one dock ----
+   The row is div > div > a[aria-label="T3 Code home"]. The collapse button is not in it: T3 pins it
+   fixed at the window's top-left (--workspace-controls-left/top), so it is moved by the same offset
+   as the row (8px sidebar padding + 6px row margin) while the sidebar is open. */
+[data-slot="sidebar-inner"] div:has(> div > div > a[aria-label="T3 Code home"]) {
+	margin: 6px 6px 0 !important;
+	border-radius: 12px !important;
+	overflow: hidden !important;
+}
+/* pass 17: the pass-2 tint/sheen/no-blur block for brand, search and footer is
+   gone - 99-mocha-pass17.css owns those surfaces now (ladder tint + real blur). */
+[data-slot="sidebar-inner"] div.flex.items-center.gap-1:has(> div [aria-label="Search threads"]) {
+	margin-left: 6px !important;
+	margin-right: 6px !important;
+}
+[data-slot="sidebar-inner"] [data-slot="sidebar-footer"] {
+	margin: 0 6px 6px !important;
+}
+/* collapse-button position: 86-brand-dock.js measures it into --t3l-tog-x/y, used in 86-mocha-glass.css */
+
+/* ---- thread rows: selected and hovered ----
+   The open thread uses bg-sidebar-row-active, other picked rows bg-sidebar-row-selected; the
+   whole-word match skips the "active:" press variant. Surface0 fill, soft lavender edge. */
+[data-slot="sidebar-inner"] :is([class~="bg-sidebar-row-active"], [class~="bg-sidebar-row-selected"]) {
+	background-color: rgb(49 50 68 / 0.88) !important;
+	box-shadow: inset 0 0 0 1px rgb(180 190 254 / 0.3), 0 2px 8px -4px rgb(17 17 27 / 0.6) !important;
+	border-radius: 12px !important;
+}
+html [data-app-sidebar][data-app-sidebar] {
+	--sidebar-row-hover: rgb(49 50 68 / 0.5);
+}
+
+/* composer box: moved to 86-mocha-glass.css (needs to outrank 60-menu-glass.css) */
+
+/* ---- stash button above the composer ----
+   The shoulder tab draws its own round frame behind the pill (the stray circle). Drop it and style
+   the pill itself: mantle fill, overlay edge, muted text. */
+[data-composer-shoulder-tab],
+[data-composer-shoulder-tab]::before,
+[data-composer-shoulder-tab]::after {
+	background: transparent !important;
+	border-color: transparent !important;
+	box-shadow: none !important;
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+}
+[data-composer-shoulder-tab]::before,
+[data-composer-shoulder-tab]::after {
+	content: none !important;
+}
+[data-composer-shoulder-tab] [data-prompt-stash-badge] {
+	background: rgb(24 24 37 / 0.92) !important;
+	border: 1px solid var(--t3d-edge) !important;
+	border-radius: 10px !important;
+	box-shadow: inset 0 1px 0 var(--t3d-sheen), 0 4px 12px -6px rgb(17 17 27 / 0.7) !important;
+	color: #a6adc8 !important;
+}
+[data-composer-shoulder-tab] [data-prompt-stash-badge]:hover,
+[data-composer-shoulder-tab] [data-prompt-stash-badge][aria-expanded="true"] {
+	background: rgb(49 50 68 / 0.95) !important;
+	color: #cdd6f4 !important;
+}

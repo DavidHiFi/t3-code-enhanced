@@ -61,6 +61,11 @@ if (Test-Path -LiteralPath $list) {
 if (-not $KeepFiles) {
     Step "Deleting $InstallDir"
     Remove-Item -LiteralPath $InstallDir -Recurse -Force -ErrorAction SilentlyContinue
+} else {
+    # without these the updater would think a copy is still installed
+    foreach ($f in 'version.txt', 'update-state.json', 'update-result.json', 'installed-files.txt') {
+        Remove-Item -LiteralPath (Join-Path $InstallDir $f) -Force -ErrorAction SilentlyContinue
+    }
 }
 
 Write-Host ''

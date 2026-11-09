@@ -1,0 +1,32 @@
+/* Shared frost uses Chromium's native blur; the SVG flood filter produced coloured edge patches. */
+html[data-window-material][data-window-material][data-window-material][data-window-material] {
+  --t24-frost: blur(22px) saturate(1);
+  --t3-real-blur: blur(22px);
+  --t24-frost-fill: rgb(30 30 46 / .95);
+}
+html[data-window-material] [data-app-modal][data-app-modal][data-app-modal][data-app-modal] {
+  backdrop-filter: blur(22px) saturate(1) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(1) !important;
+}
+@layer theme {
+  html [data-slot="number-field-group"] [data-slot="number-field-input"] {
+    background: transparent !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    transition: none !important;
+  }
+  html [data-slot="number-field-group"] {
+    background: rgb(24 24 37 / .45) !important;
+    overflow: hidden;
+  }
+  html body [data-thread-details-card] [data-thread-panel-run-context] [data-slot="tooltip-trigger"]:is(:hover, [data-t25f], [data-popup-open]) {
+    background-color: rgb(36 36 54 / .9) !important;
+  }
+}
+html[data-window-material] [data-slot="composer-shell"][data-slot="composer-shell"]::before {
+  background-color: rgb(30 30 46 / .95) !important;
+}
+html [data-slot="composer-host"][data-slot="composer-host"]::before {
+  background: transparent !important;
+  box-shadow: none !important;
+}

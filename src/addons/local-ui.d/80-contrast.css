@@ -1,5 +1,6 @@
-/* Stronger highlights and panel edges in Catppuccin Mocha tones. In stock T3 the selected row of
-   the slash list was barely different from the others (about 1.1 : 1), and panels blended together.
+/* Stronger highlights and panel edges in Catppuccin Mocha tones (owner request 2026-10-24: the selected
+   row of the slash list was barely different from the others, and panels blended into each other).
+   Measured before: selected row #313244-ish (--accent) on a #2c2c3d-ish glass list, ~1.1 : 1.
    Switch: Settings > Appearance > Local add-ons > "Stronger highlights" (html[data-t3local-contrast-off]).
    Palette: surface1 #45475a, surface2 #585b70, overlay0 #6c7086, lavender #b4befc, blue #89b4fa, crust #11111b. */
 
@@ -34,9 +35,11 @@ html:not([data-t3local-contrast-off]) [data-slot$="-item"]:not([data-slot^="side
 
 /* visible edges on floating panels and the composer so they stop melting into the chat behind them.
    Only elements that carry their own corner radius get a border: the slash list nests a square listbox
-   inside a rounded panel, and a border on the inner one stuck out past the rounded corners. */
-html:not([data-t3local-contrast-off]) [data-slot$="-popup"][class*="rounded"]:not([class*="rounded-[inherit]"]),
-html:not([data-t3local-contrast-off]) [role="menu"][class*="rounded"]:not([class*="rounded-[inherit]"]) {
+   inside a rounded panel, and a border on the inner one stuck out past the rounded corners (owner report).
+   rounded-none is excluded: the image viewer is a dialog popup with "rounded-none border-transparent", and
+   the substring match drew a thin square frame around every opened image (owner report 2026-11-02). */
+html:not([data-t3local-contrast-off]) [data-slot$="-popup"][class*="rounded"]:not([class*="rounded-[inherit]"]):not([class*="rounded-none"]),
+html:not([data-t3local-contrast-off]) [role="menu"][class*="rounded"]:not([class*="rounded-[inherit]"]):not([class*="rounded-none"]) {
   border: 1px solid rgb(108 112 134 / 0.55) !important; /* overlay0 */
 }
 html:not([data-t3local-contrast-off]) [class*="composer-surface"][class*="composer-surface"]:not([data-composer-banner-surface]) {
@@ -55,7 +58,7 @@ html[data-t3local-galaxysend-off] button[aria-label="Submit message"]:not(:disab
   color: #11111b !important;
 }
 
-/* Hover states (in stock T3 the hovered sidebar row was darker than its neighbours and
+/* Hover states (owner report 2026-10-24: the hovered sidebar row was darker than its neighbours and
    barely readable). Most hovers in the app are a low-alpha --accent or --muted, close to the dark
    glass behind them. Sidebar rows read three variables, so those are swapped for translucent
    Mocha surface2 (#585b70): hover 0.38, selected 0.7, pressed 0.55. Every other control whose own class

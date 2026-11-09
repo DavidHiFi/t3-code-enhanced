@@ -1,8 +1,8 @@
-/* Real frosted glass everywhere T3 asks for blur.
+/* Real frosted glass everywhere T3 asks for blur (2026-10-24, v3).
    Chromium's blur() does nothing when the window behind is transparent, so panels only dimmed.
    This SVG filter makes the backdrop opaque first, then blurs it and makes the result solid again
    (otherwise the sharp backdrop shows through near the edges, which is most of a short toast).
-   It also swaps into every Tailwind backdrop-blur utility (banners, sticky headers), the
+   v3 also swaps it into every Tailwind backdrop-blur utility (banners, sticky headers), the
    .surface-glass class, and a lighter variant for the composer and its slash list. */
 html[data-window-material]{
   --t3-real-blur:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='f' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'><feComponentTransfer><feFuncA type='linear' slope='0' intercept='1'/></feComponentTransfer><feGaussianBlur stdDeviation='28' edgeMode='duplicate'/><feComponentTransfer><feFuncA type='linear' slope='0' intercept='1'/></feComponentTransfer></filter></svg>#f");
@@ -30,7 +30,7 @@ html[data-window-material] [class*="before:backdrop-blur"]::before{
 }
 
 /* Composer and its slash-command drawer. Most of what sits behind it is the clear window, which the
-   plain filter fills with black, so the composer went near-black (measured
+   plain filter fills with black, so the composer went near-black (owner report 4:48 PM, measured
    rgb 22,22,32 against 43,43,58 around it). This variant lays the backdrop over a Mocha tone close to
    the window acrylic before blurring, and the tint moves from crust at 75 % to surface0 (--muted) at
    55 %, so it sits just above the chat (measured 45,44,59 at 4:57 PM). */

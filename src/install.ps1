@@ -13,16 +13,20 @@
 #   4. Patches app.asar and server.asar (each patcher backs up the original first).
 #   5. Registers the T3CodeEnhanced-Guard scheduled task, which applies the patches
 #      again after every T3 Code update.
+#   6. Records the installed version, which the Enhanced update button compares with the
+#      newest release on GitHub.
 #
 # OPTIONS
 #   -Reset       put every add-on and setting back to the release defaults
 #                (backed up first; local-ui.css is still kept)
 #   -NoTask      skip the scheduled task (patches then stop after the next update)
+#   -Quiet       plain output with no colors (used by lib\update.ps1)
 #   -T3Dir / -HomeDir / -InstallDir   other locations (used by the tests)
 
 param(
     [switch]$Reset,
     [switch]$NoTask,
+    [switch]$Quiet,
     [string]$T3Dir      = '',
     [string]$HomeDir    = $HOME,
     [string]$InstallDir = (Join-Path $env:LOCALAPPDATA 'T3CodeEnhanced')
@@ -31,7 +35,7 @@ param(
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'lib\common.ps1')
 
-function Step([string]$text) { Write-Host "-> $text" -ForegroundColor Cyan }
+function Step([string]$text) { if ($Quiet) { Write-Host "-> $text" } else { Write-Host "-> $text" -ForegroundColor Cyan } }
 
 if (-not $T3Dir) { $T3Dir = Find-T3Dir }
 if (-not $T3Dir) { throw 'T3 Code was not found under %LOCALAPPDATA%\Programs. Install T3 Code first, or pass -T3Dir.' }
@@ -67,6 +71,20 @@ foreach ($rel in $files) {
     }
     New-Item -ItemType Directory -Force -Path (Split-Path $dst) | Out-Null
     Copy-Item -LiteralPath $src -Destination $dst -Force
+}
+# files an older release installed that this one no longer ships: back up, then remove,
+# so renamed or retired add-ons do not linger
+$manifest = Join-Path $InstallDir 'installed-files.txt'
+if (Test-Path -LiteralPath $manifest) {
+    foreach ($rel in @(Get-Content -LiteralPath $manifest | Where-Object { $_ -and $files -notcontains $_ })) {
+        if ($rel -eq 'local-ui.css' -or $rel -eq 'local-patches.json' -or $rel -match '\.\.') { continue }
+        $old = Join-Path $t3Home $rel
+        if (-not (Test-Path -LiteralPath $old -PathType Leaf)) { continue }
+        $bak = Join-Path $addonBackup $rel
+        New-Item -ItemType Directory -Force -Path (Split-Path $bak) | Out-Null
+        Move-Item -LiteralPath $old -Destination $bak -Force
+        Write-Host "   retired $rel"
+    }
 }
 # the uninstaller removes exactly these files
 $files | Set-Content -LiteralPath (Join-Path $InstallDir 'installed-files.txt') -Encoding utf8
@@ -135,6 +153,14 @@ if (-not $NoTask) {
         -Description 'T3 Code Enhanced: applies the patches again after T3 Code updates. Remove with uninstall.ps1.' -Force | Out-Null
     Start-ScheduledTask -TaskName $taskName
     Write-Host "   $((Get-ScheduledTask -TaskName $taskName).State)"
+}
+
+# 6. version
+$versionFile = Join-Path $PSScriptRoot 'VERSION'
+if (Test-Path -LiteralPath $versionFile) {
+    $ver = (Get-Content -LiteralPath $versionFile -Raw).Trim()
+    Set-Content -LiteralPath (Join-Path $InstallDir 'version.txt') -Value $ver -Encoding utf8
+    Write-Host "   T3 Code Enhanced $ver"
 }
 
 Write-Host ''

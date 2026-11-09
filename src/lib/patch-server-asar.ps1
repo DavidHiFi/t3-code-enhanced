@@ -541,37 +541,47 @@ function Resolve-NotermOpen([string]$direction) {
 # every build.
 function Resolve-NoFloat([string]$direction) {
     $anchor = '.getState().setMaximized('
-    $kinds = @(
-        @{ Kind = 'preview'; Tail = '(?<src>@I@)\((?<sv>@I@)\.resourceId\)\)' },
-        @{ Kind = 'device';  Tail = ('\{kind:' + $bt + 'device' + $bt + ',\.\.\.(?<sv>@I@)\.target\}\)') }
+    # preview: mp.getState().open(r,src(sv.resourceId))     -> !1&&mp.getState()(r, src(...))
+    # device, builds to 2026-10:  mp.getState().open(r,{kind:`device`,...sv.target})  -> same edit
+    # device, builds from 2026-11: &&sv.target&&dv(r,{kind:`device`,...sv.target},...) -> &&!1<spaces>&&dv(...)
+    $shapes = @(
+        @{ Kind = 'preview'; Form = 'open'
+           Stock = '(?<mp>@I@)\.getState\(\)\.open\((?<r>@I@),(?<src>@I@)\((?<sv>@I@)\.resourceId\)\)'
+           Patch = '!1&&(?<mp>@I@)\.getState\(\)\((?<r>@I@), (?<src>@I@)\((?<sv>@I@)\.resourceId\)\)' },
+        @{ Kind = 'device'; Form = 'open'
+           Stock = ('(?<mp>@I@)\.getState\(\)\.open\((?<r>@I@),\{kind:' + $bt + 'device' + $bt + ',\.\.\.(?<sv>@I@)\.target\}\)')
+           Patch = ('!1&&(?<mp>@I@)\.getState\(\)\((?<r>@I@), \{kind:' + $bt + 'device' + $bt + ',\.\.\.(?<sv>@I@)\.target\}\)') },
+        @{ Kind = 'device'; Form = 'guard'
+           Stock = ('&&(?<sv>@I@)\.target&&(?<dv>@I@)\((?<r>@I@),\{kind:' + $bt + 'device' + $bt + ',\.\.\.\k<sv>\.target\}')
+           Patch = ('&&!1(?<pad> +)&&(?<dv>@I@)\((?<r>@I@),\{kind:' + $bt + 'device' + $bt + ',\.\.\.(?<sv>@I@)\.target\}') }
     )
     $cands = @($script:files | Where-Object { $_.Path -match '/client/assets/[^/]*\.js$' })
     $sites = @()
     foreach ($c in $cands) {
         $text = Get-ChunkText $c.Offset $c.Size
         if (-not $text.Contains($anchor)) { continue }
-        foreach ($k in $kinds) {
-            $stockRe = ('(?<mp>@I@)\.getState\(\)\.open\((?<r>@I@),' + $k.Tail).Replace('@I@', $I)
-            $patchRe = ('!1&&(?<mp>@I@)\.getState\(\)\((?<r>@I@), ' + $k.Tail).Replace('@I@', $I)
-            foreach ($pair in @(@('ORIGINAL', $stockRe), @('PATCHED', $patchRe))) {
-                foreach ($m in [regex]::Matches($text, $pair[1])) {
+        foreach ($k in $shapes) {
+            foreach ($pair in @(@('ORIGINAL', $k.Stock), @('PATCHED', $k.Patch))) {
+                foreach ($m in [regex]::Matches($text, $pair[1].Replace('@I@', $I))) {
+                    if ($k.Form -eq 'guard' -and $pair[0] -eq 'PATCHED' -and $m.Groups['pad'].Length -ne $m.Groups['sv'].Length + 5) { continue }
                     $r = [regex]::Escape($m.Groups['r'].Value)
                     $after = $text.Substring($m.Index + $m.Length, [Math]::Min(400, $text.Length - $m.Index - $m.Length))
                     $ctx = ('^[^;]{0,260}?(?<ps>@I@)\.getState\(\)\.setMaximized\(' + $r + ',!1\),\k<ps>\.getState\(\)\.close\(' + $r + '\)').Replace('@I@', $I)
                     if (-not [regex]::IsMatch($after, $ctx)) { continue }
-                    $sites += [pscustomobject]@{ Kind = $k.Kind; State = $pair[0]; Chunk = $c; Text = $text; M = $m }
+                    $sites += [pscustomobject]@{ Kind = $k.Kind; Form = $k.Form; State = $pair[0]; Chunk = $c; Text = $text; M = $m }
                 }
             }
         }
     }
-    foreach ($k in $kinds) {
-        $n = @($sites | Where-Object Kind -eq $k.Kind).Count
-        if ($n -ne 1) { return @{ State = 'UNKNOWN'; Detail = "$($k.Kind) float site matched $n times (expected 1)"; Edits = @() } }
+    foreach ($kind in 'preview', 'device') {
+        $n = @($sites | Where-Object Kind -eq $kind).Count
+        if ($n -ne 1) { return @{ State = 'UNKNOWN'; Detail = "$kind float site matched $n times (expected 1)"; Edits = @() } }
     }
     $p = $sites | Where-Object Kind -eq 'preview'
     $d = $sites | Where-Object Kind -eq 'device'
     if ($p.Chunk.Offset -ne $d.Chunk.Offset) { return @{ State = 'UNKNOWN'; Detail = 'preview and device float sites are in different chunks'; Edits = @() } }
-    foreach ($g in @('mp', 'r', 'sv')) {
+    $same = if ($d.Form -eq 'open') { 'mp', 'r', 'sv' } else { , 'r' }
+    foreach ($g in $same) {
         if ($p.M.Groups[$g].Value -ne $d.M.Groups[$g].Value) { return @{ State = 'UNKNOWN'; Detail = "float sites disagree on the captured '$g' name"; Edits = @() } }
     }
     $chunk = $p.Chunk
@@ -579,17 +589,26 @@ function Resolve-NoFloat([string]$direction) {
     $short = "chunk $name (offset $($chunk.Offset), size $($chunk.Size))"
     $edits = @()
     foreach ($s in @($p, $d)) {
-        $mp = $s.M.Groups['mp'].Value; $r = $s.M.Groups['r'].Value
-        $stockHead = $mp + '.getState().open(' + $r + ','
-        $patchHead = '!1&&' + $mp + '.getState()(' + $r + ', '
+        $r = $s.M.Groups['r'].Value
+        if ($s.Form -eq 'open') {
+            $mp = $s.M.Groups['mp'].Value
+            $stockHead = $mp + '.getState().open(' + $r + ','
+            $patchHead = '!1&&' + $mp + '.getState()(' + $r + ', '
+            $at = 0
+        } else {
+            $sv = $s.M.Groups['sv'].Value
+            $stockHead = $sv + '.target'
+            $patchHead = '!1' + (' ' * ($sv.Length + 5))
+            $at = 2
+        }
         if ($stockHead.Length -ne $patchHead.Length) { return @{ State = 'UNKNOWN'; Detail = 'float edit would change length'; Edits = @() } }
         if ($s.State -eq 'ORIGINAL' -and $direction -eq 'patched') { $old = $stockHead; $new = $patchHead }
         elseif ($s.State -eq 'PATCHED' -and $direction -eq 'stock') { $old = $patchHead; $new = $stockHead }
         else { continue }
-        $edits += @{ Kind = 'region'; Patch = 'nofloat'; Off = [int64]($dataOffset + $chunk.Offset + $s.M.Index); Old = $old; New = $new; Chunk = $chunk; ChunkText = $s.Text }
+        $edits += @{ Kind = 'region'; Patch = 'nofloat'; Off = [int64]($dataOffset + $chunk.Offset + $s.M.Index + $at); Old = $old; New = $new; Chunk = $chunk; ChunkText = $s.Text }
     }
     $state = if ($p.State -eq $d.State) { $p.State } else { 'MIXED' }
-    return @{ State = $state; Detail = "$short, preview=$($p.State), device=$($d.State)"; Edits = $edits }
+    return @{ State = $state; Detail = "$short, preview=$($p.State), device=$($d.State) ($($d.Form) form)"; Edits = $edits }
 }
 
 
@@ -792,7 +811,9 @@ function Resolve-BrowserDark([string]$direction) {
                 $before = $t.Substring([Math]::Max(0, $m.Index - 40), [Math]::Min(40, $m.Index))
                 if (-not $before.Contains($bq + 'system' + $bq + ',' + $bq + 'light' + $bq + ',' + $bq + 'dark' + $bq + ']')) { continue }
                 $n = $m.Groups['n'].Value
-                if (-not $t.Contains('D(' + $n + ')')) { continue }
+                # and the settings schema uses it as the browserDefaultAppearance default
+                # (the wrapper's minified name changes between builds: D(n), k(n), ...)
+                if (-not [regex]::IsMatch($t, 'browserDefaultAppearance:[^,]{0,40}\(' + [regex]::Escape($n) + '\)')) { continue }
                 $hits += [pscustomobject]@{ Chunk = $c; Text = $t; M = $m; State = $pair[0] }
             }
         }
@@ -938,16 +959,20 @@ function Build-ChunkPlan([object[]]$edits) {
         if ($mine.Count -eq 0) { continue }
         $absBase = $dataOffset + [int64]$e.Chunk.Offset
         $newText = $e.NewChunkText
-        foreach ($r in $mine) {
+        # edits close together (the two nofloat sites sit ~40 bytes apart) would see each
+        # other in their context, so each edit is also applied to this copy of the old text
+        $oldText = $e.ChunkText
+        foreach ($r in ($mine | Sort-Object Off)) {
             $rel = [int]($r.Off - $absBase)
-            if ($e.ChunkText.Substring($rel, $r.Old.Length) -cne $r.Old) { throw "refusing: $($r.Patch): expected '$($r.Old)' not found at chunk offset $rel - investigate" }
-            $pre  = $e.ChunkText.Substring([Math]::Max(0, $rel - 48), [Math]::Min(48, $rel))
-            $post = $e.ChunkText.Substring($rel + $r.Old.Length, [Math]::Min(48, $e.ChunkText.Length - $rel - $r.Old.Length))
+            if ($oldText.Substring($rel, $r.Old.Length) -cne $r.Old) { throw "refusing: $($r.Patch): expected '$($r.Old)' not found at chunk offset $rel - investigate" }
+            $pre  = $oldText.Substring([Math]::Max(0, $rel - 48), [Math]::Min(48, $rel))
+            $post = $oldText.Substring($rel + $r.Old.Length, [Math]::Min(48, $oldText.Length - $rel - $r.Old.Length))
             $at = $newText.IndexOf($pre + $r.Old + $post, [System.StringComparison]::Ordinal)
             if ($at -lt 0 -or $newText.IndexOf($pre + $r.Old + $post, $at + 1, [System.StringComparison]::Ordinal) -ge 0) {
                 throw "refusing: $($r.Patch) edit cannot be placed uniquely inside the $($e.Patch) rewrite - investigate"
             }
             $newText = $newText.Remove($at + $pre.Length, $r.Old.Length).Insert($at + $pre.Length, $r.New)
+            $oldText = $oldText.Remove($rel, $r.Old.Length).Insert($rel, $r.New)
         }
         $e.NewChunkText = $newText
         $regionEdits = @($regionEdits | Where-Object { $_.Chunk.Offset -ne $e.Chunk.Offset })

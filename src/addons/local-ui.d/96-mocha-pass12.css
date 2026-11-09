@@ -1,0 +1,40 @@
+/* =====================================================================
+   96-mocha-pass12.css (2026-11-03 morning) - owner round 12
+   - the thread list flows from the top again: the pass-10 bottom pull is
+     off (together with T3's own pinned-header margin it split the free
+     space into two ~84px gaps)
+   - T3 pins Working/Settled with its own margin-top:auto; killed
+   - collapsed categories stack tight: a pill directly followed by another
+     pill gets no bottom margin, and the zero-height markers carry none
+   Rollback: delete this file, restore 90-section-shelves.js from its
+   .bak-20261103-1040, reload. Notes: notes\2026-11-02-t3-mocha-docks.md
+   ===================================================================== */
+
+/* top flow: no bottom pull, no pinned headers */
+ul[role="tree"][aria-label="Threads"] {
+	min-height: 0 !important;
+}
+ul[role="tree"][aria-label="Threads"] > li[data-t3l-lead] {
+	margin-top: 0 !important;
+}
+ul[role="tree"][aria-label="Threads"] > li[data-testid="sidebar-working-header"],
+ul[role="tree"][aria-label="Threads"] > li[data-testid="sidebar-settled-header"] {
+	margin-top: 0 !important;
+}
+
+/* tight stack: a pill whose next visible section start is another pill
+   touches it (90-section-shelves.js sets data-t3l-tight; :has cannot see
+   through the zero-height marker rows T3 keeps between sections) */
+ul[role="tree"][aria-label="Threads"] > li[data-t3l-tight],
+html [data-slot="sidebar-inner"] ul[role="tree"][aria-label="Threads"] > li[data-t3l-tight] {
+	margin-bottom: 0 !important;
+}
+
+/* zero-height markers never add space */
+ul[role="tree"][aria-label="Threads"] > [data-testid="sidebar-draft-divider"],
+ul[role="tree"][aria-label="Threads"] > [data-testid="sidebar-pinned-header"],
+ul[role="tree"][aria-label="Threads"] > [data-testid="sidebar-pinned-divider"],
+ul[role="tree"][aria-label="Threads"] > [data-testid="sidebar-active-placeholder"],
+ul[role="tree"][aria-label="Threads"] > [data-testid="sidebar-settled-placeholder"] {
+	margin: 0 !important;
+}

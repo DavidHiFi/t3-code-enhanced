@@ -1,0 +1,39 @@
+/* Each list item owns one rounded frame, including the branch picker. */
+@layer theme {
+  html [data-settings-section]:is(:hover,[data-active="true"],[aria-current="page"],[data-audit-hover]),
+  html [data-slot="settings-row"]:has(button[aria-label^="Select "]):is(:hover,:has([aria-pressed="true"]),[data-audit-hover]),
+  html [data-thread-details-card] button:has(> [data-slot="select-label"]):is(:hover,[data-t25f],[data-pressed]) {
+    background: linear-gradient(100deg,rgb(137 180 250 / .09),rgb(203 166 247 / .09)),rgb(24 24 37 / .75) !important;
+    color: #cdd6f4 !important;
+    box-shadow: none !important;
+  }
+  html [data-thread-details-card] button:has(> [data-slot="select-label"]) > span {
+    background: transparent !important;
+  }
+  html [data-slot="settings-row"]:has(button[aria-label^="Select "]) {
+    position: relative;
+    margin: 4px 6px !important;
+    border: 0 !important;
+    border-radius: 10px !important;
+    background: rgb(24 24 37 / .4) !important;
+  }
+}
+html :is([data-settings-section],[data-slot="settings-row"]:has(button[aria-label^="Select "]),[data-thread-details-card] button:has(> [data-slot="select-label"]))::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  padding: 1px !important;
+  border-radius: inherit !important;
+  background: linear-gradient(100deg,var(--t28-a,transparent),var(--t28-b,transparent)) !important;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0) !important;
+  mask-composite: exclude !important;
+  pointer-events: none !important;
+}
+html :is([data-settings-section],[data-slot="settings-row"]:has(button[aria-label^="Select "]),[data-thread-details-card] button:has(> [data-slot="select-label"])):is(:hover,[data-active="true"],[aria-current="page"],:has([aria-pressed="true"]),[data-t25f],[data-audit-hover]) {
+  --t28-a: #89b4fa;
+  --t28-b: #cba6f7;
+}
+html [data-settings-section] { position: relative !important; }
+html [data-slot="sidebar-footer"] [data-t3enh-update] { margin-left: -4px !important; }
+/* Retired hot-loaded workers may survive until the next page load. */
+html [data-slot="sidebar-footer"] [data-t3enh-update] ~ [data-t3enh-update] { display:none !important; }

@@ -1,0 +1,714 @@
+/* ============================================================================
+   99-mocha-pass22.css — pass 22 (2026-11-07), tower build 0.1.8-nightly.20261106.4288.
+   Owner list: (1) collapse button, (2) one shared never-clipping glow,
+   (3/5/9/10/12) thread output column system, (4) details-card glass,
+   (6) real blur on the composer, (7) single-dock error cards, (8) message
+   images, (11) sidebar resize rail, (13) no broad top-band blur,
+   (14) one picker shell, (B) diff toolbar icon buttons.
+   The shared glow is INSET ONLY (ring + inner halo): an outer glow can always
+   be cut by an overflow/clip ancestor; an inset one never needs room outside.
+   Rollback: delete this file, restore 99-mocha-pass15-material.js from its
+   .bak-20261107-*, reload. Notes: notes\2026-11-02-t3-mocha-docks.md "pass 22".
+   ========================================================================== */
+
+/* ===== 1. ONE SHARED GLOW (item 2): re-point every glow token to the
+   inset halo. Old tokens: --t3h-glow (87), --t4-glow (88), --t5-glow (89),
+   --t6-glow (90), --t15-glow (15 tokens). Rules that pair them with a ring
+   keep the ring; the halo lights the inside and can never clip. */
+:root, html[data-window-material], html.dark {
+	--t22-halo: inset 0 0 12px -4px rgb(137 180 250 / 0.55);
+	--t15-glow: var(--t22-halo) !important;
+	--t3h-glow: var(--t22-halo) !important;
+	--t4-glow: var(--t22-halo) !important;
+	--t5-glow: var(--t22-halo) !important;
+	--t6-glow: var(--t22-halo) !important;
+}
+
+/* the five hardcoded outer glows left in earlier layers, restated inset */
+html [data-timeline-row-kind="turn-fold"] button:hover,
+html [data-timeline-row-kind="attempt-fold"] button:hover {
+	box-shadow: var(--t15-ring), var(--t22-halo) !important;
+}
+div.overflow-hidden[data-t3l-pv]:not(button):hover,
+html .chat-markdown img:hover {
+	box-shadow: var(--t15-ring), var(--t22-halo) !important;
+}
+html [data-slot="sidebar-inner"] [class~="bg-sidebar-row-active"],
+html [data-slot="sidebar-inner"] [class~="bg-sidebar-row-selected"] {
+	box-shadow: var(--t22-halo) !important;
+}
+/* details-card subgrid rows: spread-ring hover -> inset ring + halo (item 4 audit) */
+[data-thread-details-card] [data-slot="tooltip-trigger"][class*="grid-cols-subgrid"]:hover {
+	box-shadow: var(--t15-ring), var(--t22-halo) !important;
+}
+/* composer hover: inset only (was two outer glows that clipped at the lane) */
+[class*="before:bg-(--chat-composer-glass-surface)"]:is(:hover, :focus-within)::before {
+	box-shadow: var(--t22-halo), inset 0 1px 0 rgb(205 214 244 / 0.08) !important;
+}
+/* brand link hover (pass 16 hardcoded an outer glow inside overflow:hidden) */
+[data-slot="sidebar-inner"] a[aria-label="T3 Code home"]:hover {
+	box-shadow: var(--t15-ring), var(--t22-halo) !important;
+}
+
+/* ===== 2. collapse button (item 1 / owner A): no box outside its radius.
+   The wrapper carried a stray backdrop blur band (square corners against the
+   brand dock); the button gets one clean rounded dock, rest + hover. ===== */
+div.pointer-events-none.fixed[class*="workspace-controls-left"] {
+	background: none !important;
+	background-color: transparent !important;
+	border: 0 !important;
+	box-shadow: none !important;
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+}
+div.pointer-events-none.fixed[class*="workspace-controls-left"] button {
+	border-radius: 8px !important;
+	background-color: var(--t15-dock) !important;
+	box-shadow: inset 0 0 0 1px var(--t15-edge) !important;
+	transition: var(--t15-ease) !important;
+}
+div.pointer-events-none.fixed[class*="workspace-controls-left"] button:hover {
+	background-color: var(--t15-hover) !important;
+	box-shadow: var(--t15-ring), var(--t22-halo) !important;
+}
+
+/* ===== 3. NO broad blur bands (item 13): the workspace topbar strips and the
+   fixed collapse wrapper must never carry a backdrop-filter (the material
+   injector's old topbar clause painted 1280x52 / 28x52 square blur regions).
+   The compact title pill keeps its own glass. ===== */
+html[data-window-material] div.relative.flex[class*="workspace-topbar-height"],
+div.relative.flex[class*="workspace-topbar-height"],
+div[class*="workspace-topbar-height"][class*="h-["] {
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+}
+
+/* ===== 4. thread output column (items 3, 5, 9, 10, 12) =====
+   The marked run's lane is the one dock. Padding gives every child the same
+   inset on all four sides; the top inset edge can no longer be covered by the
+   first row, the bottom edge gets breathing room, and inner sub-docks end
+   flush with the content box (no double-edge sliver). */
+.messages-timeline-row-frame[data-t15a-run][data-t15a-run] div[class*="chat-content-lane"] {
+	padding: 4px 12px 10px 12px !important;
+}
+/* one left edge: the assistant bubble loses its private 10px side margins
+   inside the run (the lane padding owns the inset now); its text lines up
+   with the tool pills (row px-0.5 = 2px). */
+.messages-timeline-row-frame[data-t15a-run] [data-timeline-row-kind="message"][data-message-role="assistant"] > div {
+	margin-inline: 0 !important;
+	padding-inline: 2px !important;
+}
+/* tighter vertical rhythm inside the run */
+.messages-timeline-row-frame[data-t15a-run] [data-timeline-row-id] > div {
+	padding-bottom: 3px !important;
+}
+/* no bare rows: owner item 15 (2026-11-07 follow-up) SUPERSEDES the inner
+   pill docks from items 5/10/12 - fewer borders, one clean dock. Rows and
+   sub-dock containers sit flush inside the run lane: no box at rest, a
+   hover tint only. Outside marked runs rows keep their docks. */
+html [data-timeline-root] div.group\/timeline-row {
+	background-color: transparent !important;
+	box-shadow: none !important;
+	width: auto !important;
+	transition: var(--t15-ease) !important;
+}
+html .messages-timeline-row-frame[data-t15a-run] div.group\/timeline-row:hover {
+	background-color: rgb(49 50 68 / 0.5) !important;
+	border-radius: 8px !important;
+}
+html .messages-timeline-row-frame[data-t15a-run] [data-timeline-row-kind="work-live"] button[class*="live-work"],
+html .messages-timeline-row-frame[data-t15a-run] [data-timeline-row-kind="thinking"] button {
+	background-color: transparent !important;
+	box-shadow: none !important;
+}
+html .messages-timeline-row-frame[data-t15a-run] [data-timeline-row-kind="work-live"] button[class*="live-work"]:hover,
+html .messages-timeline-row-frame[data-t15a-run] [data-timeline-row-kind="thinking"] button:hover {
+	background-color: rgb(49 50 68 / 0.5) !important;
+}
+/* sub-dock containers inside a run: transparent, the lane is the only dock */
+html .messages-timeline-row-frame[data-t15a-run] [data-timeline-root] section[aria-label="Activity"],
+html .messages-timeline-row-frame[data-t15a-run] div[class*="chat-content-lane"] div[class*="bg-muted"] {
+	background: transparent !important;
+	box-shadow: none !important;
+	border: 0 !important;
+}
+/* thread status line ("Waiting · <task> · Stop") keeps one clean pill */
+html [data-chat-thread-status-line] {
+	width: fit-content !important;
+	max-width: 100% !important;
+	border-radius: 10px !important;
+	background-color: var(--t15-dock) !important;
+	box-shadow: inset 0 0 0 1px var(--t15-edge) !important;
+	transition: var(--t15-ease) !important;
+}
+html [data-chat-thread-status-line]:hover {
+	box-shadow: var(--t15-ring), var(--t22-halo) !important;
+}
+
+/* ---- 4a. divider rows: kill the hairlines, keep only the pill (item 3c) ---- */
+html [data-timeline-root] .h-px,
+html .messages-timeline-scroll .h-px,
+html .messages-timeline-scroll div.flex.min-w-0.items-center.gap-2 > .h-px {
+	background-color: transparent !important;
+}
+html [data-timeline-root] div.flex.min-w-0.items-center.gap-2 > span.rounded-full {
+	width: fit-content !important;
+	background-color: var(--t15-dock) !important;
+	box-shadow: inset 0 0 0 1px var(--t15-edge) !important;
+}
+
+/* ---- 4b. error cards inside a run (owner item 25): the RUN dock is the one
+   continuous border; the card flattens into it (red title + text, faint tint,
+   no own border), full content-box width so the lane edges never stop. ===== */
+.messages-timeline-row-frame[data-t15a-run] [data-v2-item-type="error"] {
+	background: rgb(243 139 168 / 0.07) !important;
+	box-shadow: none !important;
+	border: 0 !important;
+	margin-inline: 0 !important;
+	width: auto !important;
+	max-width: 100% !important;
+	border-radius: 0 !important;
+}
+html [data-timeline-root] [data-v2-item-type="error"] {
+	overflow: visible !important;
+}
+/* nested duplicate frame inside the error card: any inner bg/border box goes */
+html [data-timeline-root] [data-v2-item-type="error"] [data-v2-item-type="error"] {
+	background: transparent !important;
+	box-shadow: none !important;
+	border: 0 !important;
+}
+
+/* run lane hover: full edge-hi border + the inset halo (never clips) */
+.messages-timeline-row-frame[data-t15a-run]:hover div[class*="chat-content-lane"] {
+	box-shadow:
+		inset 1px 0 0 var(--t15-edge-hi),
+		inset -1px 0 0 var(--t15-edge-hi),
+		var(--t22-halo) !important;
+}
+/* owner item 34 root cause: a single-frame run is BOTH -start and -end, and
+   pass 16's -end rule overwrote the -start top edge. One rule, all four
+   edges, for single-frame runs. */
+.messages-timeline-row-frame[data-t15a-run][data-t15a-run-start][data-t15a-run-end] div[class*="chat-content-lane"] {
+	box-shadow:
+		inset 1px 0 0 var(--t15-edge),
+		inset -1px 0 0 var(--t15-edge),
+		inset 0 1px 0 var(--t15-edge),
+		inset 0 -1px 0 var(--t15-edge) !important;
+	border-radius: 14px !important;
+}
+
+/* ===== 5. message images (item 8): own radius, glow follows it all round,
+   no doubled borders. Applies to user-message thumbs, markdown images and
+   the click-to-zoom wrapper. ===== */
+html [data-timeline-row-kind="message"] img,
+html [data-timeline-row-kind="message"] div[class*="cursor-zoom-in"],
+html .chat-markdown img,
+html div.overflow-hidden[data-t3l-pv]:not(button) {
+	border-radius: 10px !important;
+}
+html [data-timeline-row-kind="message"] div[class*="cursor-zoom-in"] {
+	overflow: hidden !important;
+}
+html [data-timeline-row-kind="message"] div[class*="cursor-zoom-in"]:hover {
+	box-shadow: var(--t15-ring), var(--t22-halo) !important;
+}
+html [data-timeline-row-kind="message"] img {
+	box-shadow: inset 0 0 0 1px var(--t15-edge) !important;
+	transition: var(--t15-ease) !important;
+}
+html [data-timeline-row-kind="message"] img:hover {
+	box-shadow: var(--t15-ring), var(--t22-halo) !important;
+}
+
+/* ===== 6. real glass, not fake blur (item 6): the composer glass surface
+   (a ::before, which the injector cannot touch) gets a real backdrop-filter
+   and a denser Mocha fill so thread text behind it is not readable. ===== */
+:root, html, html.dark {
+	--chat-composer-glass-surface: rgb(24 24 37 / 0.82) !important;
+}
+[class*="before:bg-(--chat-composer-glass-surface)"]::before {
+	-webkit-backdrop-filter: var(--t15-blur-deep) !important;
+	backdrop-filter: var(--t15-blur-deep) !important;
+}
+
+/* ===== 7. details card = real glass (item 4): translucent Mocha tint + blur
+   + saturate on the element itself (it already had blur but a 95% flat fill). */
+html[data-window-material] [data-thread-details-card][data-thread-details-card][data-thread-details-card][data-thread-details-card],
+html [data-thread-details-card][data-thread-details-card][data-thread-details-card][data-thread-details-card] {
+	background-color: rgb(30 30 46 / 0.62) !important;
+	-webkit-backdrop-filter: blur(26px) saturate(1.4) !important;
+	backdrop-filter: blur(26px) saturate(1.4) !important;
+}
+
+/* ===== 8. sidebar resize rail (item 11 + owner re-report 36): no separate
+   line in ANY state. The rail's own Tailwind classes carry a 2px ::after
+   line with hover:after:bg-sidebar-border - that rule is (0,2,0) and loads
+   after the layers, so the kill needs triple-attr (0,3,0). The handle is the
+   sidebar's own rounded border; 15b's :has() brighten stays. The rail keeps
+   its hit area and cursor. Covers rest, hover, active, dragging. */
+html [data-slot="sidebar-rail"][data-slot="sidebar-rail"][data-slot="sidebar-rail"]::after,
+html [data-slot="sidebar-rail"][data-slot="sidebar-rail"][data-slot="sidebar-rail"]::before {
+	content: none !important;
+	display: none !important;
+	background: none !important;
+	box-shadow: none !important;
+	border: 0 !important;
+}
+html [data-slot="sidebar-rail"][data-slot="sidebar-rail"][data-slot="sidebar-rail"],
+html [data-slot="sidebar-rail"][data-slot="sidebar-rail"][data-slot="sidebar-rail"]:hover,
+html [data-slot="sidebar-rail"][data-slot="sidebar-rail"][data-slot="sidebar-rail"]:active {
+	background: none !important;
+	box-shadow: none !important;
+	border: 0 !important;
+}
+html [data-slot="sidebar-rail"][data-slot="sidebar-rail"][data-slot="sidebar-rail"] {
+	cursor: col-resize !important;
+}
+/* 15b's hover rule drew the blue edge TWICE (border-right + inset -1px 0 0
+   shadow): the inset copy is a straight line inside the rounded border. One
+   line only - the border itself follows the radius. */
+[data-slot="sidebar"]:has([data-slot="sidebar-rail"]:hover) [data-slot="sidebar-inner"],
+[data-slot="sidebar"]:has([data-slot="sidebar-rail"]:active) [data-slot="sidebar-inner"] {
+	box-shadow:
+		2px 0 16px -4px rgb(137 180 250 / 0.55),
+		0 16px 36px -14px rgb(17 17 27 / 0.85) !important;
+}
+
+/* ===== 9. one picker shell (item 14): the popup is the single material;
+   provider rail, model list and effort pane lose their own frames. ===== */
+[data-slot="popover-popup"]:has([data-model-picker-content]) {
+	background-color: var(--t15-solid) !important;
+	border-radius: 14px !important;
+	border: 1px solid var(--t15-edge-hi) !important;
+	box-shadow: 0 16px 40px -16px rgb(17 17 27 / 0.92), inset 0 1px 0 rgb(205 214 244 / 0.08) !important;
+}
+[data-model-picker-sidebar],
+[data-model-picker-content] > div[class*="bg-muted/40"],
+[data-model-picker-effort] {
+	background: transparent !important;
+	background-color: transparent !important;
+	box-shadow: none !important;
+	border: 0 !important;
+	margin: 0 !important;
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+}
+/* the effort pane reads as a third column: one aligned hairline, nothing else */
+[data-model-picker-effort] {
+	border-left: 1px solid var(--t15-edge) !important;
+	border-radius: 0 !important;
+}
+/* item 14 follow-up: the model list must sit directly on the popover glass -
+   kill the inner box at ANY depth (pass 4 docked it as a direct child) */
+[data-model-picker-content] div[class*="bg-muted/40"],
+[data-model-picker-content] {
+	background: transparent !important;
+	background-color: transparent !important;
+	box-shadow: none !important;
+	border: 0 !important;
+}
+/* provider rail divider: keep it, make it subtle (one grey hairline) */
+[data-model-picker-sidebar] {
+	border-right: 1px solid var(--t15-edge) !important;
+}
+/* panes must not glow as a whole on hover (pass 4's pane hover rule) */
+[data-model-picker-sidebar]:hover,
+[data-model-picker-content] > div[class*="bg-muted/40"]:hover,
+[data-model-picker-effort]:hover {
+	box-shadow: none !important;
+}
+/* selected-indicator: inset ring + halo, never an outer glow */
+[data-model-picker-selected-indicator] {
+	box-shadow: 0 0 0 1px var(--t15-blue), var(--t22-halo) !important;
+}
+/* model-list search row and option rows keep pass-4 geometry, aligned */
+
+/* ===== 10. diff panel toolbar icon buttons (owner B): nothing at rest, one
+   rounded hover pill, no leftover pseudo-element boxes/outlines. ===== */
+div[data-right-panel-tabbar] button,
+div[data-right-panel-surface-content] [data-surface-subheader] button {
+	background-color: transparent !important;
+	box-shadow: none !important;
+	outline: none !important;
+	border-radius: 8px !important;
+}
+div[data-right-panel-tabbar] button::before,
+div[data-right-panel-tabbar] button::after,
+div[data-right-panel-surface-content] [data-surface-subheader] button::before,
+div[data-right-panel-surface-content] [data-surface-subheader] button::after {
+	display: none !important;
+	content: none !important;
+}
+div[data-right-panel-tabbar] button:hover,
+div[data-right-panel-surface-content] [data-surface-subheader] button:hover {
+	background-color: var(--t15-hover) !important;
+	box-shadow: var(--t15-ring), var(--t22-halo) !important;
+}
+/* pressed/active keeps a quiet dock */
+div[data-right-panel-tabbar] div.group\/tab[data-active-tab="true"],
+div[data-right-panel-surface-content] [data-surface-subheader] button[data-pressed="true"] {
+	background-color: var(--t15-hover-hi) !important;
+	box-shadow: inset 0 0 0 1px var(--t15-edge) !important;
+}
+/* owner item 28a: hover pill must sit fully inside its dock - inner padding
+   on the segmented group keeps the pill's outline and glow inside, WITHOUT
+   disabling truncation (that overlap is owner item 37) */
+div[data-right-panel-surface-content] [data-surface-subheader] div[class*="overflow-hidden"],
+div[data-right-panel-surface-content] [data-surface-subheader] div[class*="overflow-clip"] {
+	padding-block: 2px !important;
+	padding-right: 4px !important;
+}
+/* owner item 37: the compare ref label shrinks with ellipsis; stats chip and
+   icon buttons never shrink; nothing overlaps at any panel width */
+div[data-right-panel-surface-content] [data-surface-subheader] :is(div, span) {
+	min-width: 0 !important;
+}
+div[data-right-panel-surface-content] [data-surface-subheader] [class*="truncate"] {
+	overflow: hidden !important;
+	text-overflow: ellipsis !important;
+	white-space: nowrap !important;
+}
+div[data-right-panel-surface-content] [data-surface-subheader] [class*="shrink-0"],
+div[data-right-panel-surface-content] [data-surface-subheader] button {
+	flex-shrink: 0 !important;
+}
+
+/* ===== 12. diff panel TABS (owner item 13, 2026-11-07): the hover pill is
+   the whole tab (close x, label, padding) - no inner text-only highlight.
+   T3 paints a small box behind the label via a descendant; kill every
+   descendant background inside tab buttons and fill the button itself. ===== */
+div[data-right-panel-tabbar] button {
+	border-radius: 8px !important;
+}
+div[data-right-panel-tabbar] button :is(span, div, svg, i) {
+	background-color: transparent !important;
+	box-shadow: none !important;
+}
+/* the close x is a nested button: no dock inside the dock (owner item 17) */
+div[data-right-panel-tabbar] button button,
+div[data-right-panel-tabbar] button :is(span, div, svg, i)::before,
+div[data-right-panel-tabbar] button :is(span, div, svg, i)::after {
+	background: transparent !important;
+	background-color: transparent !important;
+	box-shadow: none !important;
+	border: 0 !important;
+}
+div[data-right-panel-tabbar] button:hover {
+	background-color: var(--t15-hover) !important;
+	box-shadow: var(--t15-ring), var(--t22-halo) !important;
+}
+/* native title tooltips cannot be styled from layers; a custom T3 tooltip
+   ([role="tooltip"]) already gets the blurred popover material (tokens item 2) */
+
+/* ===== 14. galaxy banner (owner item 27 correction): exactly ONE border, on
+   the banner's own outer box (the workspace topbar div that owns the starry
+   background), radius = its radius. No ring on the inner content row. Hover
+   turns the same ring into the Mocha blue -> lavender gradient + soft glow. ===== */
+html [data-slot="sidebar-inner"] div.relative.flex[class*="workspace-topbar-height"] {
+	box-shadow: inset 0 0 0 1px var(--t15-edge) !important;
+	border-radius: 12px !important;
+}
+html [data-slot="sidebar-inner"] div.relative.flex[class*="workspace-topbar-height"]::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: 0 !important;
+	border-radius: inherit !important;
+	padding: 1px !important;
+	background: transparent !important;
+	-webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor;
+	mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+	mask-composite: exclude;
+	pointer-events: none !important;
+	transition: var(--t15-ease) !important;
+}
+html [data-slot="sidebar-inner"] div.relative.flex[class*="workspace-topbar-height"]:hover::after {
+	background: linear-gradient(135deg, #89b4fa, #b4befe) !important;
+	box-shadow: var(--t22-halo) !important;
+}
+/* no ring left on the inner content row (dock in dock) */
+html [data-slot="sidebar-inner"] div.flex.h-8:has(a[aria-label="T3 Code home"]) {
+	box-shadow: none !important;
+}
+
+/* ===== 14b. brand button + badges (owner item 29): clean 1px glass-edged
+   pill over the stars; hover = same gradient ring at its own radius. ===== */
+html [data-slot="sidebar-inner"] a[aria-label="T3 Code home"] {
+	background-color: rgb(17 17 27 / 0.55) !important;
+	box-shadow: inset 0 0 0 1px rgb(108 112 134 / 0.65) !important;
+	position: relative !important;
+}
+html [data-slot="sidebar-inner"] a[aria-label="T3 Code home"]::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: 0 !important;
+	border-radius: inherit !important;
+	padding: 1px !important;
+	background: transparent !important;
+	-webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor;
+	mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+	mask-composite: exclude;
+	pointer-events: none !important;
+	transition: var(--t15-ease) !important;
+}
+html [data-slot="sidebar-inner"] a[aria-label="T3 Code home"]:hover::after {
+	background: linear-gradient(135deg, #89b4fa, #b4befe) !important;
+	box-shadow: var(--t22-halo) !important;
+}
+/* Enhanced badge and Nightly badge are chips: tinted pill, no extra outline */
+html [data-slot="sidebar-inner"] a[aria-label="T3 Code home"] :is(span, div),
+html [data-slot="sidebar-inner"] div.flex.items-center.gap-1 > span {
+	box-shadow: none !important;
+	border: 0 !important;
+}
+
+/* ===== 15. seams (owner items 19+20): no strip may paint its own material
+   over the window glass. The traffic-light zone (bg-background/70) and the
+   thread header container go fully transparent; only the compact title pill
+   keeps its docked glass. ===== */
+div.relative[class*="bg-background/70"],
+div.relative.bg-background:has(ol) {
+	background: transparent !important;
+	background-color: transparent !important;
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+}
+div.relative[class*="bg-background/70"]::before,
+div.relative[class*="bg-background/70"]::after,
+div.relative.bg-background:has(ol)::before,
+div.relative.bg-background:has(ol)::after {
+	content: none !important;
+}
+/* the right floating panel reads one quiet grey hairline at its left edge,
+   same token as every dock edge (no hard seam) */
+div[data-right-panel-surface-content] {
+	border-left-color: var(--t15-edge) !important;
+}
+
+/* ===== 16. output column must clear the composer (owner D): measured after
+   deploy - the fix below sizes the timeline's scroll floor so the last dock
+   ends above the composer top edge with a visible gap. ===== */
+
+/* ============================================================================
+   OWNER FOLLOW-UP ITEMS 21-24, 26, 28 (2026-11-07 afternoon). Firm rule:
+   NO DOCK WITHIN A DOCK ANYWHERE - each area gets exactly one dock (one
+   border, one background, one hover glow); nested elements are flat.
+   ========================================================================== */
+
+/* ===== 21/23. tool-call rows, separators, changed-file rows, chips, code
+   blocks: flat inside their dock, hover tint at most. ===== */
+/* no separator lines inside run docks (row wrapper border-b etc.) */
+.messages-timeline-row-frame[data-t15a-run] [data-timeline-row-kind="work"] div,
+.messages-timeline-row-frame[data-t15a-run] [data-timeline-row-kind="work"] section,
+.messages-timeline-row-frame[data-t15a-run] [data-timeline-row-kind="work"] button {
+	border-top-color: transparent !important;
+	border-bottom-color: transparent !important;
+}
+/* changed-files card: rows and header chips are flat, hover tint only */
+html div[class*="@container/changed-files"] div.group.flex.h-7,
+html [data-timeline-root] [class*="[&_svg]:-mx-0.5"] {
+	background: transparent !important;
+	box-shadow: none !important;
+	border: 0 !important;
+}
+html div[class*="@container/changed-files"] div.group.flex.h-7:hover {
+	background-color: rgb(49 50 68 / 0.5) !important;
+	border-radius: 8px !important;
+}
+/* code blocks inside message docks: flat (faint shade, no border/outline) */
+html .chat-markdown pre,
+html .chat-markdown code[class*="bg-"] {
+	box-shadow: none !important;
+	border: 0 !important;
+	background-color: rgb(17 17 27 / 0.35) !important;
+}
+/* message images: radius + clipping only, no own ring (the bubble is the dock) */
+html [data-timeline-row-kind="message"] img {
+	box-shadow: none !important;
+}
+html [data-timeline-row-kind="message"] img:hover {
+	box-shadow: none !important;
+}
+/* composer model-picker chip: flat, hover text change only */
+html [data-chat-provider-model-picker] {
+	background: transparent !important;
+	box-shadow: none !important;
+	border: 0 !important;
+}
+
+/* ===== 22. "Worked for" / working summary rows: ONE pill (the button), the
+   row wrapper carries nothing. ===== */
+html [data-timeline-root] [data-timeline-row-kind="work-toggle"] > div,
+html [data-timeline-root] [data-timeline-row-kind="working"] > div[class*="border-b"] {
+	background: transparent !important;
+	box-shadow: none !important;
+	border: 0 !important;
+}
+/* owner item 34b: thinking rows and any wrapper box inside a run dock are
+   flat (the lane is the single dock) */
+.messages-timeline-row-frame[data-t15a-run] [data-timeline-row-kind="thinking"] div:not(.chat-markdown):not(.chat-markdown *),
+.messages-timeline-row-frame[data-t15a-run] [data-timeline-row-kind="thinking"] > div,
+.messages-timeline-row-frame[data-t15a-run] [data-timeline-row-kind="work-toggle"] div:not(.chat-markdown):not(.chat-markdown *) {
+	background: transparent !important;
+	box-shadow: none !important;
+	border: 0 !important;
+}
+
+/* ===== 33. toasts ("Thread completed / Internal error: turn failed"):
+   real frosted glass over translucent Mocha. ===== */
+[data-sonner-toast],
+[data-sonner-toast] [data-content],
+div[class*="sonner"] [data-testid] {
+	background-color: rgb(30 30 46 / 0.62) !important;
+	-webkit-backdrop-filter: blur(28px) saturate(1.6) !important;
+	backdrop-filter: blur(28px) saturate(1.6) !important;
+}
+
+
+/* ===== 24. composer real frosted glass: kill the isolation/backdrop-root on
+   the composer surface host, real blur on the glass, translucent fill, flat
+   inner input box. ===== */
+[class*="composer-surface"] {
+	isolation: auto !important;
+}
+html[data-window-material] [class*="before:bg-(--chat-composer-glass-surface)"][class*="before:bg-(--chat-composer-glass-surface)"]::before,
+html [class*="before:bg-(--chat-composer-glass-surface)"][class*="before:bg-(--chat-composer-glass-surface)"]::before {
+	background-color: rgb(24 24 37 / 0.62) !important;
+	-webkit-backdrop-filter: blur(28px) saturate(1.6) !important;
+	backdrop-filter: blur(28px) saturate(1.6) !important;
+}
+:root, html, html.dark {
+	--chat-composer-glass-surface: rgb(24 24 37 / 0.62) !important;
+}
+html [data-chat-composer-main-surface] {
+	background: transparent !important;
+	box-shadow: none !important;
+}
+
+/* ===== 20 second root cause (owner re-report): the thread scroll viewport
+   itself carries a mask-image gradient that fades the first ~60px of output.
+   Remove it; kill the sticky header's gradient overlay too. Only the small
+   breadcrumb pill keeps its glass. ===== */
+html .messages-timeline-scroll.messages-timeline-scroll.messages-timeline-scroll {
+	-webkit-mask-image: none !important;
+	mask-image: none !important;
+}
+html .messages-timeline-scroll div[class*="sticky"][class*="sticky"] {
+	background-image: none !important;
+	-webkit-mask-image: none !important;
+	mask-image: none !important;
+}
+
+/* ===== 30 second root cause (owner re-report): REVERTED by item 39 - the
+   header-row tint's right edge drew a visible rectangle mid-header. The top
+   strip step is the native Electron titleBarOverlay (see notes); the real
+   fix is the patcher's overlay toggle, not a partial web tint. ===== */
+
+/* ===== 39 third root cause: the breadcrumb <ol> itself paints a 0.95 glass
+   bar across the whole header width - the "rectangle" with a right edge.
+   Only a fit-content pill may keep glass; the row stays transparent. ===== */
+html div.relative.bg-background nav[aria-label$="breadcrumb"] ol {
+	width: fit-content !important;
+	max-width: 100% !important;
+	border-radius: 10px !important;
+}
+
+/* ===== 32 second pass (owner re-report): clean single dock, no smear.
+   Text truncates inside padding; T3's marquee masks stay (owner item 38:
+   killing them made the ticker's second text copy visible = ghost "compa").
+   Only flat pseudo text copies die. No width games. ===== */
+html [data-chat-thread-status-line] {
+	margin: 10px 12px !important;
+	width: auto !important;
+	max-width: calc(100% - 24px) !important;
+	border-radius: 10px !important;
+	background-color: rgb(24 24 37 / 0.62) !important;
+	-webkit-backdrop-filter: blur(28px) saturate(1.6) !important;
+	backdrop-filter: blur(28px) saturate(1.6) !important;
+	box-shadow: inset 0 0 0 1px var(--t15-edge) !important;
+	overflow: hidden !important;
+}
+html [data-chat-thread-status-line] button {
+	background: transparent !important;
+	box-shadow: none !important;
+	border: 0 !important;
+}
+html [data-chat-thread-status-line] span::before,
+html [data-chat-thread-status-line] span::after {
+	content: none !important;
+}
+
+/* ===== 34b second pass (owner re-report): the work row pill (work-live,
+   working, work) inside a run lane is a second box - flatten it; the lane is
+   the one dock. Hover tint from pass 6 still applies. ===== */
+.messages-timeline-row-frame[data-t15a-run] [data-timeline-row-kind="work-live"] button,
+.messages-timeline-row-frame[data-t15a-run] [data-timeline-row-kind="working"] button,
+.messages-timeline-row-frame[data-t15a-run] [data-timeline-row-kind="work"] button {
+	background: transparent !important;
+	box-shadow: none !important;
+	border: 0 !important;
+}
+
+/* ===== 40. model picker: no inner panel at any depth - the popup glass is
+   the single surface. This build's popup root is a role=dialog carrying the
+   popup-height arbitrary class (the old data-model-picker-* anchors do not
+   exist here). bg-muted/40 wrapper levels between the popup and the items go
+   flat; the search input keeps its own pill; rows keep their hover tint. ===== */
+html [role="dialog"][class*="popup-height"] div[class*="bg-muted/40"],
+html [role="dialog"][class*="popup-height"] div[class*="border-t"][class*="bg-muted/40"]:has([aria-label="Fast Mode"]),
+html [role="dialog"][class*="popup-height"] div[class*="bg-crust"],
+html [role="dialog"][class*="popup-height"] div[class*="bg-mantle"],
+html [role="dialog"][class*="popup-height"] div[class*="bg-secondary"],
+html [data-model-picker-content] div[class*="bg-muted/40"],
+html [data-model-picker-sidebar] div[class*="bg-muted/40"] {
+	background-color: transparent !important;
+	box-shadow: none !important;
+	border: 0 !important;
+}
+
+/* ===== 41+42. composer-attached banners (usage limit, rate limit, provider
+   error, reconnecting, disconnected, offline, retrying): one clean rounded
+   pill of real frosted glass, error tint OVER the Mocha base. Owner item 42:
+   the surface itself had no radius, so the inset ring painted as a square
+   pink outline sticking past the rounded inner pill and into the composer.
+   Radius on the surface, inherit on pseudos, clip on the dock and its
+   parent so no square layer can poke out, neutral edge instead of pink,
+   and a gap above the composer. The stash tab is a banner surface too;
+   it keeps its own look (85/86), or the clip cuts the lifted pill in half. ===== */
+html [data-composer-banner-surface]:not([data-composer-shoulder-tab]) {
+	border-radius: 12px !important;
+	overflow: clip !important;
+	margin-bottom: 8px !important;
+	border: 0 !important;
+	outline: none !important;
+	background-color: rgb(45 29 42 / 0.68) !important;
+	-webkit-backdrop-filter: blur(28px) saturate(1.6) !important;
+	backdrop-filter: blur(28px) saturate(1.6) !important;
+	box-shadow: inset 0 0 0 1px var(--t15-edge) !important;
+}
+html [data-composer-banner-surface]:not([data-composer-shoulder-tab])::before,
+html [data-composer-banner-surface]:not([data-composer-shoulder-tab])::after {
+	border-radius: inherit !important;
+	border: 0 !important;
+	outline: none !important;
+	box-shadow: none !important;
+}
+html div:has(> [data-composer-banner-surface]:not([data-composer-shoulder-tab])) {
+	border-radius: 12px !important;
+	overflow: clip !important;
+	outline: none !important;
+}
+html [role="alert"][class*="absolute"],
+html [role="alert"][class*="fixed"],
+html [role="alert"][class*="sticky"],
+html [role="status"][class*="absolute"],
+html [role="status"][class*="fixed"],
+html [role="status"][class*="sticky"] {
+	background-color: rgb(30 30 46 / 0.66) !important;
+	-webkit-backdrop-filter: blur(28px) saturate(1.6) !important;
+	backdrop-filter: blur(28px) saturate(1.6) !important;
+}
+
+

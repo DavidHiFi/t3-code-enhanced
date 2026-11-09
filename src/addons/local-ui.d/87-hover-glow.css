@@ -1,0 +1,116 @@
+/* Hover glow (2026-11-02), modelled on the owner's MochaCord/HaloCord theme: panel borders ease to the
+   Mocha blue accent on hover (MochaCord: border-color var(--border-hover), 0.2s ease), with a soft
+   outer glow. Covers every dock, pill, card, popover and bordered control in the rice.
+   Edges drawn as inset box-shadows get a blue inset ring instead. Rollback: delete this file, reload. */
+
+@property --chat-composer-outline {
+	syntax: "<color>";
+	inherits: true;
+	initial-value: transparent;
+}
+
+:root {
+	--t3h-blue: #89b4fa;
+	--t3h-glow: 0 0 14px -3px rgb(137 180 250 / 0.45);
+	--t3h-ease: 0.2s ease;
+}
+
+/* ---- everything that can light up eases in and out ---- */
+nav[aria-label$="breadcrumb"] > ol,
+[data-panel-layout-controls],
+[data-thread-details-card],
+[data-slot="sidebar-inner"],
+[data-slot="sidebar-footer"],
+[data-slot="composer-context-strip"],
+[data-slot="sidebar-inner"] div:has(> div > div > a[aria-label="T3 Code home"]),
+[data-slot="sidebar-inner"] div.flex.items-center.gap-1:has(> div [aria-label="Search threads"]),
+[data-slot="sidebar-inner"] [data-sidebar-row],
+[data-chat-composer-footer],
+[data-chat-composer-main-surface],
+[data-user-message-intent],
+[data-prompt-stash-badge],
+.bg-message,
+.chat-markdown .chat-markdown-codeblock,
+.chat-markdown pre,
+.chat-markdown .chat-markdown-table-container,
+[data-changed-files-state],
+:is(.dropdown-glass, .dialog-glass, .alert-glass),
+:is(.dropdown-glass, .dialog-glass, .alert-glass) :is([role="option"], [role="menuitem"], [role="menuitemradio"], [role="menuitemcheckbox"], button, input),
+[data-slot="sidebar-rail"],
+button[class*="border"],
+button[class*="ring-1"],
+[class*="badge"],
+input,
+textarea {
+	transition: border-color var(--t3h-ease), box-shadow var(--t3h-ease), background-color var(--t3h-ease), color var(--t3h-ease), --chat-composer-outline var(--t3h-ease) !important;
+}
+
+/* ---- docks and panels with a real border ---- */
+nav[aria-label$="breadcrumb"] > ol:hover,
+[data-panel-layout-controls]:hover,
+[data-thread-details-card]:hover,
+[data-slot="sidebar"] [data-slot="sidebar-inner"]:hover,
+[data-slot="sidebar-inner"] [data-slot="sidebar-footer"]:hover,
+[data-slot="composer-context-strip"]:hover,
+[data-slot="sidebar-inner"] div.flex.items-center.gap-1:has(> div [aria-label="Search threads"]):hover,
+[data-slot="sidebar-inner"] div.flex.items-center.gap-1:has(> div [aria-label="Search threads"]):focus-within,
+[data-chat-composer-footer]:hover,
+[data-user-message-intent]:hover,
+[data-composer-shoulder-tab] [data-prompt-stash-badge]:hover,
+[data-composer-shoulder-tab] [data-prompt-stash-badge][aria-expanded="true"],
+.chat-markdown .chat-markdown-codeblock:hover,
+.chat-markdown pre:not(.chat-markdown-codeblock pre):hover,
+.chat-markdown .chat-markdown-table-container:hover,
+[data-changed-files-state]:hover,
+:is(.dropdown-glass, .dialog-glass, .alert-glass):not([class*="rounded-none"]):hover {
+	border-color: var(--t3h-blue) !important;
+	box-shadow: var(--t3h-glow), inset 0 1px 0 var(--t3d-sheen) !important;
+}
+
+/* ---- the composer: T3 draws its frame with --chat-composer-outline on ::after ---- */
+html.dark [data-chat-composer-main-surface][data-chat-composer-main-surface][data-chat-composer-main-surface]:is(:hover, :focus-within) {
+	--chat-composer-outline: rgb(137 180 250 / 0.85) !important;
+}
+[class*="before:bg-(--chat-composer-glass-surface)"]:is(:hover, :focus-within)::before {
+	box-shadow: 0 0 18px -4px rgb(137 180 250 / 0.4), 0 12px 30px -14px rgb(17 17 27 / 0.85) !important;
+}
+
+/* ---- user message bubble ---- */
+.bg-message:hover {
+	box-shadow: inset 0 0 0 1px var(--t3h-blue), var(--t3h-glow) !important;
+}
+
+/* ---- thread rows: inset-ring edges turn blue ---- */
+[data-slot="sidebar-inner"] [data-sidebar-row]:hover {
+	box-shadow: inset 0 0 0 1px rgb(137 180 250 / 0.7), var(--t3h-glow) !important;
+	border-radius: 12px !important;
+}
+[data-slot="sidebar-inner"] :is([class~="bg-sidebar-row-active"], [class~="bg-sidebar-row-selected"]):hover {
+	box-shadow: inset 0 0 0 1px var(--t3h-blue), var(--t3h-glow) !important;
+}
+
+/* ---- menu and picker items, small bordered controls, badges, inputs ---- */
+:is(.dropdown-glass, .dialog-glass, .alert-glass) :is([role="option"], [role="menuitem"], [role="menuitemradio"], [role="menuitemcheckbox"]):is(:hover, [data-highlighted]) {
+	box-shadow: inset 0 0 0 1px rgb(137 180 250 / 0.7) !important;
+}
+button[class*="border"]:not([disabled]):hover,
+button[class*="ring-1"]:not([disabled]):hover,
+[data-slot="sidebar-inner"] [class*="badge"]:hover,
+[data-panel-layout-controls] button:hover,
+[data-chat-composer-footer] button:not([disabled]):hover {
+	border-color: var(--t3h-blue) !important;
+	box-shadow: inset 0 0 0 1px rgb(137 180 250 / 0.6), var(--t3h-glow) !important;
+}
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):is(:hover, :focus),
+textarea:is(:hover, :focus) {
+	border-color: rgb(137 180 250 / 0.8) !important;
+}
+
+/* ---- the sidebar resize rail ---- */
+[data-slot="sidebar-rail"]:hover::after {
+	background-color: var(--t3h-blue) !important;
+	box-shadow: 0 0 10px rgb(137 180 250 / 0.6) !important;
+}
+[data-slot="sidebar-rail"]:hover {
+	color: var(--t3h-blue) !important;
+}

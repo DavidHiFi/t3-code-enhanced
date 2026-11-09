@@ -1,0 +1,66 @@
+/* T3 Mocha rice, pass 24 (2026-11-09): frosted floating surfaces, title-bar seam, update button.
+   Rollback: delete this file and reload T3.
+
+   1. Menus, popups, tooltips, dialogs: plain blur(26px) over a transparent window leaves the sharp
+      text showing through (Chromium draws the blur, then the sharp page shows at 1 - fill). This
+      filter floods the backdrop with Mocha mantle first, then blurs it, so whatever sits behind
+      shows only as soft colour - real frosted glass, never readable text. */
+html[data-window-material] {
+	--t24-frost: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='f' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'><feFlood flood-color='%23181825' result='b'/><feComposite in='SourceGraphic' in2='b' operator='over'/><feGaussianBlur stdDeviation='22' edgeMode='duplicate'/><feComponentTransfer><feFuncA type='linear' slope='0' intercept='1'/></feComponentTransfer></filter></svg>#f") saturate(1.4);
+	--t24-frost-fill: rgb(30 30 46 / 0.62);
+}
+html[data-window-material][data-window-material] :is(
+	.t3gm,
+	.dropdown-glass,
+	.dialog-glass,
+	.alert-glass,
+	[role="menu"],
+	[role="listbox"],
+	[role="tooltip"],
+	[data-slot="menu-content"],
+	[data-slot="context-menu-content"],
+	[data-slot$="popup"]:not([data-slot$="-positioner"]):not([data-slot$="-trigger"])
+):not([class*="rounded-none"]) {
+	background-color: var(--t24-frost-fill) !important;
+	background-image: none !important;
+	-webkit-backdrop-filter: var(--t24-frost) !important;
+	backdrop-filter: var(--t24-frost) !important;
+}
+/* 2. Title-bar seam. The native caption shows the bare window acrylic; the page under it starts
+      the html tint (0.08) and the chat panel tint (0.2) at y=0, so a hard darker edge ran along
+      the caption (measured 3.5 levels, 2026-11-09). Both tints now fade in over the top 56px. */
+html[data-window-material][data-window-material]:not([data-t3local-extendedglass-off]) {
+	background-color: transparent !important;
+	background-image: linear-gradient(to bottom, rgb(30 30 46 / 0) 0, rgb(30 30 46 / 0.08) 56px) !important;
+}
+html[data-window-material][data-window-material]:not([data-t3local-extendedglass-off]) main.bg-background[data-slot="sidebar-inset"][data-slot="sidebar-inset"][data-slot="sidebar-inset"][data-slot="sidebar-inset"] {
+	background-color: transparent !important;
+	background-image:
+		linear-gradient(to bottom, rgb(30 30 46 / 0.07) 0, rgb(30 30 46 / 0.2) 56px),
+		url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E") !important;
+	background-size: 100% 100%, 256px 256px !important;
+	background-repeat: no-repeat, repeat !important;
+}
+
+/* 3. Update button: the 6px "update ready" dot was stretched to a 32px white disc by an earlier
+      shared round-control rule. Back to a small Mocha blue dot on the button's top-right edge. */
+html [data-slot="sidebar-footer"] button[aria-label^="Update"][aria-label^="Update"][aria-label^="Update"] span.absolute.rounded-full[aria-hidden="true"][aria-hidden="true"] {
+	inset: -2px -2px auto auto !important;
+	width: 7px !important;
+	height: 7px !important;
+	min-width: 0 !important;
+	min-height: 0 !important;
+	padding: 0 !important;
+	margin: 0 !important;
+	border: 0 !important;
+	background: #89b4fa !important;
+	box-shadow: 0 0 0 2px #11111b, 0 0 6px rgb(137 180 250 / 0.6) !important;
+	transform: none !important;
+}
+
+/* a menu inside another frosted surface must not frost twice */
+html[data-window-material][data-window-material] :is(.t3gm, .dropdown-glass, .dialog-glass, [data-slot$="popup"]) :is([role="menu"], [role="listbox"]) {
+	background-color: transparent !important;
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+}

@@ -23,21 +23,29 @@ try {
 		"[data-t3local-version]{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}";
 	document.documentElement.appendChild(style);
 
-	const leaves = (text) =>
-		[...document.querySelectorAll("span,div,p,h1,h2,h3,label")].filter((el) => el.children.length === 0 && el.textContent.trim() === text);
+	const leaves = (text, scope = document) =>
+		[...scope.querySelectorAll("span,div,p,h1,h2,h3,label")].filter((el) => el.children.length === 0 && el.textContent.trim() === text);
 
 	function findBadge() {
 		// the header badge sits in the top strip of the sidebar; the Update track select
 		// and other "Nightly" words live lower on the page or inside controls
+		// v2 (2026-11-09, speed): look in the sidebar header only; the whole-page scan ran on every
+		// DOM change and measured each match, which slowed streaming replies
+		const scope = document.querySelector('[data-slot="sidebar-inner"]');
+		if (!scope) return null;
 		return (
-			leaves("Nightly").find(
+			leaves("Nightly", scope).find(
 				(el) => !el.closest("[role=combobox],[role=listbox],[role=option],[data-slot=select-trigger],[data-slot=select-item],button,[aria-label='Update track']") && el.getBoundingClientRect().top < 90,
 			) || null
 		);
 	}
 
+	let cached = null;
 	function updateBadge() {
+		// nothing to do while the badge we marked is still on the page and still marked
+		if (cached && cached.isConnected && enabled() === cached.hasAttribute("data-t3local-version") && cached.textContent.trim() === "Nightly") return;
 		const badge = findBadge();
+		cached = badge;
 		state.badge = !!badge;
 		for (const old of document.querySelectorAll("[data-t3local-version]")) if (old !== badge || !enabled()) old.removeAttribute("data-t3local-version");
 		if (badge && enabled()) badge.setAttribute("data-t3local-version", VERSION);

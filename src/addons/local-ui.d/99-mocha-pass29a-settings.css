@@ -1,0 +1,123 @@
+/* Pass 29a (2026-11-09): settings polish.
+   1. Sidebar footer: the Enhanced update button sat flush against "Check for updates" (pass 28 pulled
+      it 4px left); it now keeps the same 4px gap as the other footer buttons.
+   2. Settings > Providers: resting provider rows get the grey dock edge; hover/selected keep the
+      pass 28 blue to mauve frame.
+   3. Enhanced updates card: the switch knob slides right when on (backup for the JS fix in
+      local-enhanced-update.js, which now gives the switch T3's own classes).
+   4-5. Settings controls (select triggers, bordered buttons, inputs, number fields, text areas, native
+      selects, switches, the Enhanced card's buttons and select): one grey 1px edge at rest, and on hover,
+      keyboard focus or open popup the hover fill plus a 1px blue to mauve frame, the same on every side.
+      Replaces the plain blue border/ring from 87-hover-glow.css and T3's focus rings in Settings only.
+   6. Settings page: the popup fill was 95% opaque, so the blurred chat behind it showed through as
+      faint dark rectangles in the empty space under the cards. Same colour, now fully opaque.
+   [data-p29a-hover] is a test hook: the verification probe sets it to show the hover look without a mouse.
+   Rollback: delete this file and reload T3. */
+
+/* 1. footer gap */
+html [data-slot="sidebar-footer"] [data-t3enh-update] { margin-left: 0 !important; }
+
+@layer theme {
+	/* 2. provider rows at rest: grey edge on the pass 28 ::after frame (hover/selected rule is
+	      more specific, so it still sets the gradient) */
+	html [data-slot="settings-row"]:has(button[aria-label^="Select "]) {
+		--t28-a: rgb(108 112 134 / .4);
+		--t28-b: rgb(108 112 134 / .4);
+	}
+
+	/* 3. Enhanced card switch: knob travel matches T3's switch (thumb-size minus 4px) */
+	html [data-t3enh-settings] [data-t3enh-switch] > [data-slot="switch-thumb"][data-checked] {
+		translate: calc(var(--thumb-size, 16px) - 4px) 0 !important;
+	}
+
+	/* 6. opaque Settings page (blur left as is) */
+	html [data-app-modal][aria-label="Settings"][aria-label="Settings"] {
+		background-color: rgb(30 30 46) !important;
+	}
+
+	/* 4-5. bordered controls: grey edge at rest */
+	html [data-app-modal][aria-label="Settings"] :is(
+		button[data-slot="select-trigger"],
+		button:is([data-slot="button"], [data-slot="menu-trigger"], [data-slot="popover-trigger"], [data-slot="tooltip-trigger"])[class~="border"]:not([class~="bg-primary"], [class~="bg-destructive"]):not([class~="border-transparent"]),
+		select,
+		[data-slot="input-control"],
+		[data-slot="textarea-control"],
+		[data-slot="number-field-group"],
+		input[aria-label="Pick working color"],
+		input[aria-label="Working color hex code"],
+		input[aria-label="Working color hex code"] ~ button,
+		[data-t3enh-settings] .t3enh-btn:not([data-primary])
+	):not(nav *) {
+		border-color: rgb(108 112 134 / .4) !important;
+	}
+	/* T3's 1px highlight shadow on ::before lands on the top edge only; drop it so all sides match */
+	html [data-app-modal][aria-label="Settings"] :is(
+		button[data-slot="select-trigger"],
+		button:is([data-slot="button"], [data-slot="menu-trigger"], [data-slot="popover-trigger"], [data-slot="tooltip-trigger"])[class~="border"]:not([class~="bg-primary"], [class~="bg-destructive"]),
+		[data-slot="input-control"],
+		[data-slot="textarea-control"],
+		[data-slot="number-field-group"]
+	):not(nav *)::before {
+		box-shadow: none !important;
+	}
+
+	/* 4-5. hover, keyboard focus, open popup: hover fill over an opaque base, gradient in the 1px border */
+	html [data-app-modal][aria-label="Settings"] :is(
+		button[data-slot="select-trigger"],
+		button:is([data-slot="button"], [data-slot="menu-trigger"], [data-slot="popover-trigger"], [data-slot="tooltip-trigger"])[class~="border"]:not([class~="bg-primary"], [class~="bg-destructive"]),
+		button[class~="border-transparent"]:not([aria-label="Close"]),
+		select,
+		input[aria-label="Pick working color"],
+		input[aria-label="Working color hex code"],
+		input[aria-label="Working color hex code"] ~ button,
+		[data-t3enh-settings] .t3enh-btn
+	):not(:disabled):not([data-disabled]):not(nav *):is(:hover, :focus-visible, [data-popup-open], [data-p29a-hover]),
+	html [data-app-modal][aria-label="Settings"] :is(
+		[data-slot="input-control"],
+		[data-slot="textarea-control"],
+		[data-slot="number-field-group"]
+	)[data-slot][data-slot]:not([data-disabled]):not(nav *):is(:hover, :focus-within, [data-p29a-hover]) {
+		border-color: transparent !important;
+		box-shadow: none !important;
+		outline: none !important;
+		background:
+			linear-gradient(rgb(36 36 54 / .9), rgb(36 36 54 / .9)) padding-box,
+			linear-gradient(#1e1e2e, #1e1e2e) padding-box,
+			linear-gradient(100deg, #89b4fa, #cba6f7) border-box !important;
+	}
+
+	/* 4-5. switches and segmented toggles have no border: a 1px frame on ::after inside the edge
+	        (the knob sits 2px in, so the frame never covers it) */
+	html [data-app-modal][aria-label="Settings"] :is([data-slot="switch"], [data-slot="toggle-group"] > [data-slot="toggle"]) {
+		position: relative !important;
+	}
+	html [data-app-modal][aria-label="Settings"] [data-slot="switch"]::after,
+	html [data-app-modal][aria-label="Settings"] [data-slot="toggle-group"] > [data-slot="toggle"]::after {
+		content: "" !important;
+		position: absolute !important;
+		inset: 0 !important;
+		min-width: 0 !important;
+		min-height: 0 !important;
+		transform: none !important;
+		padding: 1px !important;
+		border-radius: inherit !important;
+		background: rgb(108 112 134 / .4) !important;
+		-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+		-webkit-mask-composite: xor !important;
+		mask-composite: exclude !important;
+		pointer-events: none !important;
+	}
+	html [data-app-modal][aria-label="Settings"] [data-slot="toggle-group"] > [data-slot="toggle"]:not([data-pressed])::after {
+		background: transparent !important;
+	}
+	html [data-app-modal][aria-label="Settings"] :is([data-slot="switch"], [data-slot="toggle-group"] > [data-slot="toggle"]):not([data-disabled]):is(:hover, :focus-visible, [data-p29a-hover])::after {
+		background: linear-gradient(100deg, #89b4fa, #cba6f7) !important;
+	}
+	html [data-app-modal][aria-label="Settings"] :is([data-slot="switch"], [data-slot="toggle-group"] > [data-slot="toggle"]):focus-visible {
+		box-shadow: none !important;
+		outline: none !important;
+	}
+	html [data-app-modal][aria-label="Settings"] [data-slot="toggle-group"] > [data-slot="toggle"]:not([data-disabled]):hover {
+		background-color: rgb(36 36 54 / .9) !important;
+	}
+}

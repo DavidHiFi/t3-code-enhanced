@@ -1,0 +1,62 @@
+/* T3 Mocha rice, pass 29c (2026-11-09): text-proof glass, slash popup resting edge, stash menu clip.
+   Rollback: delete this file and reload T3.
+
+   1. Glass. The window is transparent (acrylic), so Chromium's native blur() has nothing solid to
+      blur behind the composer, menus and docks: the blurred copy is mostly transparent and the sharp
+      page text still shows through at (1 - fill), readable on the dark base even at .95 fill.
+      Fix: native blur first, then an SVG filter that only lays that result over an opaque Mocha
+      base (#1e1e2e). No SVG blur step, so none of pass 24's specks or stripes. Every surface that
+      reads --t24-frost (composer, banners, slash popup, stash menu, menus, popups, tooltips, top
+      dock buttons, breadcrumb, scroll-to-end) gets it. The sidebar and the main panel keep plain
+      native blur so the window acrylic still shows there. Fills drop from .95 to .80/.82 so the
+      blurred colour behind is visible again; text stays unreadable at any fill.
+   2. Slash popup: 1px resting edge (same grey as the composer frame), drawn on the frame layer above
+      the list. Hover keeps the 2px blue-to-mauve frame. The inner list loses its own frosted box,
+      and the popup floats 8px above the chat box again so its bottom edge is not hidden.
+   3. Stash menu: pass 5 lifted it 14px with a transform inside the drawer layer, which pass 22 clips,
+      so the top 14px (frame included) was cut off. Now the lift is a margin (same place) and the
+      layer does not clip. Pass 5's 1px border (a second frame under the hover gradient) is gone;
+      the frame layer draws the resting edge and the hover gradient, like the slash popup. */
+
+/* ===== 1. text-proof glass ===== */
+html[data-window-material][data-window-material][data-window-material][data-window-material][data-window-material] {
+	--t24-frost: blur(22px) saturate(1) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='f' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'><feFlood flood-color='%231e1e2e' result='b'/><feComposite in='SourceGraphic' in2='b' operator='over'/></filter></svg>#f") !important;
+	--t24-frost-fill: rgb(30 30 46 / 0.82) !important;
+}
+html[data-window-material] [data-slot="composer-shell"][data-slot="composer-shell"][data-slot="composer-shell"]::before {
+	background-color: rgb(30 30 46 / 0.8) !important;
+}
+/* timeline minimap pill floats over the chat with its own plain blur */
+html[data-window-material] [data-testid="timeline-minimap"] div[class*="top-1/2"][class*="left-3"]::before {
+	-webkit-backdrop-filter: var(--t24-frost) !important;
+	backdrop-filter: var(--t24-frost) !important;
+}
+
+/* ===== 2 + 3. slash popup and stash menu: one frame, resting edge, no clip ===== */
+html body [data-composer-drawer-layer][data-composer-drawer-layer]:has(> [data-composer-command-drawer], > [data-composer-stash-drawer]) {
+	overflow: visible !important;
+}
+html [data-composer-banner-surface][data-composer-banner-surface]:is([data-composer-command-drawer], [data-composer-stash-drawer]):is(*) {
+	box-shadow: 0 10px 28px -8px rgb(0 0 0 / 0.5) !important;
+}
+html [data-composer-banner-surface][data-composer-banner-surface]:is([data-composer-command-drawer], [data-composer-stash-drawer]):not(:hover):not([data-t26h])::after {
+	--t25-ga: rgb(108 112 134 / 0.55);
+	--t25-gb: rgb(108 112 134 / 0.55);
+}
+/* pass 26 zeroed pass 25's lift, so the popup's bottom 17px sat under the chat box frame and its
+   bottom edge never showed; float it 8px above the box again so the whole frame is visible */
+html [data-composer-banner-surface][data-composer-banner-surface][data-composer-command-drawer][data-composer-command-drawer] {
+	margin-bottom: calc(1rem + 1px + 8px) !important;
+}
+html [data-composer-banner-surface][data-composer-banner-surface][data-composer-stash-drawer][data-composer-stash-drawer] {
+	transform: none !important;
+	margin-bottom: 14px !important;
+	border: 0 !important;
+	transition: none !important;
+}
+html[data-window-material][data-window-material] [data-composer-command-drawer][data-composer-command-drawer][data-composer-command-drawer] :is([role="listbox"], [data-slot="command-list"])[class] {
+	background-color: transparent !important;
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+	box-shadow: none !important;
+}

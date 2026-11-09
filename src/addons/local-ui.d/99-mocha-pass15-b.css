@@ -1,0 +1,188 @@
+/* ============================================================================
+   99-mocha-pass15-b.css — pass 15, worker B: threads sidebar + app chrome.
+   2026-11-04. Build 0.1.8-nightly.20261104.4165. Selectors probed live via the
+   eval bridge (pass15b\q15b*.out.json). Consumes worker C's shared --t15-*
+   tokens (99-mocha-pass15-tokens.css); defines none of them.
+   Rollback: delete this file and 99-pass15b.js, restore 90-section-shelves.js
+   from its .bak-20261104-* copy, reload. Notes: pass 15 - worker B section.
+   ========================================================================== */
+
+/* ---- 1. brand dock: "Enhanced" accent pill (span from 99-pass15b.js) + hover glow ---- */
+[data-slot="sidebar-inner"] a[aria-label="T3 Code home"] {
+	transition: var(--t15-ease) !important;
+	border-radius: 8px !important;
+}
+[data-slot="sidebar-inner"] a[aria-label="T3 Code home"]:hover {
+	box-shadow: var(--t15-ring), var(--t15-glow) !important;
+}
+/* the Nightly badge yields width before the row overflows */
+[data-slot="sidebar-inner"] div:has(> div > div > a[aria-label="T3 Code home"]) [data-environment-identification="pill"] {
+	min-width: 0 !important;
+	max-width: 46% !important;
+	overflow: hidden !important;
+	text-overflow: ellipsis !important;
+	white-space: nowrap !important;
+	flex-shrink: 1 !important;
+}
+[data-slot="sidebar-inner"] a[aria-label="T3 Code home"] .t3l-enh {
+	font-size: 10px !important;
+	line-height: 12px !important;
+	font-weight: 600 !important;
+	letter-spacing: 0.04em !important;
+	color: var(--t15-mauve) !important;
+	background: rgb(203 166 247 / 0.12) !important;
+	border: 1px solid rgb(203 166 247 / 0.35) !important;
+	border-radius: 99px !important;
+	padding: 2px 7px !important;
+	flex: none !important;
+	/* pass 20: explicit centre on the link's cross axis - the pill sat ~1px low
+	   against the "T3 Code" text's line box */
+	align-self: center !important;
+	margin: 0 !important;
+	transition: var(--t15-ease) !important;
+}
+[data-slot="sidebar-inner"] a[aria-label="T3 Code home"]:hover .t3l-enh {
+	box-shadow: 0 0 10px -2px rgb(203 166 247 / 0.5) !important;
+}
+
+/* ---- 2. back/forward arrows: never render in the sidebar header ----
+   The stock pair (div.hidden.items-center.md:flex in the brand row) flashes for
+   one frame when a new thread opens. Hidden at all times, both container and
+   buttons, no transition — scoped to the sidebar so the title-dock proxies and
+   the title-bar pair are untouched. */
+[data-slot="sidebar"] div:has(> button[aria-label="Go back"]):has(> button[aria-label="Go forward"]),
+[data-slot="sidebar"] button[aria-label="Go back"],
+[data-slot="sidebar"] button[aria-label="Go forward"] {
+	display: none !important;
+	transition: none !important;
+	animation: none !important;
+	opacity: 0 !important;
+	pointer-events: none !important;
+}
+
+/* ---- 4. sidebar resize handle: the dock's rounded right border is the affordance ----
+   Kills the old straight hover line (87-hover-glow.css ::after); hover or drag
+   lights the sidebar dock's own rounded right edge instead. */
+[data-slot="sidebar-rail"]:hover::after {
+	content: none !important;
+	background: transparent !important;
+	box-shadow: none !important;
+}
+[data-slot="sidebar"]:has([data-slot="sidebar-rail"]:hover) [data-slot="sidebar-inner"],
+[data-slot="sidebar"]:has([data-slot="sidebar-rail"]:active) [data-slot="sidebar-inner"] {
+	border-right-color: rgb(137 180 250 / 0.8) !important;
+	box-shadow:
+		inset -1px 0 0 rgb(137 180 250 / 0.55),
+		2px 0 16px -4px rgb(137 180 250 / 0.55),
+		0 16px 36px -14px rgb(17 17 27 / 0.85) !important;
+}
+
+/* ---- 5. timeline minimap pill: grows to hold its hover-revealed turn chevrons ----
+   The build's JS manages the pill height (inline min(40px, ...) at rest) and the
+   tick widths (scale-x by distance from the current turn, origin-left, so lines
+   expand RIGHTWARD; max w-6 = 24px). Pass 17: the chevron buttons are Tailwind v4
+   `-translate-x-1/2`, i.e. the `translate` property - the old `transform: none`
+   never neutralized it, so both chevrons sat 8px left of target, amongst the
+   ticks. Both now sit centred on the pill's vertical centreline, up-chevron at
+   the top edge, down-chevron at the bottom edge (their nav positions). */
+div.absolute.top-1\/2.left-3.pointer-events-auto {
+	transition: height 0.15s ease !important;
+}
+div.absolute.top-1\/2.left-3.pointer-events-auto > span.absolute[class*="bottom-[calc"],
+div.absolute.top-1\/2.left-3.pointer-events-auto > span.absolute[class*="top-[calc"] {
+	left: 50% !important;
+	translate: -50% 0 !important;
+	transform: none !important;
+}
+div.absolute.top-1\/2.left-3.pointer-events-auto > span.absolute[class*="bottom-[calc"] {
+	top: 2px !important;
+	bottom: auto !important;
+}
+div.absolute.top-1\/2.left-3.pointer-events-auto > span.absolute[class*="top-[calc"] {
+	bottom: 2px !important;
+	top: auto !important;
+}
+
+/* ---- 6. thread rows: status mini-docks get breathing room ----
+   The row's status slot (span.group/sidebar-status-slot) packs the warning
+   indicator, the agents and scripts buttons and the hover revert button flush;
+   gap + inner margins separate them. */
+span.group\/sidebar-status-slot {
+	gap: 6px !important;
+}
+span.group\/sidebar-status-slot button + button {
+	margin-left: 4px !important;
+}
+span.group\/sidebar-status-slot button.-mr-1 {
+	margin-right: 2px !important;
+}
+
+/* ---- 7. update button: confined to its own dock in the sidebar footer ----
+   While updating ("0 of 1 updated") it grew across the whole bottom bar. */
+[data-slot="sidebar-footer"] button.rounded-full {
+	width: 2rem !important;
+	min-width: 2rem !important;
+	max-width: 2rem !important;
+	overflow: hidden !important;
+	flex: none !important;
+}
+[data-slot="sidebar-footer"] li:has(> button.rounded-full) {
+	flex: none !important;
+	max-width: 2.5rem !important;
+	overflow: hidden !important;
+}
+/* the button stays a circle so its own edge and T3's inner progress overlay
+   (an absolute rounded-full child, pass 8 rounds it to 10px) coincide: no
+   double edge at the corners of the pass-6 8px square. */
+html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] button.rounded-full,
+html [data-slot="sidebar-footer"] button.rounded-full::after,
+html [data-slot="sidebar-footer"] button.rounded-full [class*="rounded-full"] {
+	border-radius: 9999px !important;
+}
+
+/* ---- 9. floating surfaces: real blur material everywhere, not just -popup slots ----
+   Same declarations as worker C's item 2 (99-mocha-pass15-tokens.css), extended to
+   role-based menu containers that may not carry a -popup data-slot. Loaded after
+   the tokens layer, so it wins ties at equal specificity. */
+html[data-window-material] [role="menu"],
+html[data-window-material] [role="listbox"],
+html[data-window-material] [data-slot$="popup"]:not([data-slot$="-positioner"]):not([data-slot$="-trigger"]),
+html[data-window-material] [data-slot="menu-content"],
+html[data-window-material] [data-slot="context-menu-content"] {
+	background-color: var(--t15-solid) !important;
+	-webkit-backdrop-filter: var(--t15-blur-deep) !important;
+	backdrop-filter: var(--t15-blur-deep) !important;
+	color: var(--t15-text) !important;
+}
+html[data-window-material] [role="menu"],
+html[data-window-material] [role="listbox"],
+html[data-window-material] [data-slot$="popup"]:not([data-slot$="-positioner"]):not([data-slot$="-trigger"]) {
+	border-radius: 12px !important;
+}
+
+/* ---- 8. settings nav: search box aligned with the nav menu buttons ----
+   Search wrapper was r=6px p=6px 8px; the nav buttons are r=8px p=6px 10px. */
+nav[data-workspace-area="settings-nav"] div.flex.h-8.items-center.gap-2 {
+	border-radius: 8px !important;
+	padding: 6px 10px !important;
+}
+
+/* ---- 3. group shelves (with 90-section-shelves.js): pill re-pointed at the
+   pass-15 material ladder; the old --t6-* vars are gone ---- */
+li.t3l-shelf {
+	margin: 0 2px !important;
+	height: 32px !important;
+}
+.t3l-shelf-btn {
+	background-color: var(--t15-dock) !important;
+	box-shadow: inset 0 0 0 1px var(--t15-edge) !important;
+	transition: var(--t15-ease) !important;
+	border-radius: 10px !important;
+}
+.t3l-shelf-btn:hover {
+	background-color: var(--t15-hover) !important;
+	box-shadow: var(--t15-ring), var(--t15-glow) !important;
+}
+.t3l-shelf-chev {
+	color: var(--t15-subtext) !important;
+}

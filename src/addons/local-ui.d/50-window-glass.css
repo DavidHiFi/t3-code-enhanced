@@ -1,10 +1,11 @@
 /* Window glass for T3 Code. Loaded by ~/.t3/local-main.cjs after local-ui.css.
    Active only while <html data-window-material> is set, which the hook does when
-   ~/.t3/local-patches.json has "windowMaterial" set to acrylic, mica, tabbed or windhawk.
-   Each surface adds a thin layer of the theme's own color on top of the backdrop, so the
+   ~/.t3/local-patches.json has "windowMaterial" set ("windhawk" on this machine: the
+   Translucent Windows Plus rule paints the Mocha base acrylic, AA1E1E2E, like Discord
+   and Zen). Each surface adds a thin layer of the theme's own color on top, so the
    sidebar still reads apart from the chat and any theme works.
 
-   Two things hid the backdrop in stock T3:
+   Two things hid the backdrop before (measured 2026-10-24 in a paired preview tab):
    - the chat area nests four .bg-background wrappers; four 80 % layers add up to
      99.8 % solid, so only the outermost one paints and the inner ones stay clear;
    - [data-app-sidebar] redefines --sidebar from the opaque theme color, so the

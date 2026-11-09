@@ -1,0 +1,209 @@
+/* T3 Mocha rice, pass 26 (2026-11-09): usage-limit pill, chat box colour with a banner, no inner glows.
+   Rollback: delete this file and reload T3. */
+
+/* 1. No inner glows. The shared halo (pass 22) and the hover glows in pass 25 lit the inside edges
+      of rows, cards and the chat box, which read as light blotches in the corners. Hover still shows
+      the blue to mauve frame and the darker fill; only the soft inner light goes. */
+:root:root, html[data-window-material][data-window-material], html.dark.dark {
+	--t22-halo: 0 0 0 0 transparent !important;
+}
+html [data-slot="sidebar-inner"] [data-testid="sidebar-row-card"][data-testid="sidebar-row-card"][data-testid="sidebar-row-card"][data-testid="sidebar-row-card"][data-testid="sidebar-row-card"][data-testid="sidebar-row-card"]:hover,
+html body [data-thread-details-card][data-thread-details-card][data-thread-details-card] :is(.group\/details-split, .group\/details-items div.cursor-default):is(:hover, [data-t25f]),
+html [data-composer-command-drawer][data-composer-command-drawer][data-composer-command-drawer] [data-slot="command-item"][data-slot="command-item"]:is([aria-selected="true"], [data-highlighted], [data-active="true"], :hover) {
+	box-shadow: none !important;
+}
+html :is(
+	div[class*="aspect-"][class*="overflow-hidden"][data-t3l-pv]:not(button),
+	div[data-t3l-pvz][data-t3l-pvz]:not(button),
+	div[data-chat-composer-expanded-image],
+	button.cursor-zoom-in.overflow-hidden[aria-label^="Preview "]
+):is(*, :hover)::before {
+	box-shadow: none !important;
+}
+/* the chat box: one frosted layer only. The host layer drew a second, plain blur on top of the
+   frosted shell, and at the edges it sampled what sits outside the box, so the rim went blotchy. */
+html[data-window-material] div[data-slot="composer-shell"][data-slot="composer-shell"]::before,
+html[data-window-material] div[data-slot="composer-shell"][data-slot="composer-shell"]:is(:hover, :focus-within)::before,
+html[data-window-material] [data-slot="composer-host"][data-slot="composer-host"]::before,
+html[data-window-material] [data-slot="composer-host"][data-slot="composer-host"]:is(:hover, :focus-within)::before {
+	box-shadow: inset 0 1px 0 rgb(205 214 244 / 0.08) !important;
+}
+html[data-window-material] [data-slot="composer-host"][data-slot="composer-host"]::before {
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+}
+
+/* 2. Chat box keeps its colour when a banner sits on top (owner: it went purple). With a banner
+      attached, T3 hides the shell and host layers and paints the box itself with its own bluish
+      glass. Paint it with the same frosted Mocha fill the box has without a banner. */
+html[data-window-material] [data-slot="composer-shell"]:has([data-composer-banner-surface="attached"]) [data-chat-composer-main-surface][data-chat-composer-main-surface] {
+	background-color: var(--t26-box, rgb(30 30 46 / 0.85)) !important;
+	background-image: none !important;
+	-webkit-backdrop-filter: var(--t24-frost) !important;
+	backdrop-filter: var(--t24-frost) !important;
+	border-radius: 1rem !important;
+}
+
+/* 3. The usage-limit pill (and every other banner on the chat box, not the stash tab).
+      Was: a pink pill with a spare strip along the bottom (T3's 1rem tuck-under space, left inside
+      the clipped pill) and a grey box on hover. Now: one clean Mocha pill with a thin neutral edge,
+      sitting 8px above the chat box; hover draws the blue to mauve frame round the whole pill. */
+html [data-chat-composer-form] > [data-slot="composer-banner-attachment"]:has([data-composer-banner-surface="attached"]:not([data-composer-shoulder-tab])) {
+	margin-bottom: 8px !important;
+}
+html [data-slot="composer-banner-attachment"] [data-slot="composer-banner-attachment"]:has(> [data-composer-banner-surface="attached"]:not([data-composer-shoulder-tab])) {
+	margin-bottom: 6px !important;
+	border-radius: 12px !important;
+	overflow: visible !important;
+}
+html [data-slot="composer-banner-attachment"] [data-slot="composer-banner-attachment"]:has(> [data-composer-banner-surface="attached"]:not([data-composer-shoulder-tab])):last-child {
+	margin-bottom: 0 !important;
+}
+html [data-composer-banner-surface][data-composer-banner-surface]:not([data-composer-shoulder-tab]) {
+	--chat-composer-attachment-overlap: 0px !important;
+	--chat-composer-attached-tint: transparent !important;
+	position: relative !important;
+	margin-bottom: 0 !important;
+	border-radius: 12px !important;
+	overflow: visible !important;
+	background-color: rgb(30 30 46 / 0.85) !important;
+	background-image: none !important;
+	-webkit-backdrop-filter: var(--t24-frost) !important;
+	backdrop-filter: var(--t24-frost) !important;
+	box-shadow: inset 0 0 0 1px rgb(108 112 134 / 0.35) !important;
+}
+html [data-composer-banner-surface][data-composer-banner-surface]:not([data-composer-shoulder-tab])::before {
+	display: none !important;
+}
+html [data-composer-banner-surface][data-composer-banner-surface]:not([data-composer-shoulder-tab])::after {
+	content: "" !important;
+	display: block !important;
+	position: absolute !important;
+	inset: 0 !important;
+	height: auto !important;
+	z-index: 3 !important;
+	border-radius: inherit !important;
+	padding: 1px !important;
+	background: linear-gradient(100deg, var(--t25-ga), var(--t25-gb)) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	pointer-events: none !important;
+	--t25-ga: transparent;
+	--t25-gb: transparent;
+	transition: --t25-ga 0.22s ease, --t25-gb 0.22s ease !important;
+}
+html [data-composer-banner-surface][data-composer-banner-surface]:not([data-composer-shoulder-tab]):is(:hover, [data-t26h])::after {
+	--t25-ga: #89b4fa;
+	--t25-gb: #cba6f7;
+	padding: 2px !important;
+}
+html [data-composer-banner-surface][data-composer-banner-surface]:not([data-composer-shoulder-tab]) [data-composer-banner-row]:is(*, :hover, :focus-visible) {
+	background-color: transparent !important;
+}
+@media (prefers-reduced-motion: reduce) {
+	html [data-composer-banner-surface]::after { transition: none !important; }
+}
+
+/* 4. Hover cards and tooltips (the card beside a hovered thread). At 85% tint the frosted blur still
+      let the chat box edge behind it through as faint lighter patches down the right side. These
+      small cards sit over busy content, so they get a denser fill: same colour, same frost. */
+html[data-window-material][data-window-material][data-window-material] :is([data-slot="tooltip-popup"], [data-slot="preview-card-popup"], [role="tooltip"]):not([class*="rounded-none"]) {
+	background-color: rgb(30 30 46 / 0.95) !important;
+}
+
+/* 5. Chat box hover frame (owner: the blue to mauve edge on hover was gone). This T3 build moved
+      the chat box outline onto the host layer's ::after as a plain 1px grey border, so the old
+      hover rules no longer reached it. The same layer now draws the gradient frame: resting grey,
+      blue to mauve on hover or while typing, 1.5px, .22s fade. */
+html [data-slot="composer-shell"] > [data-slot="composer-host"][data-slot="composer-host"]::after {
+	border: 0 !important;
+	padding: 1px !important;
+	box-shadow: none !important;
+	background: linear-gradient(100deg, var(--t25-ga), var(--t25-gb)) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	--t25-ga: rgb(108 112 134 / 0.55);
+	--t25-gb: rgb(108 112 134 / 0.55);
+	transition: --t25-ga 0.22s ease, --t25-gb 0.22s ease !important;
+}
+html [data-slot="composer-shell"]:is(:hover, :focus-within, [data-t26h]) > [data-slot="composer-host"][data-slot="composer-host"]::after {
+	--t25-ga: #89b4fa;
+	--t25-gb: #cba6f7;
+	padding: 2px !important;
+}
+/* with a banner on top T3 hides that layer; the box itself carries the same frame then */
+html[data-window-material] [data-slot="composer-shell"]:has([data-composer-banner-surface="attached"]) [data-chat-composer-main-surface][data-chat-composer-main-surface] {
+	position: relative !important;
+}
+html[data-window-material] [data-slot="composer-shell"]:has([data-composer-banner-surface="attached"]) [data-chat-composer-main-surface][data-chat-composer-main-surface]::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: 0 !important;
+	z-index: 1 !important;
+	border-radius: inherit !important;
+	padding: 1px !important;
+	background: linear-gradient(100deg, var(--t25-ga), var(--t25-gb)) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	pointer-events: none !important;
+	--t25-ga: rgb(108 112 134 / 0.55);
+	--t25-gb: rgb(108 112 134 / 0.55);
+	transition: --t25-ga 0.22s ease, --t25-gb 0.22s ease !important;
+}
+html[data-window-material] [data-slot="composer-shell"]:has([data-composer-banner-surface="attached"]) [data-chat-composer-main-surface][data-chat-composer-main-surface]:is(:hover, :focus-within, [data-t26h])::after {
+	--t25-ga: #89b4fa;
+	--t25-gb: #cba6f7;
+	padding: 2px !important;
+}
+@media (prefers-reduced-motion: reduce) {
+	html [data-slot="composer-host"]::after, html [data-chat-composer-main-surface]::after { transition: none !important; }
+}
+
+/* 6. Room above the "Waiting" line (owner: too close to the replies above it). The banner row that
+      sits on top of the chat box (Waiting, goal, branch notice, usage limit) gets 10px of space. */
+html [data-chat-composer-form] > [data-slot="composer-banner-attachment"]:first-child:has([data-composer-banner-surface="attached"]:not([data-composer-shoulder-tab])) {
+	margin-top: 10px !important;
+}
+
+/* 8. Settings sliders (owner: "ugly dark outer elements"). The value next to each slider sat in a
+      dark rounded box, and the slider had a dark box behind its track. Both boxes go; the number,
+      the track and the thumb stay as they are. */
+html [data-slot="settings-row"] output[class*="bg-muted"],
+html [data-slot="settings-row"] input.settings-slider,
+html [data-slot="settings-row"] div:has(> input.settings-slider) {
+	background-color: transparent !important;
+	background-image: none !important;
+	box-shadow: none !important;
+	border-color: transparent !important;
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+}
+
+/* 9. Update progress pill ("0 of 1 updated", "Downloading 40%"). T3 fills it with its light grey
+      control colour, which no theme rule covered, and the 32px cap on footer buttons (pass 15/16)
+      squeezed its full-width click layer into a small box round the first digit. Now: the same dark
+      fill and thin edge as the footer buttons beside it, the click layer spans the pill again, and
+      hover darkens the pill a little. The warning and failed rings stay. */
+html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] div.h-8[class*="bg-sidebar-control-surface"][class*="bg-sidebar-control-surface"] {
+	background-color: var(--t15-dock-in, rgb(17 17 27 / 0.44)) !important;
+	transition: background-color 0.18s ease !important;
+}
+html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] div.h-8[class*="bg-sidebar-control-surface"][class*="bg-sidebar-control-surface"]:not([class*="ring-"]) {
+	box-shadow: inset 0 0 0 1px var(--t15-edge, rgb(108 112 134 / 0.4)) !important;
+}
+html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] div.h-8[class*="bg-sidebar-control-surface"][class*="bg-sidebar-control-surface"]:has(> button.absolute:hover) {
+	background-color: rgb(17 17 27 / 0.7) !important;
+}
+html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] div.h-8[class*="bg-sidebar-control-surface"][class*="bg-sidebar-control-surface"] > button.absolute.inset-0 {
+	width: auto !important;
+	min-width: 0 !important;
+	max-width: none !important;
+	height: auto !important;
+	inset: 0 !important;
+	background-color: transparent !important;
+	box-shadow: none !important;
+	border-radius: inherit !important;
+}

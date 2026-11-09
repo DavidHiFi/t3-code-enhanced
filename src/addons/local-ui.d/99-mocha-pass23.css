@@ -1,0 +1,59 @@
+/* ============================================================================
+   99-mocha-pass23.css — pass 23 (2026-11-08, build
+   0.1.8-nightly.20261106.4288). Owner bug: a SENT USER MESSAGE DOCK (the
+   rounded bubble in the chat timeline) let its content overflow horizontally
+   past the dock's right rounded border when the message carried an
+   attachment chip (file icon + name + size label).
+
+   Fix: geometry only, scoped to user message rows. The dock and every
+   flex/grid child inside it can shrink (min-width: 0), the content row is
+   capped at its lane, message text wraps (overflow-wrap/word-break
+   break-word), and no chip can push a line past the border (max-width:
+   100%). T3's own max-w-[80%] cap on the bubble stays - it already implies
+   <= 100%, so it is not restated here. Side padding stays 12px 16px from
+   92-mocha-pass8.css (equal left/right, so text ends comfortably inside the
+   border). Colors, radii, hovers and every other surface are untouched.
+
+   Rollback: delete this file and reload the T3 window.
+   Notes: notes\2026-11-08-tower-dock-overflow-fix.md
+   ========================================================================== */
+
+/* 1. The flex-column owner of the dock + hover meta rows: it may shrink and
+   can never be pushed wider than its lane by an unsinkable grandchild. */
+html [data-timeline-row-kind="message"][data-message-role="user"] > div:not([class*="bg-message"]) {
+	min-width: 0 !important;
+	max-width: 100% !important;
+}
+
+/* 2. The dock itself can shrink (T3 already caps it at 80% of the lane). */
+html [data-timeline-row-kind="message"][data-message-role="user"] > div[class*="bg-message"] {
+	min-width: 0 !important;
+}
+
+/* 3. Every flex/grid child inside the dock may shrink; nothing inside can
+   hold a minimum wider than the dock. */
+html [data-timeline-row-kind="message"][data-message-role="user"] div[class*="bg-message"] div,
+html [data-timeline-row-kind="message"][data-message-role="user"] div[class*="bg-message"] span,
+html [data-timeline-row-kind="message"][data-message-role="user"] div[class*="bg-message"] button,
+html [data-timeline-row-kind="message"][data-message-role="user"] div[class*="bg-message"] p {
+	min-width: 0 !important;
+}
+
+/* 4. Message text wraps inside the dock - long unbroken tokens break instead
+   of pushing a line past the border. No white-space: nowrap on text. */
+html [data-timeline-row-kind="message"][data-message-role="user"] [data-user-message-body],
+html [data-timeline-row-kind="message"][data-message-role="user"] [data-user-message-body] * {
+	overflow-wrap: break-word !important;
+	word-break: break-word !important;
+}
+
+/* 5. Attachment chips (icon + name + size): may shrink, truncate their label,
+   and can never force their line wider than the dock. */
+html [data-timeline-row-kind="message"][data-message-role="user"] [data-slot="context-chip"] {
+	min-width: 0 !important;
+	max-width: 100% !important;
+}
+html [data-timeline-row-kind="message"][data-message-role="user"] [data-slot="context-chip"] [data-slot="context-chip-label"] {
+	min-width: 0 !important;
+	max-width: 100% !important;
+}

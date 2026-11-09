@@ -1,0 +1,258 @@
+/* ============================================================================
+   99-mocha-pass16-fixes.css — pass 16 (2026-11-06), tower build 0.1.8-nightly.20261106.4262.
+   Owner fix list items 2, 6, 8, 9, 10 + the in-progress update dock.
+   Loads last (sorts after 99-mocha-pass16-blur.css). Probes: work\t3-rice-2026-11-02\pass16\q*.js
+   Rollback: delete this file and reload. Notes: notes\2026-11-02-t3-mocha-docks.md "Pass 16".
+   ========================================================================== */
+
+/* ---- item 2: the panel-toggle GROUP is not a dock; each button is. ----
+   The container carried a solid pass-5 fill + pass-2 border on top of the three
+   per-button pills (pass 14): nested stray boxes. Container goes clean; the
+   buttons keep their resting pill + hover glow. */
+[data-panel-layout-controls],
+html[data-window-material] [data-panel-layout-controls][data-panel-layout-controls],
+html[data-window-material] [data-panel-layout-controls]:has(button) {
+	background: transparent !important;
+	background-color: transparent !important;
+	border: 0 !important;
+	box-shadow: none !important;
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+}
+[data-panel-layout-controls]:hover {
+	border-color: transparent !important;
+	box-shadow: none !important;
+}
+
+/* ---- item 6a: build-version badge no longer clips its digits ----
+   The pill is h-4 with leading-[10px] + our 1px border: the ink did not fit.
+   Full height, full string. Pass 18 (2026-11-06, build .4275): the old
+   `max-width: none; overflow: visible` let the badge overlap/wrap at narrow
+   rails (its T3 span is shrink-0 inside a flex-wrap brand wrapper) - the
+   owner's "wonky brand" regression. It now shrinks and clips at its right
+   edge ONLY when the rail is too narrow, and shows the full string whenever
+   there is room. flex-start so a clipped string never loses its start. */
+[data-slot="sidebar-inner"] div.ml-1 > span,
+html [data-slot="sidebar-inner"] div:has(> div > div > a[aria-label="T3 Code home"]) [data-environment-identification="pill"] {
+	height: 19px !important;
+	line-height: 13px !important;
+	padding: 2px 5px !important;
+	min-width: 0 !important;
+	max-width: 100% !important;
+	overflow: hidden !important;
+	text-overflow: ellipsis !important;
+	white-space: nowrap !important;
+	flex-shrink: 1 !important;
+	justify-content: flex-start !important;
+}
+/* the badge's own wrapper must be allowed to shrink with it */
+[data-slot="sidebar-inner"] div:has(> div > div > a[aria-label="T3 Code home"]) > div.relative.z-10.flex.h-8 {
+	flex-wrap: nowrap !important;
+}
+[data-slot="sidebar-inner"] div:has(> div > div > a[aria-label="T3 Code home"]) div.ml-1 {
+	min-width: 0 !important;
+	flex-shrink: 1 !important;
+}
+
+/* ---- item 6b: the collapse button loses its own box ----
+   It sits inside the brand dock row; a second pill inside the dock read as a
+   stray box. Resting = transparent (the row dock is the visible dock), hover =
+   standard glow. */
+div.pointer-events-none.fixed[class*="left-[var(--workspace-controls-left)]"] button {
+	background: transparent !important;
+	background-color: transparent !important;
+	border-color: transparent !important;
+	box-shadow: none !important;
+}
+div.pointer-events-none.fixed[class*="left-[var(--workspace-controls-left)]"] button:hover {
+	background-color: var(--t15-hover) !important;
+	border-color: transparent !important;
+	box-shadow: var(--t15-ring), var(--t15-glow) !important;
+}
+
+/* ---- item 6c: one brand dock, not two ----
+   Pass 5 painted a second box on the inner h-8 wrapper inside the brand row.
+   Transparent; the row dock (pass 2/15b) is the single brand dock. */
+[data-slot="sidebar-inner"] div:has(> div > div > a[aria-label="T3 Code home"]) > div.relative.z-10.flex.h-8 {
+	background: transparent !important;
+	background-color: transparent !important;
+	box-shadow: none !important;
+	border: 0 !important;
+}
+[data-slot="sidebar-inner"] div:has(> div > div > a[aria-label="T3 Code home"]) > div.relative.z-10.flex.h-8:hover {
+	box-shadow: none !important;
+}
+
+/* ---- item 9: "T3 Code" hover is ONE smooth glow on the button itself ----
+   Pass 20: the container-level hover is gone entirely (the container matched
+   the 52px topbar on this build). The link itself is the dock: comfortable
+   padding, radius-following rest edge, ring+glow on hover. */
+[data-slot="sidebar-inner"] a[aria-label="T3 Code home"] {
+	padding: 4px 6px !important;
+	border-radius: 10px !important;
+	box-shadow:
+		inset 0 0 0 1px var(--t15-edge),
+		inset 0 1px 0 var(--t3d-sheen) !important;
+	transition: var(--t15-ease) !important;
+}
+[data-slot="sidebar-inner"] a[aria-label="T3 Code home"]:hover {
+	box-shadow:
+		inset 0 0 0 1px rgb(137 180 250 / 0.65),
+		0 0 16px -2px rgb(137 180 250 / 0.55) !important;
+}
+[data-slot="sidebar-inner"] a[aria-label="T3 Code home"]:hover .t3l-enh {
+	box-shadow: none !important;
+}
+
+/* ---- item 8: the run dock hugs the content column ----
+   Pass 15a painted the dock on .messages-timeline-row-frame, which spans the
+   whole lane (~1350px) while the text column is ~740px: docks read far too
+   wide. The frame goes clean; the dock paints on the row's own
+   chat-content-lane (the one consistent column), inset edges instead of a
+   frame-wide fill, and the hover keeps to inset edges so nothing clips at the
+   lane's overflow-x clip. */
+.messages-timeline-row-frame[data-t15a-run][data-t15a-run][data-t15a-run] {
+	background: transparent !important;
+	box-shadow: none !important;
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+.messages-timeline-row-frame[data-t15a-run] > div > div[class*="chat-content-lane"],
+.messages-timeline-row-frame[data-t15a-run] div[class*="chat-content-lane"] {
+	background: var(--t15-panel) !important;
+	box-shadow:
+		inset 1px 0 0 var(--t15-edge),
+		inset -1px 0 0 var(--t15-edge) !important;
+	transition: var(--t15-ease) !important;
+}
+.messages-timeline-row-frame[data-t15a-run][data-t15a-run-start] div[class*="chat-content-lane"] {
+	border-radius: 14px 14px 0 0 !important;
+	box-shadow:
+		inset 1px 0 0 var(--t15-edge),
+		inset -1px 0 0 var(--t15-edge),
+		inset 0 1px 0 var(--t15-edge) !important;
+}
+.messages-timeline-row-frame[data-t15a-run][data-t15a-run-end] div[class*="chat-content-lane"] {
+	border-radius: 0 0 14px 14px !important;
+	box-shadow:
+		inset 1px 0 0 var(--t15-edge),
+		inset -1px 0 0 var(--t15-edge),
+		inset 0 -1px 0 var(--t15-edge) !important;
+}
+.messages-timeline-row-frame[data-t15a-run][data-t15a-run-start][data-t15a-run-end] div[class*="chat-content-lane"] {
+	border-radius: 14px !important;
+}
+.messages-timeline-row-frame[data-t15a-run]:hover div[class*="chat-content-lane"] {
+	box-shadow:
+		inset 1px 0 0 var(--t15-edge-hi),
+		inset -1px 0 0 var(--t15-edge-hi) !important;
+}
+
+/* ---- item 10: group header pills identical to T3's own ----
+   Same geometry as the Working/Settled shelves: li mx-0.5 h-8, button 28px,
+   r=10, same material. (Geometry already matched on probe; pinned here so a
+   future build cannot drift, and the li gets no backing of its own.) */
+li.t3l-shelf {
+	margin: 0 2px !important;
+	height: 32px !important;
+	background: transparent !important;
+	box-shadow: none !important;
+	border-radius: 0 !important;
+	padding: 0 !important;
+}
+li.t3l-shelf .t3l-shelf-btn {
+	height: 28px !important;
+	border-radius: 10px !important;
+	background-color: var(--t15-dock) !important;
+	box-shadow: inset 0 0 0 1px var(--t15-edge) !important;
+}
+li.t3l-shelf .t3l-shelf-btn:hover {
+	background-color: var(--t15-hover) !important;
+	box-shadow: var(--t15-ring), var(--t15-glow) !important;
+}
+
+/* ---- item 4: the minimap pill contains its hover-revealed chevrons at all states ----
+   The build's JS manages the pill height (8px at rest, grows on hover); pass
+   15b's fixed 60px fought it. The chevrons stay pinned inside (15b), and a
+   floor keeps the 20px chevrons inside even at the smallest JS heights. */
+div.absolute.top-1\/2.left-3.pointer-events-auto {
+	min-height: 26px !important;
+}
+
+/* ---- item 3: the image viewer hugs the image ----
+   Clicking a thread image opened a dialog-popup stretched to the whole window
+   (1766x972 at probe) around a 745px image: a giant empty frame. The popup
+   becomes fit-content (capped to the viewport) and the inner scroll container
+   loses its own box so the image sits in one clean rounded, blurred overlay.
+   Pass 18: the gate was `:has(img)`, but build .4275's Settings dialog now
+   embeds a Clerk avatar <img>, so the rule shrank Settings to fit-content
+   (691px). Gated to the real image viewer (it always carries the
+   --media-width container) instead of any dialog holding an image. */
+[data-slot="dialog-popup"]:has(div[class*="max-w-[var(--media-width)]"]) {
+	width: fit-content !important;
+	height: fit-content !important;
+	max-width: calc(100vw - 32px) !important;
+	max-height: calc(100vh - 48px) !important;
+	min-width: 0 !important;
+}
+[data-slot="dialog-popup"]:has(img) div[class*="max-w-[var(--media-width)]"] {
+	background: transparent !important;
+	box-shadow: none !important;
+	border: 0 !important;
+}
+
+/* ---- steering item: in-progress update dock stays a modest contained pill ----
+   Mid-update the footer button grew a wide label ("0 of 1 updated") that
+   stretched the whole footer. Cap the slot, contain the progress fill, keep
+   the label readable with an ellipsis, never spill. */
+[data-slot="sidebar-footer"] li {
+	min-width: 0 !important;
+}
+[data-slot="sidebar-footer"] li:has(> button[class*="rounded-full"]) {
+	flex: none !important;
+	max-width: 2.5rem !important;
+	overflow: hidden !important;
+}
+[data-slot="sidebar-footer"] button[class*="rounded-full"],
+[data-slot="sidebar-footer"] button[class*="rounded-full"]::after,
+[data-slot="sidebar-footer"] button[class*="rounded-full"] [class*="rounded-full"] {
+	width: 2rem !important;
+	min-width: 2rem !important;
+	max-width: 2rem !important;
+	height: 2rem !important;
+	border-radius: 9999px !important;
+	overflow: hidden !important;
+}
+/* the progress fill: rounded, contained in its track */
+[data-slot="sidebar-footer"] [role="progressbar"],
+[data-slot="sidebar-footer"] [class*="progress"] {
+	border-radius: 9999px !important;
+	overflow: hidden !important;
+	max-width: 100% !important;
+}
+[data-slot="sidebar-footer"] [role="progressbar"] > *,
+[data-slot="sidebar-footer"] [class*="progress"] > * {
+	border-radius: 9999px !important;
+}
+/* the footer button animates its width when an update runs: cap the slot so
+   "0 of 1 updated" gets a modest readable pill, never the whole footer */
+[data-slot="sidebar-footer"] li[data-slot="sidebar-menu-item"] {
+	max-width: 11rem !important;
+	overflow: hidden !important;
+}
+[data-slot="sidebar-footer"] [data-slot="sidebar-menu-button"] {
+	max-width: 100% !important;
+}
+/* the "0 of 1 updated" label row: its own modest pill, ellipsis, no stretch */
+[data-slot="sidebar-footer"] span[class*="text-xs"],
+[data-slot="sidebar-footer"] div[class*="text-xs"] {
+	max-width: 100% !important;
+	overflow: hidden !important;
+	text-overflow: ellipsis !important;
+	white-space: nowrap !important;
+}
+/* pass 20: the "Update everything" state - any wide footer button stays inside
+   its slot (rounded track/fill above; label already ellipsised) */
+[data-slot="sidebar-footer"] button {
+	max-width: 100% !important;
+}

@@ -1,0 +1,18 @@
+/* T3 Mocha rice, pass 9 (2026-11-02): Settings > Providers detail pane.
+   The detail cards filled the scroll viewport edge to edge, and the outer card (overflow hidden)
+   cut their right border and right-aligned buttons. T3 also fades the last 24px of the pane with a
+   mask, so the bottom row read as fading text. Rollback: delete this file and reload. */
+
+/* breathing room so every card edge and button stays inside the outer card */
+[data-slot="settings-group"] div[class*="/providers:min-h-0"] [data-slot="scroll-area-viewport"] > div {
+	padding-inline: 12px !important;
+}
+/* no fade on the pane's text */
+[data-slot="settings-group"] div[class*="/providers:min-h-0"] [data-slot="scroll-area-viewport"] {
+	mask-image: none !important;
+	-webkit-mask-image: none !important;
+}
+/* long control buttons ("Install managed runtime") never get wider than their row */
+[data-slot="settings-group"] div[class*="/providers:min-h-0"] [data-slot="settings-row"] button {
+	max-width: 100% !important;
+}

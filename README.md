@@ -1,12 +1,12 @@
 <div align="center">
 
-<img src="docs/images/preview.png" alt="T3 Code with the app version next to the Nightly label in the sidebar, and the Local add-ons settings card with a web page theme dropdown" width="100%">
+<img src="docs/images/preview.png" alt="T3 Code Enhanced on Windows: the T3 Code Enhanced updates card in Settings next to the Catppuccin Mocha model picker, with the provider rail, model list and Reasoning list in their own panels" width="100%">
 
 # T3 Code Enhanced
 
-**Patches for T3 Code on Windows that survive updates.**
+**A Catppuccin Mocha theme and a set of patches for T3 Code on Windows, with its own updater.**
 
-Acrylic windows, frosted glass menus, a version badge in the header, and a dark default for the built-in browser, all switchable in the app's own settings.
+Install it once. It keeps itself up to date and puts its patches back after every T3 Code update.
 
 <a href="https://github.com/DavidHiFi/t3-code-enhanced/releases/latest">
 <img src="https://img.shields.io/badge/%E2%AC%87%EF%B8%8F%20DOWNLOAD%20LATEST%20RELEASE-2EA043?style=for-the-badge&labelColor=161B22" alt="Download the latest release" height="42">
@@ -24,75 +24,99 @@ Acrylic windows, frosted glass menus, a version badge in the header, and a dark 
 
 ## Installation
 
-1. Install [T3 Code](https://github.com/pingdotgg/t3code) (the per-user Windows install; Nightly and Beta both work).
-2. Download `T3-Code-Enhanced-v1.0.3.zip` from the [latest release](https://github.com/DavidHiFi/t3-code-enhanced/releases/latest) and unzip it.
-3. Double-click `install.cmd` (or run `install.ps1` in PowerShell 7). The installer finds your T3 Code folder, copies the add-ons, patches both asar files, and registers the `T3CodeEnhanced-Guard` scheduled task.
+1. Install [T3 Code](https://github.com/pingdotgg/t3code) for your Windows user. Nightly and Beta both work.
+2. Download `T3-Code-Enhanced-v2.0.0.zip` from the [latest release](https://github.com/DavidHiFi/t3-code-enhanced/releases/latest) and unzip it anywhere.
+3. Double-click `install.cmd`. If PowerShell 7 is missing, it offers to install it with winget first.
 4. Restart T3 Code.
 
-To remove everything: run `uninstall.cmd`. Your `~/.t3/local-patches.json` and your own `local-ui.css` stay.
+That's the last time you need the zip. New releases show up as a button in T3 Code and install themselves (see [Updates](#updates)). To remove everything, run `uninstall.cmd`; your `~/.t3/local-patches.json` and your own `local-ui.css` stay.
 
 ## Features
 
 ### Look
 
-- **Windows 11 backdrop:** acrylic, mica or tabbed material behind the whole window. `windhawk` hands the backdrop to a Translucent Windows rule instead.
-- **Frosted glass menus:** right-click menus are drawn as blurred glass panels in the page instead of native Windows menus.
-- **Frosted Settings page:** the full-size Settings panel (and SnapShots) blurs the app behind it instead of only thinning its fill.
-- **Extended glass:** the stock Glass opacity slider reaches the chat area and sidebar too, with a lighter mix for the composer.
-- **Stronger highlights:** clearer selected rows in lists and menus, and visible edges on panels.
-- **Galaxy accents:** star-field artwork in the sidebar header and the send button.
-- **Working color:** pick the color of the sidebar's Working spinner, label and timer with a swatch or any hex code. Defaults to Catppuccin Mocha blue `#89b4fa`; clear the box for T3's own blue.
+- **Catppuccin Mocha theme:** Mocha colours across the whole app, with blue and mauve accents.
+- **Frosted surfaces:** the chat box, menus, tooltips and dialogs blur what's behind them, so text never shows through.
+- **Mocha text selection:** selected text gets a soft Mocha blue highlight everywhere, reply cards included.
+- **Hover frames:** rows, cards, buttons, menus and settings controls get a thin blue to mauve frame on hover and a grey edge at rest.
+- **Model picker panels:** the provider rail, the model list and the Reasoning list each sit in their own panel.
+- **Windows 11 backdrop:** acrylic, mica or tabbed material behind the window. `windhawk` hands the backdrop to a Translucent Windows rule instead.
+- **Frosted right-click menus:** drawn in the page as glass panels instead of native Windows menus.
+- **Galaxy accents:** star-field artwork in the sidebar header and on the send button.
+- **Working colour:** pick the colour of the sidebar's Working spinner, label and timer. Defaults to Mocha blue `#89b4fa`.
+
+### Updates
+
+- **Enhanced update button:** a second button beside T3's own update button in the sidebar footer. Click it to check for a new release. When one is out it installs it, then asks you to reload or restart.
+- **Settings card:** Settings > About has a "T3 Code Enhanced updates" card under T3's own update settings, with switches for checking and installing automatically, how often to check (every hour, every 6 hours or once a day), a Check now button and the last result.
+- **Checked downloads:** each release zip is matched against its SHA-256 file before anything runs, then that release's installer runs hidden.
 
 ### Browser and window
 
-- **Web page theme:** Dark, Light or System as the default for pages in T3's built-in browser. A tab that picks its own theme keeps it.
-- **Version badge:** the app version after the channel label (Nightly, Beta) in the sidebar header. Switch it off in Settings > General or in the Local add-ons card.
-- **Native title bar:** the Windows title bar instead of T3's drawn one. Off by default; applies after a restart.
+- **Web page theme:** Dark, Light or System as the default for pages in T3's built-in browser.
+- **Version badge:** the app version after the Nightly or Beta label in the sidebar header.
+- **Native title bar:** the Windows title bar instead of T3's drawn one. Off by default.
 
 ### Behavior
 
 - **No terminal for scripts:** running a project script never opens the bottom terminal, and closing the right panel never floats the preview.
-- **Slower RPC budget:** slow backend calls get 60 seconds instead of 15, so long operations do not abort.
-- **OpenCode budget (opt-in):** short budgets for OpenCode calls. Off by default in the config.
-- **One button per script:** project scripts render as individual buttons with an arrow that runs all of them.
-- **Seconds on sidebar timers:** the sidebar shows how long a thread has been working down to the second (`Working 23m 27s`), like the open thread does. The switch works live; `sidebarsecs: false` in the config removes the patch.
-- **Every account in the Limits popover:** the thread popover lists usage for every account T3 can read for that provider, including each CLIProxyAPI account, instead of "Unavailable" when the selected instance has no limits of its own. Rows start with the first 5 characters of the account email, or with a name you set in the config: `"accountNames": { "you@example.com": "Max" }`. `usageaccounts: false` removes the patch.
+- **Longer RPC budget:** slow backend calls get 60 seconds instead of 15, so long operations don't abort.
+- **One button per script:** project scripts show as separate buttons, with an arrow that runs them all.
+- **Seconds on sidebar timers:** `Working 23m 27s` in the sidebar, like the open thread shows.
+- **Every account in the Limits popover:** usage for every account T3 can read for that provider, including each CLIProxyAPI account. Name rows with `"accountNames": { "you@example.com": "Max" }` in the config.
+- **OpenCode budget (opt-in):** shorter budgets for OpenCode calls. Off by default, and skipped on the tested nightly because that code changed.
 
-### Settings and upkeep
+### Upkeep
 
-- **Local add-ons card:** every switch above lives in Settings > Appearance, and writes through to `~/.t3/local-patches.json`.
-- **Guard task:** `T3CodeEnhanced-Guard` watches the install folder and re-applies every patch seconds after a T3 Code update. It never closes a window you are working in.
-- **Same-length patches:** each edit keeps the patched file the same size, checks syntax after writing, and refuses to guess when a T3 build changes shape. The patch that changed is skipped and reported; the rest still apply.
+- **Local add-ons card:** the switches above live in Settings > Appearance and write to `~/.t3/local-patches.json`.
+- **Guard task:** `T3CodeEnhanced-Guard` re-applies every patch seconds after a T3 Code update. It never closes a window you're working in.
+- **Careful patches:** each edit keeps the patched file the same size and checks syntax after writing. If a T3 build changes shape, that one patch is skipped and reported; the rest still apply.
 
 ## Notes
 
 > [!NOTE]
-> **Settings.** Everything lives in `~/.t3/local-patches.json`. Change it there or in Settings > Appearance > Local add-ons, then run `install.ps1` again (or restart T3 Code). Your own `~/.t3/local-ui.css` is never overwritten.
+> **Speed.** Version 2.0 rewrote the theme rules that made T3 Code sluggish. Adding a chat message used to cost about 90 ms of style work with the theme on; it now costs under 2 ms.
 
 > [!IMPORTANT]
-> **Tested builds.** Verified against `0.1.3-nightly.20261024.3617`. A newer build with changed internals is handled per patch: the changed one is skipped and reported, the rest still apply.
+> **Tested builds.** Checked against T3 Code `0.1.8-nightly.20261109.4399`. On a newer build with changed internals, the affected patch is skipped and reported, and the rest still apply.
 
 > [!WARNING]
-> **This modifies installed files.** The patchers rewrite `app.asar` and `server.asar` inside T3 Code's install folder. Backups land in `%LOCALAPPDATA%\T3CodeEnhanced\backups`, and `uninstall.ps1` restores the stock files byte for byte. Antivirus software sometimes flags asar edits.
+> **This modifies installed files.** The patchers rewrite `app.asar` and `server.asar` in T3 Code's install folder. The originals are backed up to `%LOCALAPPDATA%\T3CodeEnhanced\backups`, and `uninstall.cmd` puts them back byte for byte. Some antivirus software flags asar edits.
+
+<details>
+<summary><b>Settings file and installer options</b></summary>
+
+<br>
+
+Everything lives in `~/.t3/local-patches.json`. The updater reads its part from `enhancedUpdates`:
+
+```json
+"enhancedUpdates": { "check": true, "install": true, "intervalHours": 6 }
+```
+
+`install.ps1` is safe to run again at any time. Options:
+
+```
+-Reset     put every add-on and setting back to the release defaults (backed up first)
+-NoTask    skip the guard task (patches then stop after the next T3 Code update)
+-Quiet     plain output, used by the updater
+```
+
+</details>
 
 <details>
 <summary><b>Building from source</b></summary>
 
 <br>
 
-Requirements: PowerShell 7 and Node.js (for the syntax checks). The `upstream/` submodule is pinned to the build these patches were checked against.
+Requirements: PowerShell 7 and Node.js (for the syntax checks). The `upstream/` submodule is pinned to the T3 Code source these patches were checked against.
 
 ```
 git clone --recurse-submodules https://github.com/DavidHiFi/t3-code-enhanced.git
-```
-
-Check an add-on after editing it:
-
-```
 node --check src/addons/local-main.cjs
 ```
 
-Test the patchers against copies, never your live install:
+Test the patchers on a copy, never your live install:
 
 ```
 pwsh -File src/lib/patch-server-asar.ps1 -Status -AsarPath C:\temp\server.asar -ConfigPath src/addons/local-patches.json -BackupDir C:\temp\backups
@@ -104,7 +128,7 @@ pwsh -File src/lib/patch-server-asar.ps1 -Revert -AsarPath C:\temp\server.asar -
 
 ## Contributing
 
-Bug reports with your guard log (`%LOCALAPPDATA%\T3CodeEnhanced\guard.log`), your T3 Code version, and the patcher output help most.
+Bug reports help most when they include your T3 Code version, the guard log (`%LOCALAPPDATA%\T3CodeEnhanced\guard.log`) and the installer output.
 
 <a href="CONTRIBUTING.md">
 <img src="https://img.shields.io/badge/%F0%9F%A4%9D%20HOW%20TO%20CONTRIBUTE-8957E5?style=for-the-badge&labelColor=161B22" alt="How to contribute" height="36">
@@ -129,19 +153,19 @@ Thank you for every star.
 | Who | What |
 |---|---|
 | **[pingdotgg](https://github.com/pingdotgg)** ([T3 Code](https://github.com/pingdotgg/t3code)) | The app this patches. Pinned unmodified as the `upstream` submodule under its MIT license. |
-| **[m417z](https://github.com/m417z)** ([Translucent Windows](https://windhawk.net/mods/translucent-windows)) | The optional `windhawk` material route paints the backdrop. |
-| **[ramensoftware](https://github.com/ramensoftware)** ([Windhawk](https://windhawk.net/)) | The mod engine that route rides on. |
-| **[Catppuccin](https://github.com/catppuccin/catppuccin)** | The Mocha palette the glass and highlight styles are mixed from. |
+| **[Catppuccin](https://github.com/catppuccin/catppuccin)** | The Mocha palette the whole theme is built from. |
+| **[m417z](https://github.com/m417z)** ([Translucent Windows](https://windhawk.net/mods/translucent-windows)) | Paints the backdrop on the optional `windhawk` material route. |
+| **[ramensoftware](https://github.com/ramensoftware)** ([Windhawk](https://windhawk.net/)) | The mod engine that route runs on. |
 
-Built on [T3 Code](https://github.com/pingdotgg/t3code), with [PowerShell 7](https://github.com/PowerShell/PowerShell) and [Node.js](https://nodejs.org) for the patchers and checks.
+Built on [T3 Code](https://github.com/pingdotgg/t3code), with [PowerShell 7](https://github.com/PowerShell/PowerShell) and [Node.js](https://nodejs.org) for the installer, patchers and checks.
 
 > Missing or wrong credit? [Open an issue](https://github.com/DavidHiFi/t3-code-enhanced/issues/new) and I'll fix it.
 
 ## Disclaimers
 
-Most of this project's code was developed with AI coding agents, including Claude and DeepSeek. No single AI agent made the project. Every patch was verified against a real T3 Code install before release.
+I build this with AI coding agents: Claude Code (Claude Opus, Sonnet and Haiku) and DeepSeek wrote most of the code. Every change was checked on a real T3 Code install before release.
 
-The add-ons run locally and send nothing anywhere; the only network use is T3 Code itself. Patches are matched against the build they were written for and skip themselves when a T3 update changes the code shape.
+The updater is the only part that goes online. It asks GitHub for the latest release of this repo when T3 Code starts and on the schedule you pick, and downloads the zip when you install one. Turn off "Check for updates automatically" in Settings > About to stop that. Nothing else is sent anywhere.
 
 <div align="center">
 <br>

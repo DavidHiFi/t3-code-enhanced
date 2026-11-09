@@ -1,0 +1,87 @@
+/* T3 Mocha rice, pass 15 worker A (2026-11-05): thread/output column.
+   Six items from the pass 15 brief. Uses worker C's shared --t15-* tokens only
+   (99-mocha-pass15-tokens.css); nothing redefined here.
+   Pairs with 99-mocha-pass15a-run.js, which marks the frames of the latest run
+   with data-t15a-run (+ -start/-end); the outer run dock paints on those marks.
+   Rollback: delete this file and 99-mocha-pass15a-run.js, reload.
+   Notes: notes\2026-11-02-t3-mocha-docks.md - "pass 15 - worker A". */
+
+/* ================= item 1: one outer dock per run =================
+   Pass 20: the paint itself now lives in 99-mocha-pass16-fixes.css item 8
+   (on the row's chat-content-lane, which hugs the ~736px text column). The
+   frame-level rules that used to live here were removed - they spanned the
+   full lane and pass 16 had to fight them off with a triple-attribute
+   override. The marker (99-mocha-pass15a-run.js) sets data-t15a-run /
+   -start / -end on the run's frames. */
+
+/* ================= item 2: glow must not clip at the lane edge ================= */
+/* The lane is overflow-x: clip; the error card and the fold/working pills sit
+   exactly on the lane edge, so their 11px glow cut off as a hard vertical
+   line. Side margins give the glow room (same fix as pass 8 message docks). */
+[data-timeline-root] [data-v2-item-type="error"] {
+	margin-left: 12px !important;
+	margin-right: 12px !important;
+}
+[data-timeline-root] [data-timeline-row-kind="turn-fold"] button,
+[data-timeline-root] [data-timeline-row-kind="attempt-fold"] button,
+[data-timeline-root] [data-timeline-row-kind="working"] button,
+[data-timeline-root] [data-timeline-row-kind="working"] div[class*="border-b"] > div,
+[data-timeline-root] [data-timeline-row-kind="turn-fold"] button + div,
+[data-timeline-root] [data-timeline-row-kind="working"] div[class*="border-b"] > div button {
+	margin-left: 12px !important;
+}
+[data-timeline-root] [data-timeline-row-kind="turn-fold"] button:hover,
+[data-timeline-root] [data-timeline-row-kind="attempt-fold"] button:hover,
+[data-timeline-root] [data-timeline-row-kind="working"] button:hover,
+[data-timeline-root] [data-timeline-row-kind="working"] div[class*="border-b"] > div:hover {
+	box-shadow: var(--t15-ring), var(--t15-glow) !important;
+}
+[data-timeline-root] [data-v2-item-type="error"]:hover {
+	box-shadow:
+		inset 0 0 0 1px var(--t15-edge),
+		var(--t15-ring),
+		var(--t15-glow) !important;
+}
+
+/* ================= item 3: "Run interrupted" divider pill dock ================= */
+/* wd divider: outer div.flex.min-w-0.items-center.gap-2 with h-px flex-1 lines
+   and a rounded-full label pill. Dock the pill like the other dividers. */
+[data-timeline-root] div.flex.min-w-0.items-center.gap-2 > span.rounded-full {
+	background-color: var(--t15-dock) !important;
+	box-shadow: inset 0 0 0 1px var(--t15-edge) !important;
+	transition: var(--t15-ease) !important;
+	/* pass 20: hug the label; the flex-1 hairlines own the rest of the row */
+	width: fit-content !important;
+}
+[data-timeline-root] div.flex.min-w-0.items-center.gap-2 > span.rounded-full:hover {
+	box-shadow: var(--t15-ring), var(--t15-glow) !important;
+}
+
+/* ================= item 4: compaction label full contrast ================= */
+/* Pass 8 paints an animated gradient over the whole pill behind the label;
+   it washes the muted text out. Keep the pill docked and solid enough, force
+   the label to full contrast, and turn the fill into a thin bottom strip. */
+html [data-timeline-row-kind="context-compaction"] [role="separator"] > span.relative {
+	background-color: var(--t15-dock-in) !important;
+	color: var(--t15-text) !important;
+	-webkit-mask-image: none !important;
+	mask-image: none !important;
+}
+html [data-timeline-row-kind="context-compaction"] [role="separator"] > span.relative,
+html [data-timeline-row-kind="context-compaction"] [role="separator"] > span.relative * {
+	opacity: 1 !important;
+}
+html [data-timeline-row-kind="context-compaction"] [role="separator"] > span.relative:has(svg[class*="animate-spin"])::before {
+	inset: auto 6px 2px 6px !important;
+	height: 3px !important;
+}
+
+/* ================= item 5: changed-files card top corners ================= */
+/* The sticky header paints its own opaque bg with an 8px radius inside the
+   card's 12px rounding - the corners read darker than the border. Match the
+   card curve and use the same translucent material. */
+[data-changed-files-state] [data-changed-files-header] {
+	border-top-left-radius: 11px !important;
+	border-top-right-radius: 11px !important;
+	background-color: var(--t15-panel-deep) !important;
+}

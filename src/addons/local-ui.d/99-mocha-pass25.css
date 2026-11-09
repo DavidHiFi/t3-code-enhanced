@@ -1,0 +1,721 @@
+/* T3 Mocha rice, pass 25 (2026-11-09): frosted composer and docks, secret-card input border,
+   Enhanced badge gradient, right-panel tab hover on the whole tab.
+   Rollback: delete this file and reload T3. */
+
+/* 1. "Enhanced" badge: Mocha blue -> mauve gradient pill, crust text (same look as the
+      Windhawk Enhanced Styler badge), instead of the mauve tint. */
+html [data-slot="sidebar-inner"] a[aria-label="T3 Code home"] .t3l-enh.t3l-enh {
+	color: #11111b !important;
+	background: linear-gradient(135deg, #89b4fa, #cba6f7) !important;
+	border: 0 !important;
+	font-weight: 700 !important;
+	box-shadow: 0 0 8px -2px rgb(203 166 247 / 0.45) !important;
+}
+html [data-slot="sidebar-inner"] a[aria-label="T3 Code home"]:hover .t3l-enh.t3l-enh {
+	box-shadow: 0 0 12px -2px rgb(203 166 247 / 0.7) !important;
+}
+
+/* 2. Right-panel tabs: one hover outline on the whole tab box. The label button and the close x
+      inside a tab no longer draw their own pill (pass 22 item 12 gave every tab-bar button one). */
+html div[data-right-panel-tabbar] div.group\/tab button:is(:hover, :focus, :focus-visible, :active),
+html div[data-right-panel-tabbar] div.group\/tab button {
+	background-color: transparent !important;
+	box-shadow: none !important;
+	outline: none !important;
+}
+html div[data-right-panel-tabbar] div.group\/tab:hover {
+	background-color: var(--t15-hover) !important;
+	box-shadow: var(--t15-ring), var(--t22-halo, var(--t15-glow)) !important;
+}
+html div[data-right-panel-tabbar] div.group\/tab button.group\/close:hover {
+	color: var(--t15-red) !important;
+}
+
+/* 3. Queued messages sit on the right, like sent messages. Cause: pass 22 item 39
+      (html div.relative.bg-background:has(ol) ol { width: fit-content }) was meant for the
+      breadcrumb pill but matched every list in the chat area, so the queue list shrank to its
+      widest child and hugged the left edge. Lists go back to full width; the bubble and its
+      action dock both end at the right edge. Markdown lists get their natural width back too. */
+html section[data-thread-queue][data-thread-queue] > ol.flex,
+html section[data-thread-queue][data-thread-queue] li[aria-label^="Queued message"] {
+	width: 100% !important;
+	max-width: none !important;
+	align-items: flex-end !important;
+	border-radius: 0 !important;
+}
+html section[data-thread-queue][data-thread-queue] li[aria-label^="Queued message"] > div {
+	align-self: flex-end !important;
+	margin-left: auto !important;
+	margin-right: 0 !important;
+}
+html div.relative.bg-background .chat-markdown.chat-markdown ol {
+	width: auto !important;
+	max-width: none !important;
+	border-radius: 0 !important;
+}
+
+/* 4. Frosted material on every surface that floats over scrolling text (owner: text was readable
+      through the composer). Same mantle-flood blur as pass 24 menus: what is behind shows only as
+      soft colour. Each keeps its own fill and edge from earlier layers. */
+html[data-window-material][data-window-material] div[data-slot="composer-shell"]::before,
+html[data-window-material][data-window-material] [data-composer-banner-surface]::before {
+	background-color: var(--t24-frost-fill) !important;
+	-webkit-backdrop-filter: var(--t24-frost) !important;
+	backdrop-filter: var(--t24-frost) !important;
+}
+html[data-window-material][data-window-material] :is(
+	[data-chat-thread-status-line],
+	[data-scroll-to-end],
+	[data-t3l-ba-row],
+	[data-slot="composer-context-strip"],
+	nav[aria-label$="breadcrumb"] > ol,
+	section[data-thread-queue] [class*="border-dashed"],
+	section[data-thread-queue] li[aria-label^="Queued message"] > div:last-child,
+	header[data-chat-header] button[data-slot]:not(nav[aria-label$="breadcrumb"] button),
+	[data-workspace-titlebar-controls] button[data-slot]
+) {
+	-webkit-backdrop-filter: var(--t24-frost) !important;
+	backdrop-filter: var(--t24-frost) !important;
+}
+html[data-window-material][data-window-material] :is(
+	nav[aria-label$="breadcrumb"] > ol,
+	section[data-thread-queue] [class*="border-dashed"],
+	section[data-thread-queue] li[aria-label^="Queued message"] > div:last-child
+) {
+	background-color: var(--t24-frost-fill) !important;
+}
+/* the composer footer row sits inside the frosted shell: no second, thinner glass of its own */
+html[data-window-material][data-window-material] [data-chat-composer-footer] {
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+	background-color: transparent !important;
+}
+
+/* 5. No band at the top. The 52px header row took its own slot, so the timeline was cut off in a
+      straight line under the window glass. The timeline scroller now runs up under the header;
+      the header itself is see-through and click-through, and only its floating docks (breadcrumb
+      pill, buttons) take clicks. A 52px spacer keeps the first message clear of the docks. */
+html header[data-chat-header][data-chat-header] {
+	z-index: 30 !important;
+	background: transparent !important;
+	pointer-events: none !important;
+}
+html header[data-chat-header][data-chat-header] nav {
+	pointer-events: none !important;
+}
+html header[data-chat-header][data-chat-header] :is(ol, button, a, input, [role="button"], [data-slot="tooltip-trigger"]) {
+	pointer-events: auto !important;
+}
+html [data-chat-column] header[data-chat-header] + div .messages-timeline-scroll.messages-timeline-scroll {
+	margin-top: calc(-1 * var(--workspace-topbar-height, 52px)) !important;
+	height: calc(100% + var(--workspace-topbar-height, 52px)) !important;
+}
+html [data-chat-column] header[data-chat-header] + div .legend-list-content-container > div:first-child > div[class*="titlebar-scroll-fade-height"] {
+	height: calc(var(--workspace-titlebar-scroll-fade-height, 1.5rem) + var(--workspace-topbar-height, 52px)) !important;
+}
+
+/* 6. Secret request card: one quiet edge at rest, Mocha blue on hover and while typing,
+      matching the "Save securely" button beside it. */
+html form:has(input[data-1p-ignore]) span[data-slot="input-control"][data-slot="input-control"] {
+	border: 1px solid var(--t15-edge-hi, rgb(108 112 134 / 0.55)) !important;
+	background-color: rgb(17 17 27 / 0.55) !important;
+	border-radius: 10px !important;
+	box-shadow: none !important;
+	outline: none !important;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+html form:has(input[data-1p-ignore]) span[data-slot="input-control"]::before {
+	content: none !important;
+}
+html form:has(input[data-1p-ignore]) span[data-slot="input-control"][data-slot="input-control"]:hover {
+	border-color: rgb(137 180 250 / 0.75) !important;
+	box-shadow: var(--t15-glow, 0 0 10px -2px rgb(137 180 250 / 0.45)) !important;
+}
+html form:has(input[data-1p-ignore]) span[data-slot="input-control"][data-slot="input-control"]:focus-within {
+	border-color: #89b4fa !important;
+	box-shadow: var(--t15-glow, 0 0 10px -2px rgb(137 180 250 / 0.45)) !important;
+}
+html form:has(input[data-1p-ignore]) span[data-slot="input-control"][data-slot="input-control"]:has([aria-invalid="true"]) {
+	border-color: #f38ba8 !important;
+}
+html form:has(input[data-1p-ignore]) span[data-slot="input-control"] input {
+	background: transparent !important;
+	box-shadow: none !important;
+	outline: none !important;
+}
+html form:has(input[data-1p-ignore]) button[type="submit"][type="submit"] {
+	border: 1px solid var(--t15-edge-hi, rgb(108 112 134 / 0.55)) !important;
+	background-color: var(--t15-dock, rgb(24 24 37 / 0.9)) !important;
+	color: #cdd6f4 !important;
+	border-radius: 10px !important;
+	box-shadow: none !important;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+html form:has(input[data-1p-ignore]) button[type="submit"][type="submit"]:not(:disabled):hover {
+	border-color: rgb(137 180 250 / 0.75) !important;
+	box-shadow: var(--t15-glow, 0 0 10px -2px rgb(137 180 250 / 0.45)) !important;
+}
+html form:has(input[data-1p-ignore]) button[type="submit"][type="submit"]:disabled {
+	opacity: 0.5 !important;
+}
+
+/* 7. Update button: same 8px corners as Settings / Pull requests / Usage beside it, idle and while
+      updating (the wide "updating" pill and its inner click area too). The small ready dot stays round. */
+html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] :is(button, div)[class*="rounded-full"][class*="rounded-full"][class*="rounded-full"],
+html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] button[class*="rounded-full"][class*="rounded-full"][class*="rounded-full"]::after {
+	border-radius: 8px !important;
+}
+
+/* 8. "Compacting context" / "Thinking": no white text sweeping across the row. T3 draws a second
+      bright copy of the label and slides it over the first (.live-activity-focus), or sweeps a
+      gradient through the text (.live-tool-shine). Both go; the label stays in Mocha subtext and
+      breathes gently instead, so the row still reads as live. */
+html .live-activity-focus.live-activity-focus {
+	display: none !important;
+	animation: none !important;
+}
+html .live-tool-shine.live-tool-shine {
+	color: #a6adc8 !important;
+	background: none !important;
+	-webkit-background-clip: border-box !important;
+	background-clip: border-box !important;
+	-webkit-text-fill-color: currentColor !important;
+	animation: t25-breathe 2.4s ease-in-out infinite !important;
+}
+html div.relative[data-t3l-live] > :not(.live-activity-focus) {
+	color: #a6adc8 !important;
+	animation: t25-breathe 2.4s ease-in-out infinite !important;
+}
+@keyframes t25-breathe {
+	0%, 100% { opacity: 0.6; }
+	50% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+	html .live-tool-shine.live-tool-shine,
+	html div.relative[data-t3l-live] > :not(.live-activity-focus) { animation: none !important; opacity: 1 !important; }
+}
+
+/* 9. Top-right buttons (maximize, bottom panel, right panel): one size, one even 4px gap.
+      The panel pair had its own 3px padding plus a 2px gap, so the first gap was 7px and the
+      second 2px. */
+html [data-panel-layout-controls][data-panel-layout-controls] {
+	gap: 4px !important;
+	padding: 0 !important;
+}
+html :is([data-workspace-titlebar-controls], header[data-chat-header], [data-panel-layout-controls]) button[aria-label="Maximize panel"][aria-label="Maximize panel"] {
+	width: 26px !important;
+	height: 26px !important;
+	min-width: 26px !important;
+	min-height: 26px !important;
+}
+
+/* 10. Hover frame on thread rows and images: Mocha blue-to-mauve gradient edge plus a soft glow,
+       the same frame the active thread row already wears (pass 8). Drawn on an overlay above the
+       content, so it hugs any image size and nothing inside the card can cover it. The edge colours
+       are registered properties, so the frame fades in and out instead of snapping. */
+@property --t25-ga { syntax: "<color>"; inherits: false; initial-value: rgb(108 112 134 / 0.32); }
+@property --t25-gb { syntax: "<color>"; inherits: false; initial-value: rgb(108 112 134 / 0.32); }
+
+/* image holders: sent-message grid tiles, queued-message tiles, composer attachments and chips */
+html :is(
+	div[class*="aspect-"][class*="overflow-hidden"][data-t3l-pv]:not(button),
+	div[data-t3l-pvz][data-t3l-pvz]:not(button),
+	div[data-chat-composer-expanded-image],
+	button.cursor-zoom-in.overflow-hidden[aria-label^="Preview "]
+) {
+	position: relative !important;
+	border-width: 0 !important;
+	box-shadow: none !important;
+	transition: box-shadow 0.22s ease !important;
+}
+html :is(
+	div[class*="aspect-"][class*="overflow-hidden"][data-t3l-pv]:not(button),
+	div[data-t3l-pvz][data-t3l-pvz]:not(button),
+	div[data-chat-composer-expanded-image],
+	button.cursor-zoom-in.overflow-hidden[aria-label^="Preview "]
+)::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: 0 !important;
+	z-index: 2 !important;
+	border-radius: inherit !important;
+	padding: 1px !important;
+	background: linear-gradient(135deg, var(--t25-ga), var(--t25-gb)) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	pointer-events: none !important;
+	transition: --t25-ga 0.22s ease, --t25-gb 0.22s ease !important;
+}
+/* inner glow along the edge, over the picture */
+html :is(
+	div[class*="aspect-"][class*="overflow-hidden"][data-t3l-pv]:not(button),
+	div[data-t3l-pvz][data-t3l-pvz]:not(button),
+	div[data-chat-composer-expanded-image],
+	button.cursor-zoom-in.overflow-hidden[aria-label^="Preview "]
+)::before {
+	content: "" !important;
+	position: absolute !important;
+	inset: 0 !important;
+	z-index: 1 !important;
+	border-radius: inherit !important;
+	box-shadow: inset 0 0 14px -4px rgb(137 180 250 / 0.55), inset 0 0 22px -8px rgb(203 166 247 / 0.5) !important;
+	opacity: 0 !important;
+	pointer-events: none !important;
+	transition: opacity 0.22s ease !important;
+}
+html :is(
+	div[class*="aspect-"][class*="overflow-hidden"][data-t3l-pv]:not(button),
+	div[data-t3l-pvz][data-t3l-pvz]:not(button),
+	div[data-chat-composer-expanded-image],
+	button.cursor-zoom-in.overflow-hidden[aria-label^="Preview "]
+):hover::after {
+	--t25-ga: #89b4fa;
+	--t25-gb: #cba6f7;
+	padding: 2px !important;
+}
+html :is(
+	div[class*="aspect-"][class*="overflow-hidden"][data-t3l-pv]:not(button),
+	div[data-t3l-pvz][data-t3l-pvz]:not(button),
+	div[data-chat-composer-expanded-image],
+	button.cursor-zoom-in.overflow-hidden[aria-label^="Preview "]
+):hover::before {
+	opacity: 1 !important;
+}
+html :is(
+	div[class*="aspect-"][class*="overflow-hidden"][data-t3l-pv]:not(button),
+	div[data-t3l-pvz][data-t3l-pvz]:not(button),
+	div[data-chat-composer-expanded-image],
+	button.cursor-zoom-in.overflow-hidden[aria-label^="Preview "]
+):hover {
+	box-shadow: 0 0 14px -4px rgb(137 180 250 / 0.5), 0 0 20px -8px rgb(203 166 247 / 0.45) !important;
+}
+/* the picture inside a holder: no edge or ring of its own, the holder draws it. Every holder's
+   picture sits inside its Preview button, so this needs no :has() (v2 speed fix) */
+html :is(button[aria-label^="Preview "], div[data-chat-composer-expanded-image]) img:not([data-t3l-none]) {
+	box-shadow: none !important;
+	border: 0 !important;
+}
+
+/* images inside replies (markdown): an <img> cannot carry an overlay, so the frame is its own
+   border, painted from a gradient behind it; a dark fill under the picture keeps the gradient
+   out of transparent pixels. The edge is always there (quiet grey), so nothing shifts on hover. */
+html :is(.chat-markdown, [data-timeline-row-kind="message"]) img:not(:is(
+	div[class*="aspect-"] img, button[aria-label^="Preview "] img, [data-chat-composer-expanded-image] img
+)) {
+	border: 1.5px solid transparent !important;
+	background: linear-gradient(#181825, #181825) padding-box, linear-gradient(135deg, var(--t25-ga), var(--t25-gb)) border-box !important;
+	box-shadow: none !important;
+	transition: --t25-ga 0.22s ease, --t25-gb 0.22s ease, box-shadow 0.22s ease !important;
+}
+html :is(.chat-markdown, [data-timeline-row-kind="message"]) img:not(:is(
+	div[class*="aspect-"] img, button[aria-label^="Preview "] img, [data-chat-composer-expanded-image] img
+)):hover {
+	--t25-ga: #89b4fa;
+	--t25-gb: #cba6f7;
+	box-shadow: 0 0 14px -4px rgb(137 180 250 / 0.5), 0 0 20px -8px rgb(203 166 247 / 0.45) !important;
+}
+
+/* thread rows: the same frame on an overlay above the row (the old inset ring was hidden under
+   the row's own content), plus a glow inside the card, since the list clips anything outside it */
+html [data-slot="sidebar-inner"] [data-testid="sidebar-row-card"][data-testid="sidebar-row-card"]::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: 0 !important;
+	z-index: 3 !important;
+	border-radius: 12px !important;
+	padding: 1px !important;
+	background: linear-gradient(100deg, var(--t25-ga), var(--t25-gb)) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	pointer-events: none !important;
+	--t25-ga: transparent;
+	--t25-gb: transparent;
+	transition: --t25-ga 0.22s ease, --t25-gb 0.22s ease !important;
+}
+html [data-slot="sidebar-inner"] [data-testid="sidebar-row-card"][data-testid="sidebar-row-card"]:is([class~="bg-sidebar-row-active"], [class~="bg-sidebar-row-selected"])::after {
+	--t25-ga: rgb(137 180 250 / 0.9);
+	--t25-gb: rgb(203 166 247 / 0.9);
+}
+html [data-slot="sidebar-inner"] [data-testid="sidebar-row-card"][data-testid="sidebar-row-card"]:hover::after {
+	--t25-ga: #89b4fa;
+	--t25-gb: #cba6f7;
+	padding: 2px !important;
+}
+html [data-slot="sidebar-inner"] [data-testid="sidebar-row-card"][data-testid="sidebar-row-card"][data-testid="sidebar-row-card"][data-testid="sidebar-row-card"][data-testid="sidebar-row-card"]:hover {
+	background-color: rgb(24 24 37 / 0.72) !important;
+	box-shadow: inset 0 0 16px -6px rgb(137 180 250 / 0.5), inset 0 0 24px -10px rgb(203 166 247 / 0.45) !important;
+}
+@media (prefers-reduced-motion: reduce) {
+	html [data-testid="sidebar-row-card"]::after,
+	html :is(div[data-chat-composer-expanded-image], button[aria-label^="Preview "])::after { transition: none !important; }
+}
+
+/* 11. Diff panel ref picker ("Changes v  vs Automatic v"): one hover frame on the whole box, as
+       the owner asked. Pass 13 and pass 22 gave each trigger inside the box its own hover pill,
+       which sat off-centre inside the box. Inner triggers now stay flat in every state; only their
+       text brightens. */
+html div[data-right-panel-surface-content] [data-surface-subheader] > div[class*="diff-refs"][class*="diff-refs"] {
+	position: relative !important;
+}
+html div[data-right-panel-surface-content] [data-surface-subheader] > div[class*="diff-refs"][class*="diff-refs"] :is(button, [data-slot="menu-trigger"], [data-slot="combobox-trigger"], span[data-slot="tooltip-trigger"]):not([data-t3l-none]) {
+	background-color: transparent !important;
+	background-image: none !important;
+	border-color: transparent !important;
+	box-shadow: none !important;
+	outline: none !important;
+}
+html div[data-right-panel-surface-content] [data-surface-subheader] > div[class*="diff-refs"][class*="diff-refs"] :is(button, [data-slot="menu-trigger"], [data-slot="combobox-trigger"]):is(:hover, [data-popup-open], [aria-expanded="true"]) {
+	color: #cdd6f4 !important;
+}
+html div[data-right-panel-surface-content] [data-surface-subheader] > div[class*="diff-refs"][class*="diff-refs"]::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: 0 !important;
+	border-radius: inherit !important;
+	padding: 1px !important;
+	background: linear-gradient(100deg, var(--t25-ga), var(--t25-gb)) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	pointer-events: none !important;
+	--t25-ga: transparent;
+	--t25-gb: transparent;
+	transition: --t25-ga 0.22s ease, --t25-gb 0.22s ease !important;
+}
+html div[data-right-panel-surface-content] [data-surface-subheader] > div[class*="diff-refs"][class*="diff-refs"]:is(:hover, :focus-within)::after {
+	--t25-ga: #89b4fa;
+	--t25-gb: #cba6f7;
+}
+html div[data-right-panel-surface-content] [data-surface-subheader] > div[class*="diff-refs"][class*="diff-refs"]:is(:hover, :focus-within) {
+	background-color: var(--t15-hover) !important;
+	box-shadow: var(--t22-halo) !important;
+}
+
+/* 12. Thread area focus frame. T3 outlines the whole conversation area (2px square) when it takes
+       keyboard focus, e.g. after a shortcut; the window's rounded corners cut it off at the bottom
+       and left, and it started under the header. It now shows as the same gradient frame, drawn on
+       the rounded content pane itself, so it follows every corner. */
+html [data-workspace-area="conversation"][data-workspace-area="conversation"]:focus-visible {
+	outline: none !important;
+}
+html main[data-slot="sidebar-inset"][data-slot="sidebar-inset"]::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: 0 !important;
+	z-index: 60 !important;
+	border-radius: inherit !important;
+	padding: 2px !important;
+	background: linear-gradient(135deg, var(--t25-ga), var(--t25-gb)) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	pointer-events: none !important;
+	--t25-ga: transparent;
+	--t25-gb: transparent;
+	transition: --t25-ga 0.22s ease, --t25-gb 0.22s ease !important;
+}
+html main[data-slot="sidebar-inset"][data-slot="sidebar-inset"]:has([data-workspace-area="conversation"]:focus-visible)::after {
+	--t25-ga: rgb(137 180 250 / 0.85);
+	--t25-gb: rgb(203 166 247 / 0.85);
+}
+
+/* 13. Slash-command menu (owner, 2026-11-09).
+   - Red box: pass 22 tints every composer banner with the error colour rgb(45 29 42/.68), and the
+     slash menu is one of those banners. Its bottom 17px (the stock "tuck under the composer" padding)
+     also sat on top of the composer's rounded edge, so that strip showed as a red box over it.
+     The menu now drops the tint and the tuck and floats 8px above the composer like the other docks.
+   - Frame: the same blue-to-mauve edge and glow as every other box.
+   - Highlighted row: 80-contrast painted it surface2 #585b70 with a lavender bar (too light); now the
+     dark Mocha hover tint with the gradient ring, same as thread rows. */
+html [data-composer-drawer-layer]:has(> [data-composer-command-drawer]) {
+	overflow: visible !important;
+}
+html [data-composer-banner-surface][data-composer-command-drawer][data-composer-command-drawer] {
+	background-color: transparent !important;
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+	padding-bottom: 0 !important;
+	margin-bottom: calc(var(--chat-composer-attachment-overlap, 17px) + 8px) !important;
+	box-shadow: 0 0 18px -6px rgb(137 180 250 / 0.45), 0 0 28px -10px rgb(203 166 247 / 0.4), 0 10px 28px -8px rgb(0 0 0 / 0.5) !important;
+}
+html [data-composer-banner-surface][data-composer-command-drawer][data-composer-command-drawer]::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: 0 !important;
+	z-index: 5 !important;
+	border-radius: inherit !important;
+	padding: 2px !important;
+	background: linear-gradient(135deg, rgb(137 180 250 / 0.9), rgb(203 166 247 / 0.9)) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	pointer-events: none !important;
+}
+html [data-composer-command-drawer][data-composer-command-drawer] [data-slot="command-item"][data-slot="command-item"] {
+	position: relative !important;
+}
+html [data-composer-command-drawer][data-composer-command-drawer] [data-slot="command-item"][data-slot="command-item"]::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: 0 !important;
+	border-radius: inherit !important;
+	padding: 1px !important;
+	background: linear-gradient(100deg, var(--t25-ga), var(--t25-gb)) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	pointer-events: none !important;
+	--t25-ga: transparent;
+	--t25-gb: transparent;
+	transition: --t25-ga 0.18s ease, --t25-gb 0.18s ease !important;
+}
+html [data-composer-command-drawer][data-composer-command-drawer] [data-slot="command-item"][data-slot="command-item"]:is([aria-selected="true"], [data-highlighted], [data-active="true"], :hover) {
+	--accent: rgb(49 50 68 / 0.75);
+	--color-accent: rgb(49 50 68 / 0.75);
+	--accent-foreground: #cdd6f4;
+	--color-accent-foreground: #cdd6f4;
+	background-color: rgb(49 50 68 / 0.75) !important;
+	color: #cdd6f4 !important;
+	box-shadow: inset 0 0 14px -6px rgb(137 180 250 / 0.5), inset 0 0 22px -10px rgb(203 166 247 / 0.45) !important;
+}
+html [data-composer-command-drawer][data-composer-command-drawer] [data-slot="command-item"][data-slot="command-item"]:is([aria-selected="true"], [data-highlighted], [data-active="true"], :hover)::after {
+	--t25-ga: #89b4fa;
+	--t25-gb: #cba6f7;
+}
+@media (prefers-reduced-motion: reduce) {
+	html [data-composer-command-drawer] [data-slot="command-item"]::after { transition: none !important; }
+}
+/* 14. Popups (update notes, menus, selects): the stock ::before layer keeps a 5px radius while the
+       theme rounds the popup to 12px, so its square-ish corners poked out past the rounded edge
+       (owner, 2026-11-09, update notes popup). Measured: corner pixels 27,27,38 vs 25,26,37 around;
+       with the layer following the popup's radius they match. */
+html [data-slot$="-popup"]::before,
+html [data-slot$="-popup"]::after {
+	border-radius: inherit !important;
+}
+
+/* 15. Path dock above the thread: section 4 gave every header button the frost, which drew a darker
+       pill around the project and thread names inside the dock. Those buttons sit in the dock's own
+       frost, so they get none (edited in section 4 with :not(); this note marks the change). */
+/* 16. Top-right details dock rows (Open in VS Code, project scripts, context, changes, branch):
+       the hover was a light grey-blue wash (surface0 at 42% over the see-through card) and the
+       chevron drew its own box inside the row. Now one dark Mocha hover per row, the same gradient
+       frame and inner glow as thread rows, and every button inside the row stays flat. */
+html body [data-thread-details-card][data-thread-details-card] :is(.group\/details-split, .group\/details-items div.cursor-default, [data-slot="tooltip-trigger"][class*="grid-cols-subgrid"]) {
+	position: relative !important;
+	border-radius: 9px !important;
+	background-color: transparent !important;
+	box-shadow: none !important;
+	transition: background-color 0.22s ease, box-shadow 0.22s ease !important;
+}
+html body [data-thread-details-card][data-thread-details-card] :is(.group\/details-split, .group\/details-items div.cursor-default, [data-slot="tooltip-trigger"][class*="grid-cols-subgrid"])::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: 0 !important;
+	z-index: 3 !important;
+	border-radius: inherit !important;
+	padding: 1px !important;
+	background: linear-gradient(100deg, var(--t25-ga), var(--t25-gb)) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	pointer-events: none !important;
+	--t25-ga: transparent;
+	--t25-gb: transparent;
+	transition: --t25-ga 0.22s ease, --t25-gb 0.22s ease !important;
+}
+/* subgrid rows have no padding of their own, so their frame sits 4px outside the text */
+html body [data-thread-details-card][data-thread-details-card] [data-slot="tooltip-trigger"][class*="grid-cols-subgrid"]::after {
+	inset: -3px -6px !important;
+}
+html body [data-thread-details-card][data-thread-details-card] :is(.group\/details-split, .group\/details-items div.cursor-default, [data-slot="tooltip-trigger"][class*="grid-cols-subgrid"]):is(:hover, [data-t25f])::after {
+	--t25-ga: #89b4fa;
+	--t25-gb: #cba6f7;
+	padding: 2px !important;
+}
+html body [data-thread-details-card][data-thread-details-card] :is(.group\/details-split, .group\/details-items div.cursor-default):is(:hover, [data-t25f]) {
+	background-color: rgb(24 24 37 / 0.72) !important;
+	box-shadow: inset 0 0 14px -6px rgb(137 180 250 / 0.5), inset 0 0 22px -10px rgb(203 166 247 / 0.45) !important;
+}
+html body [data-thread-details-card][data-thread-details-card] [data-slot="tooltip-trigger"][class*="grid-cols-subgrid"]:is(:hover, [data-t25f]) {
+	background-color: rgb(24 24 37 / 0.72) !important;
+	box-shadow: 0 0 0 3px rgb(24 24 37 / 0.72), 0 0 0 6px rgb(24 24 37 / 0) !important;
+}
+html body [data-thread-details-card][data-thread-details-card] .group\/details-split button:not([data-t3l-none]) {
+	background-color: transparent !important;
+	background-image: none !important;
+	box-shadow: none !important;
+	outline: none !important;
+	border-color: transparent !important;
+}
+
+/* 17. No blotches in the see-through material (owner: "spots", "scuffed", settings and around the
+       top-right dock). The chat and settings area was only a 20% tint over the window acrylic, so the
+       blurred desktop behind came through in patches, and pass 24's grain added a scuffed texture.
+       Tint raised to 58% with the same fade under the title bar, grain removed. Measured patch
+       spread in an empty area: 3.08 -> about 1.5 (lower is smoother). */
+html[data-window-material][data-window-material][data-window-material]:not([data-t3local-extendedglass-off]) main[data-slot="sidebar-inset"][data-slot="sidebar-inset"][data-slot="sidebar-inset"][data-slot="sidebar-inset"][data-slot="sidebar-inset"] {
+	background-color: transparent !important;
+	background-image: linear-gradient(to bottom, rgb(30 30 46 / 0.07) 0, rgb(30 30 46 / 0.58) 56px) !important;
+	background-size: 100% 100% !important;
+	background-repeat: no-repeat !important;
+}
+
+/* 18. Reply boxes in the thread: on hover they lit a plain light-blue edge. Now the Mocha blue to
+       mauve gradient frame and glow, drawn on an overlay so the text never covers it. Replies inside
+       a work run stay unframed (the run's lane is their box, pass 20). */
+html body :is([data-timeline-row-kind="message"][data-message-role="assistant"] > div:has(.chat-markdown), [data-timeline-row-kind="message"][data-message-role="user"] > div[class*="bg-message"]) {
+	position: relative !important;
+}
+html body :is([data-timeline-row-kind="message"][data-message-role="assistant"] > div:has(.chat-markdown), [data-timeline-row-kind="message"][data-message-role="user"] > div[class*="bg-message"])::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: 0 !important;
+	z-index: 2 !important;
+	border-radius: inherit !important;
+	padding: 1px !important;
+	background: linear-gradient(135deg, var(--t25-ga), var(--t25-gb)) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	pointer-events: none !important;
+	transition: --t25-ga 0.22s ease, --t25-gb 0.22s ease !important;
+}
+html body :is([data-timeline-row-kind="message"][data-message-role="assistant"] > div:has(.chat-markdown), [data-timeline-row-kind="message"][data-message-role="user"] > div[class*="bg-message"]):is(:hover, [data-t25f]) {
+	box-shadow: 0 0 14px -6px rgb(137 180 250 / 0.45), 0 0 22px -10px rgb(203 166 247 / 0.4) !important;
+}
+html body :is([data-timeline-row-kind="message"][data-message-role="assistant"] > div:has(.chat-markdown), [data-timeline-row-kind="message"][data-message-role="user"] > div[class*="bg-message"]):is(:hover, [data-t25f])::after {
+	--t25-ga: #89b4fa;
+	--t25-gb: #cba6f7;
+	padding: 2px !important;
+}
+html .messages-timeline-row-frame[data-t15a-run] [data-timeline-row-kind="message"][data-message-role="assistant"] > div:has(.chat-markdown)::after {
+	content: none !important;
+}
+html .messages-timeline-row-frame[data-t15a-run] [data-timeline-row-kind="message"][data-timeline-row-kind="message"][data-message-role="assistant"] > div:has(.chat-markdown):is(:hover, [data-t25f]) {
+	box-shadow: none !important;
+}
+
+/* 19. "Cite" button that pops up over selected reply text: it used the thin glass button, so the
+       reply text read straight through it. Now a solid-looking frosted pill (dark Mocha fill over a
+       strong blur) with the gradient frame, so nothing shows through. */
+html body > button.fixed:is([aria-label="Cite selection in composer"], [aria-label="Selection is too long to cite"]) {
+	background-color: rgb(24 24 37 / 0.88) !important;
+	background-image: none !important;
+	-webkit-backdrop-filter: blur(18px) saturate(1.4) !important;
+	backdrop-filter: blur(18px) saturate(1.4) !important;
+	color: #cdd6f4 !important;
+	border: 1.5px solid transparent !important;
+	border-radius: 9px !important;
+	background: linear-gradient(rgb(24 24 37 / 0.9), rgb(24 24 37 / 0.9)) padding-box, linear-gradient(135deg, #89b4fa, #cba6f7) border-box !important;
+	box-shadow: 0 0 14px -4px rgb(137 180 250 / 0.5), 0 0 20px -8px rgb(203 166 247 / 0.45), 0 8px 20px -8px rgb(0 0 0 / 0.6) !important;
+}
+html body > button.fixed:is([aria-label="Cite selection in composer"]):is(:hover, :focus-visible) {
+	background: linear-gradient(rgb(49 50 68 / 0.95), rgb(49 50 68 / 0.95)) padding-box, linear-gradient(135deg, #89b4fa, #cba6f7) border-box !important;
+	outline: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+	html [data-thread-details-card] *::after, html [data-timeline-row-kind="message"] > div::after { transition: none !important; }
+}
+
+/* 20. Frosted glass without specks (owner, 2026-11-09: "remnants of artifacting in the blurry
+       material"). At 62% tint the coarse steps Chromium uses to draw pass 24's wide blur showed
+       through as thin lines, blocky bands and specks over text behind the composer, the queue and
+       menus. Five versions were tried side by side over the thread list (stronger, weaker, double
+       and triple blurs); keeping the blur and raising the tint to 85% was the only one with no
+       marks and no readable text behind it. */
+html[data-window-material][data-window-material][data-window-material] {
+	--t24-frost-fill: rgb(30 30 46 / 0.85);
+}
+/* 21. Room between the thread and the queued messages: the queue list sits straight after the
+       last thread box with no space (owner screenshot: the dashed bubble touched the box above). */
+html section[data-thread-queue][data-thread-queue] {
+	padding-top: 14px !important;
+}
+
+/* 22. The reply box inside a work run (the box under "Worked for ...") had only a faint grey edge
+       on hover. Hovering anywhere in the run now lights the whole box with the blue to mauve edge:
+       blue down the left, mauve down the right, blending along the top and bottom. The box is
+       drawn row by row, so each row draws its own share of the frame. */
+html .messages-timeline-row-frame[data-t15a-run] div[class*="chat-content-lane"] {
+	position: relative !important;
+}
+html .messages-timeline-row-frame[data-t15a-run] div[class*="chat-content-lane"]::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: 0 !important;
+	z-index: 3 !important;
+	border-radius: inherit !important;
+	padding: 0 2px !important;
+	background: linear-gradient(90deg, var(--t25-ga), var(--t25-gb)) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	pointer-events: none !important;
+	--t25-ga: transparent;
+	--t25-gb: transparent;
+	transition: --t25-ga 0.22s ease, --t25-gb 0.22s ease !important;
+}
+html .messages-timeline-row-frame[data-t15a-run][data-t15a-run-start] div[class*="chat-content-lane"]::after { padding: 2px 2px 0 !important; }
+/* rows sit at fractional pixel positions; reach 1px up into the row above so the edge never shows a 1px break at a join */
+html .messages-timeline-row-frame[data-t15a-run]:not([data-t15a-run-start]) div[class*="chat-content-lane"]::after { top: -1px !important; }
+html .messages-timeline-row-frame[data-t15a-run][data-t15a-run-end] div[class*="chat-content-lane"]::after { padding: 0 2px 2px !important; }
+html .messages-timeline-row-frame[data-t15a-run][data-t15a-run-start][data-t15a-run-end] div[class*="chat-content-lane"]::after { padding: 2px !important; }
+html .messages-timeline-scroll[data-t25-lit] .messages-timeline-row-frame[data-t15a-run] > .chat-content-lane::after {
+	--t25-ga: #89b4fa;
+	--t25-gb: #cba6f7;
+}
+html .messages-timeline-scroll[data-t25-lit] .messages-timeline-row-frame[data-t15a-run][data-t15a-run] > .chat-content-lane {
+	box-shadow: none !important; /* no inner glow: each row would glow on its own and leave a bright seam where two rows meet */
+}
+@media (prefers-reduced-motion: reduce) {
+	html .messages-timeline-row-frame[data-t15a-run] div[class*="chat-content-lane"]::after { transition: none !important; }
+}
+
+/* 23. No inner hover boxes inside a work run (owner, 2026-11-09: "get rid of this unnecessary
+       extra hovered state elements in here, they look ugly"). The rows inside the box (thinking,
+       file reads, tool calls) used to light up a grey panel of their own on hover. The run box
+       itself is the only thing that reacts now (section 22). The "Worked for" toggle keeps its pill. */
+html .messages-timeline-row-frame[data-t15a-run][data-t15a-run] :is(
+	div.group\/timeline-row,
+	[data-timeline-row-kind="work-live"] button[class*="live-work"],
+	[data-timeline-row-kind="thinking"] button,
+	div[class*="chat-content-lane"] [data-timeline-row-kind]:not([data-timeline-row-kind="work-toggle"]) li,
+	div[class*="chat-content-lane"] [data-timeline-row-kind]:not([data-timeline-row-kind="work-toggle"]) [class*="hover:bg"]:not([data-changed-files-state] *)
+):is(:hover, :focus-visible, [data-t25f]) {
+	background-color: transparent !important;
+	background-image: none !important;
+	box-shadow: none !important;
+	outline: none !important;
+}
+
+/* 24. Hover fills a shade darker, matching the pills (owner, 2026-11-09: "too light ... fit in
+       with the Mocha base, not too dark"). Measured from the owner's screenshots: the details
+       dock row hovered at rgb(68 67 84) because a stock inner layer adds 8% white on hover under
+       the theme's fill; the slash-menu row at rgb(50 51 70). Pills sit at about rgb(32 32 49).
+       Both now use one fill just above the pills; the blue/mauve edge and inner glow stay. */
+html body [data-thread-details-card][data-thread-details-card] .group\/details-split .group\/details-split,
+html body [data-thread-details-card][data-thread-details-card] .group\/details-split :is(div, button):not([data-t3l-none]) {
+	background-color: transparent !important;
+}
+html body [data-thread-details-card][data-thread-details-card][data-thread-details-card] :is(.group\/details-split, .group\/details-items div.cursor-default, [data-slot="tooltip-trigger"][class*="grid-cols-subgrid"]):is(:hover, [data-t25f]),
+html [data-composer-command-drawer][data-composer-command-drawer][data-composer-command-drawer] [data-slot="command-item"][data-slot="command-item"]:is([aria-selected="true"], [data-highlighted], [data-active="true"], :hover, [data-t25f]) {
+	--accent: rgb(36 36 54 / 0.9);
+	--color-accent: rgb(36 36 54 / 0.9);
+	background-color: rgb(36 36 54 / 0.9) !important;
+}
+
+/* 25. Section 24 alone lost on the real rows: T3's own hover and open-tooltip tints
+       (dark:hover:!bg-white/[0.08], dark:data-popup-open:!bg-white/[0.08]) are !important inside
+       @layer utilities, and a layered !important beats an unlayered one. These rules sit in the
+       earliest layer, which wins for !important, so the dark fill from section 24 shows. */
+@layer theme {
+	html body [data-thread-details-card] :is(.group\/details-split, .group\/details-items div.cursor-default):is(:hover, [data-t25f], :has([data-popup-open])) {
+		background-color: rgb(36 36 54 / 0.9) !important;
+	}
+	html body [data-thread-details-card] .group\/details-split :is(button, div):not([data-t3l-none]) {
+		background-color: transparent !important;
+	}
+}

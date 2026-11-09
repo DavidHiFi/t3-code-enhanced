@@ -7,6 +7,11 @@
 	"versionBadge": true,
 	"settingsUi": true,
 	"browserAppearance": "dark",
+	"enhancedUpdates": {
+		"check": true,
+		"install": true,
+		"intervalHours": 6
+	},
 	"serverPatches": {
 		"slowrpc": true,
 		"opencode": false,
