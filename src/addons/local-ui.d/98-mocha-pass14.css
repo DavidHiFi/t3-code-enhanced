@@ -12,7 +12,7 @@
 /* ================= workspace titlebar controls (Maximize panel, drawer/panel toggles) ================= */
 div[data-workspace-titlebar-controls="true"] button {
 	background: var(--t5-pill) !important;
-	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t5-edge) !important;
 	border-radius: 9px !important;
 	padding: 3px !important;
 	transition: var(--t5-ease) !important;
@@ -28,7 +28,7 @@ div[data-workspace-titlebar-controls="true"] button:hover {
 div[data-right-panel-tabbar] button[data-slot="button"],
 div[data-right-panel-tabbar] button[data-slot="menu-trigger"] {
 	background: var(--t5-pill) !important;
-	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t5-edge) !important;
 	border-radius: 9px !important;
 	transition: var(--t5-ease) !important;
 }
@@ -41,7 +41,7 @@ div[data-right-panel-tabbar] button[data-slot="menu-trigger"]:hover {
 /* ================= every panel tab is a resting dock (not just the active one) ================= */
 div[data-right-panel-tabbar] div.group\/tab {
 	background: var(--t5-pill) !important;
-	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t5-edge) !important;
 }
 div[data-right-panel-tabbar] div.group\/tab > button[data-slot="tooltip-trigger"] {
 	border-radius: 7px !important;
@@ -55,19 +55,7 @@ div[data-right-panel-tabbar] div.group\/tab:hover > button[data-slot="tooltip-tr
 div[data-right-panel-surface-content] aside [data-surface-subheader] {
 	margin: 2px 4px !important;
 	border-radius: 10px !important;
-	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
-}
-
-/* ================= background activity row (marked data-t3l-ba-row by 97-diff-docks.js) ================= */
-[data-t3l-ba-row] {
-	background: var(--t5-pill-hi) !important;
-	border-radius: 10px !important;
-	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
-	padding: 3px 8px !important;
-	transition: var(--t5-ease) !important;
-}
-div[data-t3l-ba-row]:hover {
-	box-shadow: var(--t5-ring), var(--t5-glow) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t5-edge) !important;
 }
 
 /* ================= search row icon-button slab: round pass 10's square field ================= */

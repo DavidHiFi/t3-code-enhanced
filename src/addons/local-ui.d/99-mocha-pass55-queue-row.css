@@ -1,0 +1,14 @@
+/* Pass 55 (2026-11-22): no square box behind the queued message buttons.
+   Under each queued message T3 draws one row: time stamp (hidden until hover), Send now, edit,
+   remove. Pass 25 item 4 gave that row (li > div:last-child) the frosted fill and blur meant for
+   the message card, with no radius, so a square grey box showed around the chips, wider on the
+   left where the hidden time stamp sits. The chips carry their own rounded dark fill (pass 53),
+   so the row itself is now bare.
+   Rollback: delete this file and reload T3. */
+html[data-window-material][data-window-material] section[data-thread-queue] li[aria-label^="Queued message"] > div:last-child:not(.border-dashed) {
+	background: none !important;
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+	box-shadow: none !important;
+	border-color: transparent !important;
+}

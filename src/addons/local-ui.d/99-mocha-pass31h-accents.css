@@ -1,0 +1,184 @@
+/* Pass 31h accents (2026-11-10):
+   1. Working spinner: Mocha blue-to-mauve dashed ring, smooth 1s spin (3s under reduced motion).
+   2. Scrollbars: slim blue-to-mauve gradient thumbs on a clear track, brighter on hover.
+   3. Galaxy send button: grey rest edge, blue-to-mauve hover frame and glow, Mocha-only blue galaxy.
+   4. Brand dock: grey rest edge, blue-to-mauve hover frame and glow, Mocha-only night galaxy.
+   Rollback: delete this file and reload T3. */
+
+@property --p31h-a { syntax: "<color>"; inherits: false; initial-value: rgb(108 112 134 / 0.55); }
+@property --p31h-b { syntax: "<color>"; inherits: false; initial-value: rgb(108 112 134 / 0.55); }
+
+@keyframes p31h-spin { to { transform: rotate(360deg); } }
+
+/* ===== 1. Working spinner =====
+   Lucide circle-dashed: sidebar row status ("Working", "Setting up"), the composer
+   background-work row and the chat status line. Markdown mention icons are not
+   matched. The svg keeps its box (size-4 / size-3.5); its paths are hidden and the
+   ring is a conic gradient cut to the same 8 dashes on the same radius. */
+html :is(
+	.text-info-foreground > svg.lucide-circle-dashed,
+	[data-composer-banner-row] svg.lucide-circle-dashed,
+	[data-chat-thread-status-line] svg.lucide-circle-dashed
+) {
+	background: conic-gradient(from 0deg, #89b4fa, #cba6f7 50%, #89b4fa) !important;
+	border-radius: 50% !important;
+	-webkit-mask-image:
+		repeating-conic-gradient(from -15deg, #000 0deg 29.5deg, transparent 30.5deg 44.5deg, #000 45deg),
+		radial-gradient(closest-side, transparent 73.5%, #000 75.5% 90.5%, transparent 92.5%) !important;
+	-webkit-mask-composite: source-in !important;
+	mask-image:
+		repeating-conic-gradient(from -15deg, #000 0deg 29.5deg, transparent 30.5deg 44.5deg, #000 45deg),
+		radial-gradient(closest-side, transparent 73.5%, #000 75.5% 90.5%, transparent 92.5%) !important;
+	mask-composite: intersect !important;
+	animation: p31h-spin 1s linear infinite !important;
+	transform-origin: 50% 50% !important;
+	will-change: transform;
+}
+html :is(
+	.text-info-foreground > svg.lucide-circle-dashed,
+	[data-composer-banner-row] svg.lucide-circle-dashed,
+	[data-chat-thread-status-line] svg.lucide-circle-dashed
+) > * {
+	opacity: 0 !important;
+}
+@media (prefers-reduced-motion: reduce) {
+	html :is(
+		.text-info-foreground > svg.lucide-circle-dashed,
+		[data-composer-banner-row] svg.lucide-circle-dashed,
+		[data-chat-thread-status-line] svg.lucide-circle-dashed
+	) {
+		animation-duration: 3s !important;
+	}
+}
+
+/* ===== 2. Scrollbars =====
+   Chromium drops ::-webkit-scrollbar styling on any element with a non-auto
+   scrollbar-color or scrollbar-width, so those go back to auto (never the
+   scrollbar-width:none strips). Widths stay T3's own (6px, or 10px with a 3px
+   clip border on the snap strip). Layered !important beats the utilities. */
+@layer theme {
+	html .chat-markdown pre,
+	html :is(.\[--app-scrollbar-thumb-hover\:rgb\(191_191_191\)\],.group-focus-visible\:bg-\[var\(--app-scrollbar-thumb-hover\)\],.group-hover\:bg-\[var\(--app-scrollbar-thumb-hover\)\],.hover\:bg-\[var\(--app-scrollbar-thumb-hover\)\],.scrollbar-thumb-color,.scrollbar-thumb-foreground\/18,.var\(--trees-scrollbar-thumb-current\)),
+	html :is(.scrollbar-track-color,.scrollbar-track-transparent),
+	html .\[scrollbar-width\:thin\] {
+		scrollbar-color: auto !important;
+		scrollbar-width: auto !important;
+	}
+
+	html ::-webkit-scrollbar-track,
+	html ::-webkit-scrollbar-corner {
+		background: transparent !important;
+	}
+	html ::-webkit-scrollbar-thumb {
+		background-color: transparent !important;
+		background-image: linear-gradient(180deg, rgb(137 180 250 / 0.62), rgb(203 166 247 / 0.62)) !important;
+		border-radius: 999px !important;
+	}
+	html ::-webkit-scrollbar-thumb:hover {
+		background-image: linear-gradient(180deg, rgb(137 180 250 / 0.92), rgb(203 166 247 / 0.92)) !important;
+	}
+
+	/* Base UI ScrollArea thumbs (settings, popovers, chat tables) and the terminal scrollback thumb */
+	html [data-slot="scroll-area-thumb"],
+	html [aria-label="Terminal scrollback"] > div {
+		background-color: transparent !important;
+		background-image: linear-gradient(180deg, rgb(137 180 250 / 0.62), rgb(203 166 247 / 0.62)) !important;
+		border-radius: 999px !important;
+	}
+	html [data-slot="scroll-area-thumb"][data-slot]:hover,
+	html [aria-label="Terminal scrollback"]:hover > div {
+		background-image: linear-gradient(180deg, rgb(137 180 250 / 0.92), rgb(203 166 247 / 0.92)) !important;
+	}
+	html [data-slot="scroll-area-scrollbar"][data-orientation="horizontal"] [data-slot="scroll-area-thumb"] {
+		background-image: linear-gradient(90deg, rgb(137 180 250 / 0.62), rgb(203 166 247 / 0.62)) !important;
+	}
+}
+
+/* ===== 3. Galaxy send button =====
+   The galaxy is T3's own SVG, coloured only by --stage-night-* custom properties,
+   so it is recoloured at the source by setting them on the svg itself. */
+html [data-chat-composer-surface] button.isolate.rounded-full:has(> span > svg[data-stage-art]) svg[data-stage-art] {
+	--stage-night-bottom: #89b4fa;
+	--stage-night-mid: #89b4fa;
+	--stage-night-top: #b4befe;
+	--stage-night-glow-highlight: #cba6f7;
+	--stage-night-glow-secondary: #f5c2e7;
+	--stage-night-highlight: #b4befe;
+	--stage-night-secondary: #74c7ec;
+	--stage-night-tertiary: #cba6f7;
+	--stage-night-line: #b4befe;
+	--stage-night-sparkle: #f5c2e7;
+}
+@layer theme {
+	html [data-chat-composer-surface] button.isolate.rounded-full:has(> span > svg[data-stage-art]) {
+		background-color: #89b4fa !important;
+		color: #11111b !important;
+		box-shadow: none !important;
+		filter: none !important;
+	}
+	html [data-chat-composer-surface] button.isolate.rounded-full:has(> span > svg[data-stage-art]):enabled:hover {
+		box-shadow: 0 0 14px -4px rgb(137 180 250 / 0.55), 0 0 20px -8px rgb(203 166 247 / 0.5) !important;
+	}
+}
+html [data-chat-composer-surface] button.isolate.rounded-full:has(> span > svg[data-stage-art])::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: 0 !important;
+	border-radius: inherit !important;
+		padding: 1.5px !important;
+	--p31h-a: inherit;
+	--p31h-b: inherit;
+	background: linear-gradient(135deg, var(--p31h-a), var(--p31h-b)) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	mask-composite: exclude !important;
+	pointer-events: none !important;
+	z-index: 1 !important;
+	transition: --p31h-a 150ms ease-out, --p31h-b 150ms ease-out !important;
+}
+html [data-chat-composer-surface] button.isolate.rounded-full:has(> span > svg[data-stage-art]) {
+	--p31h-a: rgb(108 112 134 / 0.55);
+	--p31h-b: rgb(108 112 134 / 0.55);
+	transition-property: transform, box-shadow, --p31h-a, --p31h-b !important;
+}
+html [data-chat-composer-surface] button.isolate.rounded-full:has(> span > svg[data-stage-art]):enabled:hover {
+	--p31h-a: #89b4fa;
+	--p31h-b: #cba6f7;
+}
+
+/* ===== 4. Brand dock (workspace topbar with the night galaxy) =====
+   The galaxy backdrop is a positioned child, so it paints over pass22's inset
+   rest edge. The edge moves onto the masked ::after frame (drawn above the
+   backdrop), one 12px radius for frame, glow and fill. */
+html body [data-slot="sidebar-inner"] .sidebar-stage-backdrop svg[data-stage-art] {
+	--stage-night-bottom: #11111b;
+	--stage-night-mid: #181825;
+	--stage-night-top: #1e1e2e;
+	--stage-night-glow-highlight: #cba6f7;
+	--stage-night-glow-secondary: #89b4fa;
+	--stage-night-highlight: #74c7ec;
+	--stage-night-secondary: #89b4fa;
+	--stage-night-tertiary: #cba6f7;
+	--stage-night-line: #b4befe;
+	--stage-night-sparkle: #f5c2e7;
+}
+html body [data-slot="sidebar-inner"] div.relative.flex:is(.\[--toast-header-offset\:var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\]\!,.max-h-\[var\(--workspace-topbar-height\)\]\!,.min-h-\[var\(--workspace-topbar-height\)\],.min-h-\[var\(--workspace-topbar-height\)\]\!,.pb-\(--workspace-topbar-height\),.wco\:h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:max-h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:mt-\(--workspace-topbar-height\),.workspace-topbar-height) {
+	--p31h-a: rgb(108 112 134 / 0.55);
+	--p31h-b: rgb(108 112 134 / 0.55);
+	box-shadow: none !important;
+	transition: box-shadow 150ms ease-out, --p31h-a 150ms ease-out, --p31h-b 150ms ease-out !important;
+}
+html body [data-slot="sidebar-inner"] div.relative.flex:is(.\[--toast-header-offset\:var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\]\!,.max-h-\[var\(--workspace-topbar-height\)\]\!,.min-h-\[var\(--workspace-topbar-height\)\],.min-h-\[var\(--workspace-topbar-height\)\]\!,.pb-\(--workspace-topbar-height\),.wco\:h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:max-h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:mt-\(--workspace-topbar-height\),.workspace-topbar-height):hover {
+	--p31h-a: #89b4fa;
+	--p31h-b: #cba6f7;
+	box-shadow: 0 0 14px -4px rgb(137 180 250 / 0.5), 0 0 20px -8px rgb(203 166 247 / 0.45) !important;
+}
+html body [data-slot="sidebar-inner"] div.relative.flex:is(.\[--toast-header-offset\:var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\]\!,.max-h-\[var\(--workspace-topbar-height\)\]\!,.min-h-\[var\(--workspace-topbar-height\)\],.min-h-\[var\(--workspace-topbar-height\)\]\!,.pb-\(--workspace-topbar-height\),.wco\:h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:max-h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:mt-\(--workspace-topbar-height\),.workspace-topbar-height)::after,
+html body [data-slot="sidebar-inner"] div.relative.flex:is(.\[--toast-header-offset\:var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\]\!,.max-h-\[var\(--workspace-topbar-height\)\]\!,.min-h-\[var\(--workspace-topbar-height\)\],.min-h-\[var\(--workspace-topbar-height\)\]\!,.pb-\(--workspace-topbar-height\),.wco\:h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:max-h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:mt-\(--workspace-topbar-height\),.workspace-topbar-height):hover::after {
+	--p31h-a: inherit;
+	--p31h-b: inherit;
+	background: linear-gradient(135deg, var(--p31h-a), var(--p31h-b)) !important;
+	box-shadow: none !important;
+	z-index: 5 !important;
+}

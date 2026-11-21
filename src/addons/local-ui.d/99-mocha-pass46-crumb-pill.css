@@ -1,0 +1,39 @@
+/* Pass 46 (2026-11-14): owner, "there needs to be hovered and non hovered state borders" on the
+   title pill in the chat header (back and forward arrows, project / thread title).
+   Pass 38 made that pill flat and edgeless inside the header dock. It now has the same edges as
+   the header buttons beside it: a soft grey ring at rest, the blue to mauve ring on hover or
+   keyboard focus. No outer glow: the nav clips 2px past the pill, so a glow would show a hard cut.
+   In @layer theme so it beats pass 38's unlayered !important rule.
+   Rollback: delete this file and reload T3. */
+@layer theme {
+
+html body header[data-chat-header][data-chat-header] nav[aria-label$="breadcrumb"] > ol {
+	position: relative !important;
+	border-color: transparent !important;
+	border-radius: 10px !important;
+	box-shadow: inset 0 0 0 1.5px rgb(108 112 134 / 0.4) !important;
+	transition: box-shadow 0.16s ease !important;
+}
+html body header[data-chat-header][data-chat-header] nav[aria-label$="breadcrumb"] > ol::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: -1px !important;
+	z-index: 3 !important;
+	border-radius: 11px !important;
+	padding: 2px !important;
+	background: linear-gradient(135deg, #89b4fa, #cba6f7) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	opacity: 0 !important;
+	transition: opacity 0.16s ease !important;
+	pointer-events: none !important;
+}
+html body header[data-chat-header][data-chat-header] nav[aria-label$="breadcrumb"] > ol:is(:hover, :has(:focus-visible)) {
+	box-shadow: none !important;
+}
+html body header[data-chat-header][data-chat-header] nav[aria-label$="breadcrumb"] > ol:is(:hover, :has(:focus-visible))::after {
+	opacity: 1 !important;
+}
+
+}

@@ -71,6 +71,8 @@ foreach ($rel in $files) {
     }
     New-Item -ItemType Directory -Force -Path (Split-Path $dst) | Out-Null
     Copy-Item -LiteralPath $src -Destination $dst -Force
+    # a downloaded zip marks its files as from the internet; the icon tool would then stop on a warning
+    if ($rel -match '\.(exe|ps1)$') { Unblock-File -LiteralPath $dst -ErrorAction SilentlyContinue }
 }
 # files an older release installed that this one no longer ships: back up, then remove,
 # so renamed or retired add-ons do not linger

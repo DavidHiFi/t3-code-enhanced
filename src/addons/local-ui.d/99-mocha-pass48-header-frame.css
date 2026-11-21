@@ -1,0 +1,55 @@
+/* Pass 48 (2026-11-16): the chat top bar (header dock with the project / thread pill).
+   Owner: "Add hover gradient border to the element. Include a top bar." The top bar kept a plain
+   1px grey edge on hover, while every other dock lights up with the blue to mauve frame.
+   Now the bar keeps its grey edge at rest and, on hover, the edge turns into the same 2px blue to mauve frame,
+   on all four sides. The frame sits over the real 1px border (which goes clear while lit), so
+   nothing inside moves. The frame itself never takes the mouse.
+   Fix (2026-11-16, owner: "It still has no hover"): the bar was a window drag area
+   (app-region: drag). Windows takes the mouse over a drag area, so the page never saw a hover
+   and the frame never lit. The bar is now a normal area; the Windows title strip above it
+   still drags the window.
+   Fix 2 (2026-11-16, owner: "Hovering the top dock shows nothing; only the outer border of the
+   main big dock displays"): T3 makes the bar itself ignore the mouse (pointer-events: none) and
+   only the title pill and buttons take it, so hovering the empty bar did nothing and hovering
+   the pill lit the outer frame. The bar now takes the mouse, its frame lights only while the
+   pointer is on the bar itself, and the pill or a button lights its own ring instead.
+   Fix 3 (2026-11-16, owner: "it gets skinnier at some points ... I don't like that inner frosted
+   glow and the inner border"): the frame was a 2px padding ring. At the 110% display scale 2px is
+   2.2 screen pixels, so each side rounded differently and the top looked thinner. The frame is
+   now a 2px border on the overlay, which the browser snaps to whole screen pixels, so all four
+   sides match. The inner glow is gone; hover keeps only the bar's normal drop shadow.
+   In @layer theme so it beats pass 39's and pass 41's unlayered !important rules.
+   Rollback: delete this file and reload T3. */
+
+@layer theme {
+	html body #root header[data-chat-header] {
+		position: relative !important;
+		pointer-events: auto !important;
+		-webkit-app-region: no-drag !important;
+		app-region: no-drag !important;
+		transition: border-color 0.15s ease-out, box-shadow 0.15s ease-out !important;
+	}
+	html body #root header[data-chat-header]::after {
+		content: "" !important;
+		position: absolute !important;
+		inset: -1px !important;
+		z-index: 3 !important;
+		border-radius: 13px !important;
+		padding: 0 !important;
+		border: 2px solid transparent !important;
+		background: linear-gradient(100deg, #89b4fa, #cba6f7) border-box !important;
+		-webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0) border-box !important;
+		-webkit-mask-composite: xor !important;
+		mask-composite: exclude !important;
+		opacity: 0 !important;
+		transition: opacity 0.15s ease-out !important;
+		pointer-events: none !important;
+	}
+	html body #root header[data-chat-header]:hover:not(:has(nav[aria-label$="breadcrumb"] > ol:hover, button:hover)) {
+		border-color: transparent !important;
+		box-shadow: 0 6px 18px -8px rgb(17 17 27 / 0.7) !important;
+	}
+	html body #root header[data-chat-header]:hover:not(:has(nav[aria-label$="breadcrumb"] > ol:hover, button:hover))::after {
+		opacity: 1 !important;
+	}
+}

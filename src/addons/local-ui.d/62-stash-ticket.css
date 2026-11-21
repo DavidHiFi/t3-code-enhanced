@@ -22,10 +22,6 @@
 	content: none !important;
 }
 
-[data-composer-shoulder-tab] [data-prompt-stash-badge] {
-	border: 1px solid var(--chat-composer-attached-outline, var(--app-theme-toolbar-border, color-mix(in srgb, currentColor 25%, transparent)));
-}
-
 [data-composer-banner-surface='attached']:has([data-composer-stash-drawer]),
 [data-composer-stash-drawer] {
 	background-color: #1e1e2e !important;

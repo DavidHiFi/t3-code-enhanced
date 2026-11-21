@@ -1,0 +1,101 @@
+/* Pass 35 (2026-11-12): dialogs and their buttons get the blue-to-mauve hover frame.
+   The confirm dialogs (Delete thread, and every other alert or plain dialog) only turned their
+   border flat blue on hover (87-hover-glow), and the Cancel / Confirm buttons had no gradient.
+   1. The dialog box: its 1px border goes transparent and is painted with the box's own frost
+      (background-clip: border-box), and a 1px masked ::after draws the edge: grey at rest,
+      blue to mauve on hover, with the blue and mauve glow the toasts use. Dialogs clip their
+      overflow, so the frame sits just inside the edge (inset 0) where nothing can cut it.
+   2. Dialog footer buttons: same frame on each button. Outline buttons (Cancel) rest grey and
+      hover dark; filled buttons (Confirm, Delete) keep their colour and get the frame on hover.
+   Settings has its own button passes (29a, 34) and is skipped for the buttons. */
+@property --p35-a { syntax: "<color>"; inherits: false; initial-value: transparent; }
+@property --p35-b { syntax: "<color>"; inherits: false; initial-value: transparent; }
+
+@layer theme {
+	/* ---------- 1. the dialog box ---------- */
+	html :is([data-slot="alert-dialog-popup"], [data-slot="command-dialog-popup"], [data-slot="dialog-popup"]:not([data-app-modal]), .dialog-glass, .alert-glass):not(:is(.\[\&\+\[data-slot\=composer-banner-attachment\]_\[data-composer-banner-surface\=attached\]\]\:before\:rounded-none,.\[\&\>\[data-slot\=settings-row\]\]\:rounded-none,.\[\&_\[data-slot\=settings-row\]\]\:rounded-none,.data-panel-open\:rounded-none,.in-\[\.range-middle\]\:rounded-none,.max-sm\:rounded-none,.rounded-none)):not(:has(div.max-w-\[var\(--media-width\)\])) {
+		border-color: transparent !important;
+		background-clip: border-box !important;
+		--p35-a: rgb(108 112 134 / .55);
+		--p35-b: rgb(108 112 134 / .55);
+		transition-property: scale, opacity, translate, transform, box-shadow, --p35-a, --p35-b !important;
+		transition-duration: .2s !important;
+	}
+	html :is([data-slot="alert-dialog-popup"], [data-slot="command-dialog-popup"], [data-slot="dialog-popup"]:not([data-app-modal]), .dialog-glass, .alert-glass):not(:is(.\[\&\+\[data-slot\=composer-banner-attachment\]_\[data-composer-banner-surface\=attached\]\]\:before\:rounded-none,.\[\&\>\[data-slot\=settings-row\]\]\:rounded-none,.\[\&_\[data-slot\=settings-row\]\]\:rounded-none,.data-panel-open\:rounded-none,.in-\[\.range-middle\]\:rounded-none,.max-sm\:rounded-none,.rounded-none)):not(:has(div.max-w-\[var\(--media-width\)\])):not(.fixed, .absolute) {
+		position: relative !important;
+	}
+	html :is([data-slot="alert-dialog-popup"], [data-slot="command-dialog-popup"], [data-slot="dialog-popup"]:not([data-app-modal]), .dialog-glass, .alert-glass):not(:is(.\[\&\+\[data-slot\=composer-banner-attachment\]_\[data-composer-banner-surface\=attached\]\]\:before\:rounded-none,.\[\&\>\[data-slot\=settings-row\]\]\:rounded-none,.\[\&_\[data-slot\=settings-row\]\]\:rounded-none,.data-panel-open\:rounded-none,.in-\[\.range-middle\]\:rounded-none,.max-sm\:rounded-none,.rounded-none)):not(:has(div.max-w-\[var\(--media-width\)\])):hover {
+		border-color: transparent !important;
+		box-shadow: 0 18px 40px -16px rgb(17 17 27 / .9), 0 0 14px -3px rgb(137 180 250 / .42), 0 0 22px -6px rgb(203 166 247 / .34) !important;
+		--p35-a: #89b4fa;
+		--p35-b: #cba6f7;
+	}
+	html :is([data-slot="alert-dialog-popup"], [data-slot="command-dialog-popup"], [data-slot="dialog-popup"]:not([data-app-modal]), .dialog-glass, .alert-glass):not(:is(.\[\&\+\[data-slot\=composer-banner-attachment\]_\[data-composer-banner-surface\=attached\]\]\:before\:rounded-none,.\[\&\>\[data-slot\=settings-row\]\]\:rounded-none,.\[\&_\[data-slot\=settings-row\]\]\:rounded-none,.data-panel-open\:rounded-none,.in-\[\.range-middle\]\:rounded-none,.max-sm\:rounded-none,.rounded-none)):not(:has(div.max-w-\[var\(--media-width\)\]))::after {
+		content: "" !important;
+		--p35-a: inherit !important;
+		--p35-b: inherit !important;
+		position: absolute !important;
+		inset: 0 !important;
+		z-index: 2 !important;
+		padding: 1.5px !important;
+		border-radius: inherit !important;
+		background: linear-gradient(100deg, var(--p35-a), var(--p35-b)) !important;
+		-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+		-webkit-mask-composite: xor !important;
+		mask-composite: exclude !important;
+		pointer-events: none !important;
+		transition: --p35-a .18s ease, --p35-b .18s ease !important;
+	}
+
+	/* ---------- 2. footer buttons ---------- */
+	html :is([data-slot="alert-dialog-footer"], [data-slot="dialog-footer"]) [data-slot="button"]:not([data-app-modal] *) {
+		position: relative !important;
+		border-color: transparent !important;
+		--p35-a: transparent;
+		--p35-b: transparent;
+	}
+	/* outline and plain buttons rest with the grey edge */
+	html :is([data-slot="alert-dialog-footer"], [data-slot="dialog-footer"]) [data-slot="button"]:not([data-app-modal] *):not(:is(.\*\:after\:bg-primary,.\[\&\:\:-moz-progress-bar\]\:bg-primary,.\[\&\:\:-moz-range-thumb\]\:bg-primary,.\[\&\:\:-webkit-progress-value\]\:bg-primary,.\[\&\:\:-webkit-slider-thumb\]\:bg-primary,.\[\:hover\,\[data-pressed\]\]\:bg-primary\/90,.\[button\&\,a\&\]\:hover\:bg-primary\/90,.aria-pressed\:bg-primary\/8,.before\:bg-primary-foreground,.bg-primary,.bg-primary\/10,.bg-primary\/25,.bg-primary\/5,.bg-primary\/50,.bg-primary\/6,.bg-primary\/8,.bg-primary\/\[0\.035\],.bg-primary\/\[0\.045\],.checked\:bg-primary,.dark\:bg-primary\/10,.dark\:data-checked\:bg-primary\/15,.dark\:data-checked\:hover\:bg-primary\/15,.data-checked\:bg-primary,.data-checked\:bg-primary\/8,.data-checked\:hover\:bg-primary\/8,.group-active\:bg-primary\/60,.group-focus-visible\:bg-primary\/60,.hover\:bg-primary\/90,.in-data-selected\:bg-primary,.selection\:bg-primary,.selection\:bg-primary\/30), :is(.\[\:hover\,\[data-pressed\]\]\:bg-destructive\/4,.\[\:hover\,\[data-pressed\]\]\:bg-destructive\/90,.\[button\&\,a\&\]\:hover\:bg-destructive\/90,.bg-destructive,.bg-destructive\/10,.bg-destructive\/12,.bg-destructive\/14,.bg-destructive\/30,.bg-destructive\/5,.bg-destructive\/6,.bg-destructive\/8,.bg-destructive\/80,.bg-destructive\/90,.dark\:bg-destructive\/16,.dark\:data-pressed\:\!bg-destructive\/16,.dark\:hover\:\!bg-destructive\/16,.data-pressed\:\!bg-destructive\/16,.disabled\:hover\:bg-destructive\/90,.group-has-\[button\[data-provider-update-main\]\:hover\]\/provider-update\:bg-destructive\/18,.hover\:\!bg-destructive\/16,.hover\:bg-destructive,.hover\:bg-destructive\/10)) {
+		--p35-a: rgb(108 112 134 / .5);
+		--p35-b: rgb(108 112 134 / .5);
+		box-shadow: none !important;
+	}
+	html :is([data-slot="alert-dialog-footer"], [data-slot="dialog-footer"]) [data-slot="button"]:not([data-app-modal] *):not(:is(.\*\:after\:bg-primary,.\[\&\:\:-moz-progress-bar\]\:bg-primary,.\[\&\:\:-moz-range-thumb\]\:bg-primary,.\[\&\:\:-webkit-progress-value\]\:bg-primary,.\[\&\:\:-webkit-slider-thumb\]\:bg-primary,.\[\:hover\,\[data-pressed\]\]\:bg-primary\/90,.\[button\&\,a\&\]\:hover\:bg-primary\/90,.aria-pressed\:bg-primary\/8,.before\:bg-primary-foreground,.bg-primary,.bg-primary\/10,.bg-primary\/25,.bg-primary\/5,.bg-primary\/50,.bg-primary\/6,.bg-primary\/8,.bg-primary\/\[0\.035\],.bg-primary\/\[0\.045\],.checked\:bg-primary,.dark\:bg-primary\/10,.dark\:data-checked\:bg-primary\/15,.dark\:data-checked\:hover\:bg-primary\/15,.data-checked\:bg-primary,.data-checked\:bg-primary\/8,.data-checked\:hover\:bg-primary\/8,.group-active\:bg-primary\/60,.group-focus-visible\:bg-primary\/60,.hover\:bg-primary\/90,.in-data-selected\:bg-primary,.selection\:bg-primary,.selection\:bg-primary\/30), :is(.\[\:hover\,\[data-pressed\]\]\:bg-destructive\/4,.\[\:hover\,\[data-pressed\]\]\:bg-destructive\/90,.\[button\&\,a\&\]\:hover\:bg-destructive\/90,.bg-destructive,.bg-destructive\/10,.bg-destructive\/12,.bg-destructive\/14,.bg-destructive\/30,.bg-destructive\/5,.bg-destructive\/6,.bg-destructive\/8,.bg-destructive\/80,.bg-destructive\/90,.dark\:bg-destructive\/16,.dark\:data-pressed\:\!bg-destructive\/16,.dark\:hover\:\!bg-destructive\/16,.data-pressed\:\!bg-destructive\/16,.disabled\:hover\:bg-destructive\/90,.group-has-\[button\[data-provider-update-main\]\:hover\]\/provider-update\:bg-destructive\/18,.hover\:\!bg-destructive\/16,.hover\:bg-destructive,.hover\:bg-destructive\/10)):is(:hover:not(:disabled), :focus-visible) {
+		background-color: rgb(24 24 37 / .72) !important;
+		background-image: none !important;
+		color: #cdd6f4 !important;
+		box-shadow: 0 0 12px -4px rgb(137 180 250 / .4) !important;
+	}
+	html :is([data-slot="alert-dialog-footer"], [data-slot="dialog-footer"]) [data-slot="button"]:not([data-app-modal] *):is(:hover:not(:disabled), :focus-visible) {
+		border-color: transparent !important;
+		--p35-a: #89b4fa;
+		--p35-b: #cba6f7;
+	}
+	html :is([data-slot="alert-dialog-footer"], [data-slot="dialog-footer"]) [data-slot="button"]:is(.\[\:hover\,\[data-pressed\]\]\:bg-destructive\/4,.\[\:hover\,\[data-pressed\]\]\:bg-destructive\/90,.\[button\&\,a\&\]\:hover\:bg-destructive\/90,.bg-destructive,.bg-destructive\/10,.bg-destructive\/12,.bg-destructive\/14,.bg-destructive\/30,.bg-destructive\/5,.bg-destructive\/6,.bg-destructive\/8,.bg-destructive\/80,.bg-destructive\/90,.dark\:bg-destructive\/16,.dark\:data-pressed\:\!bg-destructive\/16,.dark\:hover\:\!bg-destructive\/16,.data-pressed\:\!bg-destructive\/16,.disabled\:hover\:bg-destructive\/90,.group-has-\[button\[data-provider-update-main\]\:hover\]\/provider-update\:bg-destructive\/18,.hover\:\!bg-destructive\/16,.hover\:bg-destructive,.hover\:bg-destructive\/10):not([data-app-modal] *):hover:not(:disabled) {
+		background-color: color-mix(in oklab, var(--destructive) 88%, #cdd6f4) !important;
+		box-shadow: 0 0 12px -4px rgb(203 166 247 / .45) !important;
+	}
+	html :is([data-slot="alert-dialog-footer"], [data-slot="dialog-footer"]) [data-slot="button"]:is(.\*\:after\:bg-primary,.\[\&\:\:-moz-progress-bar\]\:bg-primary,.\[\&\:\:-moz-range-thumb\]\:bg-primary,.\[\&\:\:-webkit-progress-value\]\:bg-primary,.\[\&\:\:-webkit-slider-thumb\]\:bg-primary,.\[\:hover\,\[data-pressed\]\]\:bg-primary\/90,.\[button\&\,a\&\]\:hover\:bg-primary\/90,.aria-pressed\:bg-primary\/8,.before\:bg-primary-foreground,.bg-primary,.bg-primary\/10,.bg-primary\/25,.bg-primary\/5,.bg-primary\/50,.bg-primary\/6,.bg-primary\/8,.bg-primary\/\[0\.035\],.bg-primary\/\[0\.045\],.checked\:bg-primary,.dark\:bg-primary\/10,.dark\:data-checked\:bg-primary\/15,.dark\:data-checked\:hover\:bg-primary\/15,.data-checked\:bg-primary,.data-checked\:bg-primary\/8,.data-checked\:hover\:bg-primary\/8,.group-active\:bg-primary\/60,.group-focus-visible\:bg-primary\/60,.hover\:bg-primary\/90,.in-data-selected\:bg-primary,.selection\:bg-primary,.selection\:bg-primary\/30):not([data-app-modal] *):hover:not(:disabled) {
+		background-color: color-mix(in oklab, var(--primary) 90%, #cdd6f4) !important;
+		box-shadow: 0 0 12px -4px rgb(137 180 250 / .45) !important;
+	}
+	html :is([data-slot="alert-dialog-footer"], [data-slot="dialog-footer"]) [data-slot="button"]:not([data-app-modal] *)::after {
+		content: "" !important;
+		--p35-a: inherit !important;
+		--p35-b: inherit !important;
+		position: absolute !important;
+		inset: -1px !important;
+		z-index: 1 !important;
+		padding: 1.5px !important;
+		border-radius: inherit !important;
+		background: linear-gradient(100deg, var(--p35-a), var(--p35-b)) !important;
+		-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+		-webkit-mask-composite: xor !important;
+		mask-composite: exclude !important;
+		pointer-events: none !important;
+		transition: --p35-a .18s ease, --p35-b .18s ease !important;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	html :is([data-slot$="dialog-popup"], .dialog-glass, .alert-glass, [data-slot$="dialog-footer"] [data-slot="button"])::after { transition: none !important; }
+}

@@ -1,0 +1,11 @@
+/* Pass 36 icon (2026-11-12): a house for the "Homelab Home" script button.
+   T3 only offers six script icons (play, test, lint, configure, build, debug), so the play
+   arrow is redrawn here: the Lucide "house" outline in Mocha lavender with a faint fill, to
+   sit between the blue VS Code logo above it and the mauve cat below.
+   Toolbar button only; the icon picker in the script's edit dialog still shows "play".
+   If the script is renamed, update the label here. Rollback: delete this file and reload T3. */
+[aria-label="Run Homelab Home"][data-toolbar-control] > svg.lucide-play > path {
+	d: path("M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z");
+	stroke: #b4befe;
+	fill: rgb(180 190 254 / 0.16);
+}

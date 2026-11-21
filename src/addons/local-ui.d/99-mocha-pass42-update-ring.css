@@ -1,0 +1,26 @@
+/* Pass 42 (2026-11-14): the update pill's download ring ("0 of 1 updated", "Downloading 40%").
+   T3 draws the progress arc in plain white over a faint white track, edge to edge in the 32px icon
+   box, so it sat on the pill's own border and looked like a hard white outline. Now: the ring sits
+   inside the pill, the track is the grey rest edge, the arc is Mocha blue with a soft blue-to-mauve
+   glow, and it fills smoothly instead of in 300ms steps.
+   Rollback: delete this file and reload T3. */
+@layer theme {
+	html [data-slot="sidebar-footer"] svg.-rotate-90[viewBox="0 0 32 32"] {
+		scale: 0.8 !important;
+		overflow: visible !important;
+		filter: drop-shadow(0 0 2px rgb(137 180 250 / 0.55)) drop-shadow(0 0 4px rgb(203 166 247 / 0.35)) !important;
+	}
+	html [data-slot="sidebar-footer"] svg.-rotate-90[viewBox="0 0 32 32"] > circle:first-child {
+		stroke: rgb(108 112 134 / 0.45) !important;
+		stroke-width: 2px !important;
+	}
+	html [data-slot="sidebar-footer"] svg.-rotate-90[viewBox="0 0 32 32"] > circle:last-child {
+		stroke: #89b4fa !important;
+		stroke-width: 2px !important;
+		stroke-linecap: round !important;
+		transition: stroke-dashoffset 0.8s cubic-bezier(0.22, 1, 0.36, 1) !important;
+	}
+	html [data-slot="sidebar-footer"] svg.-rotate-90[viewBox="0 0 32 32"] + svg {
+		color: #cdd6f4 !important;
+	}
+}

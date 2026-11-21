@@ -22,7 +22,7 @@ html :is([data-settings-section],[data-slot="settings-row"]:has(button[aria-labe
   content: "" !important;
   position: absolute !important;
   inset: 0 !important;
-  padding: 1px !important;
+		padding: 1.5px !important;
   border-radius: inherit !important;
   background: linear-gradient(100deg,var(--t28-a,transparent),var(--t28-b,transparent)) !important;
   -webkit-mask: linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0) !important;
@@ -34,6 +34,5 @@ html :is([data-settings-section],[data-slot="settings-row"]:has(button[aria-labe
   --t28-b: #cba6f7;
 }
 html [data-settings-section] { position: relative !important; }
-html [data-slot="sidebar-footer"] [data-t3enh-update] { margin-left: -4px !important; }
 /* Retired hot-loaded workers may survive until the next page load. */
 html [data-slot="sidebar-footer"] [data-t3enh-update] ~ [data-t3enh-update] { display:none !important; }

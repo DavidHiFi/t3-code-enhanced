@@ -1,30 +1,34 @@
-// T3 Code Enhanced: main-process hook.
+// T3 Code local main-process hook.
 //
-// The app.asar "localcss" patch (lib/patch-app-asar.ps1) calls this file with the main
-// BrowserWindow on every page load of the main window. It lives outside the install folder,
-// so T3 updates keep it; the guard task puts the one-line call back after each update.
+// The app.asar "localcss" patch (lib\patch-app-asar.ps1 in T3 Code Enhanced) calls
+// this file with the main BrowserWindow on every page load of the main window. It lives outside the install folder, so T3 updates keep it;
+// the patch guard puts the one-line call back after each update.
 //
 // What it does, driven by ~/.t3/local-patches.json:
-//   localUiCss: true        inject ~/.t3/local-ui.css, then ~/.t3/local-ui.d/*.css (name order),
-//                           and run ~/.t3/local-ui.d/*.js (small page add-ons that go with the CSS)
-//   windowMaterial: "acrylic" | "mica" | "tabbed" | "windhawk" | "none"
-//                           Windows 11 backdrop behind the whole window. "windhawk" leaves the
-//                           backdrop color to a Windhawk Translucent Windows rule for this exe.
-//                           The window background becomes transparent (T3 re-applies its own
-//                           color on every theme change, so that call is pinned too) and
+//   localUiCss: true        inject ~/.t3/local-ui.css, then ~/.t3/local-ui.d/*.css (name order)
+//   windowMaterial: "windhawk" | "acrylic" | "mica" | "tabbed" | "none"
+//                           Windows 11 backdrop behind the whole window. "windhawk" leaves
+//                           the backdrop to the Translucent Windows Plus rule for this exe
+//                           (the house Mocha acrylic, also kept when the window is unfocused). The window
+//                           background becomes transparent (T3 re-applies its own color
+//                           on every theme change, so that call is pinned too) and
 //                           <html data-window-material="..."> tells the CSS to let it through.
 //   versionBadge: true      (default; false turns it off) inject local-version-badge.js: the
-//                           app version after the channel label (Nightly, Beta) in the sidebar
-//                           header, plus a switch in Settings > General to hide it again
-//                           (localStorage t3local.showVersion)
+//                           app version after "Nightly" in the sidebar header, plus a switch
+//                           in Settings > General to hide it again (localStorage t3local.showVersion)
 //   glassMenus: true        (default) right-click menus drawn as glass panels in the page
 //                           (local-glass-menu.js) instead of native Windows menus
 //   settingsUi: true        (default) Settings > Appearance > Local add-ons card (local-settings-ui.js)
 //   browserAppearance: "dark" | "light" | "system"
-//                           default theme for pages in the built-in browser, see installBrowserAppearance()
-//   enhancedUpdates: { check, install, intervalHours }
-//                           the Enhanced update button and its Settings card: see local-enhanced-update.cjs
-//   evalBridge: true        (off by default) debug channel for development, see startEvalBridge()
+//                           default theme for pages in the built-in browser, see installBrowserAppearance();
+//                           with "dark", pages that have no dark theme of their own are darkened by Chromium
+//   sharedSignIns: ["tailscale.com"]
+//                           (default none) sign-in cookies of these sites are shared by every built-in browser
+//                           store, so one sign-in works in every thread, see installSharedSignIns()
+//   evalBridge: true       (off by default) agent debug channel, see startEvalBridge()
+//   appIcon: "riced" | "original"
+//                           (default riced) the app icon everywhere: window, taskbar, shortcuts, the sidebar logo,
+//                           and the program file after T3 closes, see local-app-icon.cjs
 // Edits here load at the next window reload. Errors are written to ~/.t3/local-main.log.
 
 const fs = require("fs");
@@ -33,6 +37,13 @@ const path = require("path");
 
 const dir = path.join(os.homedir(), ".t3");
 const MATERIALS = new Set(["windhawk", "acrylic", "mica", "tabbed"]);
+const APP_ICONS = new Set(["riced", "original"]);
+
+function appIconModule() {
+	const file = path.join(dir, "local-app-icon.cjs");
+	delete require.cache[file];
+	return require(file);
+}
 
 function log(text) {
 	try {
@@ -42,7 +53,9 @@ function log(text) {
 
 function readConfig() {
 	try {
-		return JSON.parse(fs.readFileSync(path.join(dir, "local-patches.json"), "utf8"));
+		// Windows PowerShell 5.1 saves UTF-8 with a byte-order mark, which JSON.parse rejects.
+		const raw = fs.readFileSync(path.join(dir, "local-patches.json"), "utf8");
+		return JSON.parse(raw.charCodeAt(0) === 0xfeff ? raw.slice(1) : raw);
 	} catch (error) {
 		log(`config unreadable: ${error.message}`);
 		return {};
@@ -62,55 +75,6 @@ function layerFiles(ext) {
 	}
 }
 
-// Debug channel for development (off unless "evalBridge": true): a script dropped at
-// ~/.t3/local-eval/request.js runs in the page and its JSON result lands in result.json.
-function startEvalBridge(mainWindow) {
-	const folder = path.join(dir, "local-eval");
-	clearInterval(mainWindow.__t3EvalTimer);
-	mainWindow.__t3EvalTimer = setInterval(() => {
-		const request = path.join(folder, "request.js");
-		if (mainWindow.isDestroyed()) return clearInterval(mainWindow.__t3EvalTimer);
-		if (!fs.existsSync(request)) return;
-		let code = "";
-		try {
-			code = fs.readFileSync(request, "utf8");
-			fs.unlinkSync(request);
-		} catch {
-			return;
-		}
-		const write = (value) => fs.writeFileSync(path.join(folder, "result.json"), JSON.stringify(value, null, 1));
-		mainWindow.webContents
-			.executeJavaScript(code, true)
-			.then((value) => write({ ok: true, at: new Date().toISOString(), value }))
-			.catch((error) => write({ ok: false, at: new Date().toISOString(), error: String(error && error.message) }));
-	}, 1000);
-}
-
-// The Enhanced update button and Settings card (local-enhanced-update.js) talk to the updater with
-// console.log("T3ENH:{...}"). Like the settings listener below, each load replaces the old listener.
-function installUpdater(window) {
-	const file = path.join(dir, "local-enhanced-update.cjs");
-	if (!fs.existsSync(file)) return;
-	delete require.cache[file];
-	const updater = require(file);
-	const contents = window.webContents;
-	for (const old of contents.listeners("console-message")) {
-		if (String(old).includes("T3ENH:")) contents.removeListener("console-message", old);
-	}
-	contents.on("console-message", (...args) => {
-		const message = args[0] && typeof args[0] === "object" && "message" in args[0] ? args[0].message : args[2];
-		if (typeof message !== "string" || !message.startsWith("T3ENH:")) return;
-		try {
-			updater.handle(JSON.parse(message.slice(6)), window);
-		} catch (error) {
-			log(`updater: ${error.message}`);
-		}
-	});
-	updater.attach(window);
-	const ui = path.join(dir, "local-enhanced-update.js");
-	if (fs.existsSync(ui)) contents.executeJavaScript(fs.readFileSync(ui, "utf8")).catch((error) => log(`update ui: ${error.message}`));
-}
-
 function applyMaterial(window, material) {
 	if (process.platform !== "win32" || typeof window.setBackgroundMaterial !== "function") return null;
 	if (!MATERIALS.has(material)) material = "none";
@@ -124,7 +88,36 @@ function applyMaterial(window, material) {
 	// "windhawk" still asks Electron for acrylic: with "none" Chromium paints the page
 	// on an opaque surface and the Windhawk blur only reached the title bar (2026-10-24 cold start)
 	window.setBackgroundMaterial(material === "windhawk" ? "acrylic" : material);
+	keepMaterial(window, material === "none" ? null : material === "windhawk" ? "acrylic" : material);
 	return material === "none" ? null : material;
+}
+
+// 2026-11-14: the glass behind the window went see-through (no blur) until a reload. The wobble
+// mod hides the window (DWM cloak) for every drag and shows it again without re-setting the
+// backdrop, which DWM can leave stale (the window manager mod notes the same and re-sets it).
+// So after a move, resize, focus, show or restore, ask for the same material again: that makes
+// DWM rebuild it. Twice, because the wobble shows the window only after its landing (~0.3 s).
+function keepMaterial(window, value) {
+	if (window.__t3LocalKeepMaterial) {
+		for (const [name, fn] of window.__t3LocalKeepMaterial) window.removeListener(name, fn);
+		window.__t3LocalKeepMaterial = null;
+	}
+	if (!value) return;
+	let timers = [];
+	const reassert = () => {
+		for (const t of timers) clearTimeout(t);
+		timers = [450, 1400].map((ms) => setTimeout(() => {
+			try {
+				if (!window.isDestroyed()) window.setBackgroundMaterial(value);
+			} catch (error) {
+				log(`keepMaterial: ${error.message}`);
+			}
+		}, ms));
+	};
+	const events = ["moved", "resized", "focus", "show", "restore"].map((name) => [name, reassert]);
+	for (const [name, fn] of events) window.on(name, fn);
+	window.__t3LocalKeepMaterial = events;
+	log(`keepMaterial: on (${value})`);
 }
 
 // Native context menus cannot be themed or blurred, so popups on the main window are drawn by
@@ -195,19 +188,135 @@ function installGlassMenus(mainWindow) {
 	};
 }
 
+// The Enhanced update button and Settings card (local-enhanced-update.js) talk to the updater with
+// console.log("T3ENH:{...}"). Like the settings listener below, each load replaces the old listener.
+function installUpdater(window) {
+	const file = path.join(dir, "local-enhanced-update.cjs");
+	if (!fs.existsSync(file)) return;
+	delete require.cache[file];
+	const updater = require(file);
+	const contents = window.webContents;
+	for (const old of contents.listeners("console-message")) {
+		if (String(old).includes("T3ENH:")) contents.removeListener("console-message", old);
+	}
+	contents.on("console-message", (...args) => {
+		const message = args[0] && typeof args[0] === "object" && "message" in args[0] ? args[0].message : args[2];
+		if (typeof message !== "string" || !message.startsWith("T3ENH:")) return;
+		try {
+			updater.handle(JSON.parse(message.slice(6)), window);
+		} catch (error) {
+			log(`updater: ${error.message}`);
+		}
+	});
+	updater.attach(window);
+	const ui = path.join(dir, "local-enhanced-update.js");
+	if (fs.existsSync(ui)) contents.executeJavaScript(fs.readFileSync(ui, "utf8")).catch((error) => log(`update ui: ${error.message}`));
+}
+
+// Debug channel for agents (off unless "evalBridge": true): a script dropped at
+// ~/.t3/local-eval/request.js runs in the page and its JSON result lands in result.json.
+function startEvalBridge(mainWindow) {
+	const folder = path.join(dir, "local-eval");
+	clearInterval(mainWindow.__t3EvalTimer);
+	mainWindow.__t3EvalTimer = setInterval(() => {
+		const request = path.join(folder, "request.js");
+		if (mainWindow.isDestroyed()) return clearInterval(mainWindow.__t3EvalTimer);
+		// cmd.json: main-process commands for the t3ui CLI (hidden copy of the app, captures).
+		// The handler lives in local-ghost.cjs and is re-read per command, so it changes without a reload.
+		const cmdFile = path.join(folder, "cmd.json");
+		if (fs.existsSync(cmdFile)) {
+			const done = (value) => fs.writeFileSync(path.join(folder, "cmd-result.json"), JSON.stringify(value, null, 1));
+			let req = null;
+			try {
+				req = JSON.parse(fs.readFileSync(cmdFile, "utf8"));
+			} catch (error) {
+				done({ ok: false, error: `bad cmd.json: ${error.message}` });
+			}
+			try { fs.unlinkSync(cmdFile); } catch {}
+			if (req) {
+				try {
+					const ghost = path.join(dir, "local-ghost.cjs");
+					delete require.cache[ghost];
+					Promise.resolve(require(ghost)(mainWindow, req, { dir, cssFiles, layerFiles, readConfig, log }))
+						.then((value) => done({ ok: true, id: req.id, at: new Date().toISOString(), value }))
+						.catch((error) => done({ ok: false, id: req.id, at: new Date().toISOString(), error: String((error && error.message) || error) }));
+				} catch (error) {
+					done({ ok: false, id: req.id, error: String(error && error.message) });
+				}
+			}
+		}
+		if (!fs.existsSync(request)) return;
+		let code = "";
+		try {
+			code = fs.readFileSync(request, "utf8");
+			fs.unlinkSync(request);
+		} catch {
+			return;
+		}
+		const write = (value) => fs.writeFileSync(path.join(folder, "result.json"), JSON.stringify(value, null, 1));
+		mainWindow.webContents
+			.executeJavaScript(code, true)
+			.then((value) => write({ ok: true, at: new Date().toISOString(), value }))
+			.catch((error) => write({ ok: false, at: new Date().toISOString(), error: String(error && error.message) }));
+	}, 1000);
+}
+
 // Default theme for pages in T3's built-in browser. T3 attaches its own debugger to every <webview>
 // tab but only sends prefers-color-scheme when the tab's Appearance menu is not "System", so new tabs
 // follow nativeTheme and usually open light. With browserAppearance "light" or "dark", that value is
 // sent whenever T3 would send or skip "System"; a tab set to Light or Dark in its own menu keeps it.
 // Each webview tab's Debugger is wrapped once per process; state lives on global because this module is
 // re-required on every window load.
+// Dark pages: prefers-color-scheme only changes pages that ship a dark theme (Tailscale's admin does not),
+// so when a tab's final scheme is "dark" Chromium's auto dark mode (CDP Emulation.setAutoDarkModeOverride)
+// is switched on as well. Chromium leaves pages that declare a dark color-scheme alone; pages that are
+// already dark without declaring it (AdGuard Home) are detected by their painted background and skipped.
 const SCHEMES = new Set(["light", "dark"]);
+const OWN_DARK_PROBE = `(() => {
+	const cs = getComputedStyle(document.documentElement).colorScheme || "";
+	const meta = (document.querySelector('meta[name="color-scheme"]') || {}).content || "";
+	if (/dark/.test(cs) || /dark/.test(meta)) return true;
+	const ctx = document.createElement("canvas").getContext("2d", { willReadFrequently: true });
+	const light = (el) => {
+		for (; el && el.nodeType === 1; el = el.parentElement) {
+			ctx.clearRect(0, 0, 1, 1); ctx.fillStyle = "#000"; ctx.fillStyle = getComputedStyle(el).backgroundColor; ctx.fillRect(0, 0, 1, 1);
+			const [r, g, b, a] = ctx.getImageData(0, 0, 1, 1).data;
+			if (a > 128) return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+		}
+		return null;
+	};
+	const l = light(document.elementFromPoint(innerWidth / 2, innerHeight / 2)) ?? light(document.body) ?? 1;
+	return l < 0.35;
+})()`;
 function installBrowserAppearance(scheme) {
 	const { app, webContents } = require("electron");
 	const state = (global.__t3BrowserAppearance ||= {});
 	state.orig ||= new WeakMap();
 	state.attachedAt ||= new WeakMap();
+	state.value ||= new WeakMap(); // debugger -> last prefers-color-scheme value sent ("", "light", "dark")
+	state.dark ||= new WeakMap(); // debugger -> auto dark override currently on
+	state.wcOf ||= new WeakMap();
+	state.loadHooked ||= new WeakSet();
 	state.scheme = SCHEMES.has(scheme) ? scheme : "system";
+	state.applyDark = (wc) => {
+		if (!wc || wc.isDestroyed() || !wc.debugger.isAttached()) return;
+		const dbg = wc.debugger;
+		const orig = state.orig.get(dbg);
+		if (!orig) return;
+		const set = (on) => {
+			if (state.dark.get(dbg) === on) return;
+			state.dark.set(dbg, on);
+			orig.sendCommand.call(dbg, "Emulation.setAutoDarkModeOverride", on ? { enabled: true } : {}).catch((error) => {
+				state.dark.delete(dbg);
+				log(`autoDark: ${error.message}`);
+			});
+		};
+		const value = state.value.has(dbg) ? state.value.get(dbg) : state.scheme === "system" ? "" : state.scheme;
+		if (value !== "dark") return set(false);
+		wc.executeJavaScriptInIsolatedWorld(1999, [{ code: OWN_DARK_PROBE }])
+			.then((ownDark) => set(!ownDark))
+			.catch(() => set(true));
+	};
 	// Electron gives every Debugger its own attach/detach/sendCommand properties, so patching the prototype
 	// changes nothing. Each webview tab's debugger is wrapped once; the wrappers only call state.hooks, which
 	// every window load replaces, so edits below apply at the next window reload, not the next T3 start.
@@ -215,6 +324,7 @@ function installBrowserAppearance(scheme) {
 		attach(dbg, attach, args) {
 			const result = attach.apply(dbg, args);
 			state.attachedAt.set(dbg, Date.now());
+			state.dark.delete(dbg); // a fresh attach starts with no overrides
 			if (state.scheme !== "system") state.emulate(dbg);
 			return result;
 		},
@@ -227,20 +337,38 @@ function installBrowserAppearance(scheme) {
 				if (feature) {
 					const restoring = Date.now() - (state.attachedAt.get(dbg) || 0) < 2000;
 					if ((restoring || feature.value === "") && state.scheme !== "system") params = { ...params, features: params.features.map((f) => (f === feature ? { ...f, value: state.scheme } : f)) };
+					const value = params.features.find((f) => f && f.name === "prefers-color-scheme").value;
+					state.value.set(dbg, value);
+					const sent = sendCommand.call(dbg, method, params, ...rest);
+					Promise.resolve(sent).then(() => state.applyDark(state.wcOf.get(dbg)), () => {});
+					return sent;
 				}
 			}
 			return sendCommand.call(dbg, method, params, ...rest);
 		},
 	};
 	state.emulate = (dbg) => {
+		const value = state.scheme === "system" ? "" : state.scheme;
+		state.value.set(dbg, value);
 		state.orig
 			.get(dbg)
-			.sendCommand.call(dbg, "Emulation.setEmulatedMedia", { features: [{ name: "prefers-color-scheme", value: state.scheme === "system" ? "" : state.scheme }] })
+			.sendCommand.call(dbg, "Emulation.setEmulatedMedia", { features: [{ name: "prefers-color-scheme", value }] })
+			.then(() => state.applyDark(state.wcOf.get(dbg)))
 			.catch((error) => log(`browserAppearance emulate: ${error.message}`));
 	};
 	state.track = (wc) => {
-		if (wc.getType() !== "webview" || wc.isDestroyed() || state.orig.has(wc.debugger)) return;
+		if (wc.getType() !== "webview" || wc.isDestroyed()) return;
 		const dbg = wc.debugger;
+		state.wcOf.set(dbg, wc);
+		// re-check the page's own background on every page load (SPAs paint late, so twice more after load)
+		if (!state.loadHooked.has(wc)) {
+			state.loadHooked.add(wc);
+			wc.on("dom-ready", () => state.applyDark && state.applyDark(wc));
+			wc.on("did-finish-load", () => {
+				for (const delay of [0, 1500, 4000]) setTimeout(() => state.applyDark && state.applyDark(wc), delay);
+			});
+		}
+		if (state.orig.has(dbg)) return;
 		const orig = { attach: dbg.attach, sendCommand: dbg.sendCommand };
 		state.orig.set(dbg, orig);
 		dbg.attach = (...args) => state.hooks.attach(dbg, orig.attach, args);
@@ -257,11 +385,116 @@ function installBrowserAppearance(scheme) {
 	}
 }
 
+// Shared sign-ins for the built-in browser. T3 keeps one persistent cookie store per environment
+// (persist:t3code-preview-<sha256(environmentId)[0..20]>), so a sign-in made in a laptop thread's browser
+// was missing in a tower thread's browser and Tailscale sent it back to its login page. Cookies of the
+// sites in local-patches.json "sharedSignIns" (default none) are copied into every
+// default-profile store at each window load and mirrored live, sign-outs included. Stores are flushed so
+// it survives a T3 restart. Cookie values are never logged. Session objects outlive window reloads, so
+// each gets one listener that calls state.onChanged, which every load replaces.
+function installSharedSignIns(list) {
+	const { app, session } = require("electron");
+	const state = (global.__t3SharedSignIns ||= { hooked: new WeakSet(), echo: new Map() });
+	const domains = (Array.isArray(list) ? list : []).map((d) => String(d).toLowerCase().replace(/^\./, "")).filter(Boolean);
+	if (!domains.length) {
+		state.onChanged = () => {};
+		return;
+	}
+	const STORE = /^t3code-preview-[0-9a-f]{20}$/;
+	const matches = (domain) => {
+		const host = String(domain || "").toLowerCase().replace(/^\./, "");
+		return domains.some((d) => host === d || host.endsWith(`.${d}`));
+	};
+	const id = (c) => `${c.domain}|${c.path}|${c.name}`;
+	const url = (c) => `https://${String(c.domain).replace(/^\./, "")}${c.path || "/"}`;
+	const details = (c) => {
+		const d = { url: url(c), name: c.name, value: c.value, path: c.path || "/", secure: c.secure, httpOnly: c.httpOnly, sameSite: c.sameSite };
+		if (!c.hostOnly) d.domain = c.domain;
+		if (!c.session && c.expirationDate) d.expirationDate = c.expirationDate;
+		return d;
+	};
+	// a write we make fires "changed" in the target store; that echo must not be mirrored back
+	const expect = (s, key) => state.echo.set(`${s.storagePath}|${key}`, Date.now());
+	const isEcho = (s, key) => {
+		const k = `${s.storagePath}|${key}`;
+		const at = state.echo.get(k);
+		state.echo.delete(k);
+		return at !== undefined && Date.now() - at < 5000;
+	};
+	const stores = () => {
+		let names = [];
+		try {
+			names = fs.readdirSync(path.join(app.getPath("userData"), "Partitions")).filter((n) => STORE.test(n));
+		} catch {}
+		return names.map((n) => session.fromPartition(`persist:${n}`));
+	};
+	const flush = (s) => s.cookies.flushStore().catch(() => {});
+	state.onChanged = (s, cookie, cause, removed) => {
+		if (!matches(cookie.domain)) return;
+		// the removal half of an overwrite (ours or the site's) is never mirrored and must not use up the echo mark
+		if (removed && cause !== "explicit" && cause !== "expired-overwrite") return;
+		if (isEcho(s, id(cookie))) return;
+		for (const other of stores()) {
+			if (other === s) continue;
+			expect(other, id(cookie));
+			const done = removed ? other.cookies.remove(url(cookie), cookie.name) : other.cookies.set(details(cookie));
+			done.then(() => flush(other)).catch((error) => log(`sharedSignIns mirror: ${error.message}`));
+		}
+	};
+	const hook = (s) => {
+		if (state.hooked.has(s)) return;
+		state.hooked.add(s);
+		s.cookies.on("changed", (_event, cookie, cause, removed) => state.onChanged(s, cookie, cause, removed));
+	};
+	if (!state.listening) {
+		// a store created later (a new environment) is hooked and filled when T3 opens it
+		app.on("session-created", (s) => {
+			if (!STORE.test(path.basename(s.storagePath || ""))) return;
+			hook(s);
+			setTimeout(() => state.sync && state.sync(), 1000);
+		});
+		state.listening = true;
+	}
+	state.sync = async () => {
+		const all = stores();
+		all.forEach(hook);
+		// get({ domain }) skips host-only cookies on subdomains (login.tailscale.com's sign-in), so read all and filter here
+		const have = await Promise.all(all.map(async (s) => (await s.cookies.get({})).filter((c) => matches(c.domain))));
+		const best = new Map(); // newest copy of each cookie, by expiry
+		for (const cookies of have) for (const c of cookies) {
+			const cur = best.get(id(c));
+			if (!cur || (c.expirationDate || Infinity) > (cur.expirationDate || Infinity)) best.set(id(c), c);
+		}
+		let writes = 0;
+		await Promise.all(
+			all.map(async (s, i) => {
+				const mine = new Map(have[i].map((c) => [id(c), c]));
+				let changed = false;
+				for (const [key, c] of best) {
+					const own = mine.get(key);
+					if (own && own.value === c.value && Math.abs((own.expirationDate || 0) - (c.expirationDate || 0)) < 60) continue;
+					expect(s, key);
+					try {
+						await s.cookies.set(details(c));
+						writes++;
+						changed = true;
+					} catch (error) {
+						log(`sharedSignIns set ${c.name}@${c.domain}: ${error.message}`);
+					}
+				}
+				if (changed) await flush(s);
+			}),
+		);
+		log(`sharedSignIns: ${best.size} cookies for ${domains.join(",")} across ${all.length} stores, ${writes} copied`);
+	};
+	state.sync().catch((error) => log(`sharedSignIns: ${error.message}`));
+}
+
 // The Local add-ons card in Settings > Appearance (local-settings-ui.js) reports a changed switch as
 // console.log("T3LOCAL:{key,value}"). Only keys listed here are accepted. nativeTitleBar also needs the
 // app.asar patch re-run, which happens in a detached pwsh so the app never waits on it.
 const SETTING_KEYS = new Set(["glassMenus", "nativeTitleBar"]);
-const PATCHER = path.join(process.env.LOCALAPPDATA || "", "T3CodeEnhanced", "lib", "patch-app-asar.ps1");
+const PWSH = path.join(process.env.LOCALAPPDATA || "", "Microsoft/WindowsApps/Microsoft.PowerShell_8wekyb3d8bbwe/pwsh.exe");
 function listenForSettings(window) {
 	// The BrowserWindow outlives window reloads, and a listener closes over the module that added it. So each
 	// load removes every earlier settings listener (ours or from an older copy of this file, found by its
@@ -275,7 +508,8 @@ function listenForSettings(window) {
 		if (typeof message !== "string" || !message.startsWith("T3LOCAL:")) return;
 		try {
 			const { key, value } = JSON.parse(message.slice(8));
-			const valid = key === "browserAppearance" ? SCHEMES.has(value) || value === "system" : SETTING_KEYS.has(key) && typeof value === "boolean";
+			const valid =
+				key === "browserAppearance" ? SCHEMES.has(value) || value === "system" : key === "appIcon" ? APP_ICONS.has(value) : SETTING_KEYS.has(key) && typeof value === "boolean";
 			if (!valid) return;
 			const config = readConfig();
 			config[key] = value;
@@ -283,10 +517,10 @@ function listenForSettings(window) {
 			log(`setting ${key}=${value}`);
 			if (key === "glassMenus") window.__t3GlassMenus = value;
 			if (key === "browserAppearance") installBrowserAppearance(value);
+			if (key === "appIcon") appIconModule().apply(window, config, log);
 			if (key === "nativeTitleBar") {
-				if (fs.existsSync(PATCHER)) {
-					require("child_process").spawn("pwsh.exe", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", PATCHER, "-Apply"], { detached: true, stdio: "ignore", windowsHide: true }).unref();
-				} else log("nativeTitleBar: patch-app-asar.ps1 not installed; switch saved, run install.ps1 to apply it");
+				const script = "H:/System Configuration/scripts/2026-10-24-t3-app-asar-patcher.ps1";
+				require("child_process").spawn(PWSH, ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", script, "-Apply"], { detached: true, stdio: "ignore", windowsHide: true }).unref();
 			}
 		} catch (error) {
 			log(`setting write: ${error.message}`);
@@ -326,6 +560,12 @@ module.exports = function onMainWindowLoad(window) {
 	delete require.cache[__filename];
 	const config = readConfig();
 	const contents = window.webContents;
+	// before the layers, so the sidebar logo script finds self.T3ICON on its first pass
+	try {
+		appIconModule().apply(window, config, log);
+	} catch (error) {
+		log(`appIcon: ${error.message}`);
+	}
 	if (config.localUiCss === true) {
 		for (const file of cssFiles()) {
 			try {
@@ -334,6 +574,7 @@ module.exports = function onMainWindowLoad(window) {
 				log(`read ${file}: ${error.message}`);
 			}
 		}
+		// local-ui.d/*.js: small DOM add-ons that ride with the CSS layers (85-title-nav.js)
 		for (const file of layerFiles(".js")) {
 			try {
 				contents.executeJavaScript(fs.readFileSync(file, "utf8")).catch((error) => log(`layer ${file}: ${error.message}`));
@@ -342,12 +583,6 @@ module.exports = function onMainWindowLoad(window) {
 			}
 		}
 	}
-	try {
-		installUpdater(window);
-	} catch (error) {
-		log(`updater: ${error.message}`);
-	}
-	if (config.evalBridge === true) startEvalBridge(window);
 	if (config.versionBadge !== false) {
 		try {
 			const script = fs.readFileSync(path.join(dir, "local-version-badge.js"), "utf8").replace("__T3_VERSION__", JSON.stringify(require("electron").app.getVersion()));
@@ -380,9 +615,20 @@ module.exports = function onMainWindowLoad(window) {
 		}
 	} else window.__t3GlassMenus = false;
 	try {
+		installUpdater(window);
+	} catch (error) {
+		log(`updater: ${error.message}`);
+	}
+	if (config.evalBridge === true) startEvalBridge(window);
+	try {
 		installBrowserAppearance(config.browserAppearance);
 	} catch (error) {
 		log(`browserAppearance: ${error.message}`);
+	}
+	try {
+		installSharedSignIns(config.sharedSignIns);
+	} catch (error) {
+		log(`sharedSignIns: ${error.message}`);
 	}
 	try {
 		installFrameSelection(window);

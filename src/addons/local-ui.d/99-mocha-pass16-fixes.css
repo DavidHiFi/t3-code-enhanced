@@ -58,13 +58,13 @@ html [data-slot="sidebar-inner"] div:has(> div > div > a[aria-label="T3 Code hom
    It sits inside the brand dock row; a second pill inside the dock read as a
    stray box. Resting = transparent (the row dock is the visible dock), hover =
    standard glow. */
-div.pointer-events-none.fixed[class*="left-[var(--workspace-controls-left)]"] button {
+div.pointer-events-none.fixed.left-\[var\(--workspace-controls-left\)\] button {
 	background: transparent !important;
 	background-color: transparent !important;
 	border-color: transparent !important;
 	box-shadow: none !important;
 }
-div.pointer-events-none.fixed[class*="left-[var(--workspace-controls-left)]"] button:hover {
+div.pointer-events-none.fixed.left-\[var\(--workspace-controls-left\)\] button:hover {
 	background-color: var(--t15-hover) !important;
 	border-color: transparent !important;
 	box-shadow: var(--t15-ring), var(--t15-glow) !important;
@@ -91,14 +91,9 @@ div.pointer-events-none.fixed[class*="left-[var(--workspace-controls-left)]"] bu
 	padding: 4px 6px !important;
 	border-radius: 10px !important;
 	box-shadow:
-		inset 0 0 0 1px var(--t15-edge),
+		inset 0 0 0 1.5px var(--t15-edge),
 		inset 0 1px 0 var(--t3d-sheen) !important;
 	transition: var(--t15-ease) !important;
-}
-[data-slot="sidebar-inner"] a[aria-label="T3 Code home"]:hover {
-	box-shadow:
-		inset 0 0 0 1px rgb(137 180 250 / 0.65),
-		0 0 16px -2px rgb(137 180 250 / 0.55) !important;
 }
 [data-slot="sidebar-inner"] a[aria-label="T3 Code home"]:hover .t3l-enh {
 	box-shadow: none !important;
@@ -117,35 +112,27 @@ div.pointer-events-none.fixed[class*="left-[var(--workspace-controls-left)]"] bu
 	padding-left: 0 !important;
 	padding-right: 0 !important;
 }
-.messages-timeline-row-frame[data-t15a-run] > div > div[class*="chat-content-lane"],
-.messages-timeline-row-frame[data-t15a-run] div[class*="chat-content-lane"] {
+.messages-timeline-row-frame[data-t15a-run] > div > div.chat-content-lane,
+.messages-timeline-row-frame[data-t15a-run] div.chat-content-lane {
 	background: var(--t15-panel) !important;
 	box-shadow:
 		inset 1px 0 0 var(--t15-edge),
 		inset -1px 0 0 var(--t15-edge) !important;
 	transition: var(--t15-ease) !important;
 }
-.messages-timeline-row-frame[data-t15a-run][data-t15a-run-start] div[class*="chat-content-lane"] {
+.messages-timeline-row-frame[data-t15a-run][data-t15a-run-start] div.chat-content-lane {
 	border-radius: 14px 14px 0 0 !important;
 	box-shadow:
 		inset 1px 0 0 var(--t15-edge),
 		inset -1px 0 0 var(--t15-edge),
 		inset 0 1px 0 var(--t15-edge) !important;
 }
-.messages-timeline-row-frame[data-t15a-run][data-t15a-run-end] div[class*="chat-content-lane"] {
+.messages-timeline-row-frame[data-t15a-run][data-t15a-run-end] div.chat-content-lane {
 	border-radius: 0 0 14px 14px !important;
 	box-shadow:
 		inset 1px 0 0 var(--t15-edge),
 		inset -1px 0 0 var(--t15-edge),
 		inset 0 -1px 0 var(--t15-edge) !important;
-}
-.messages-timeline-row-frame[data-t15a-run][data-t15a-run-start][data-t15a-run-end] div[class*="chat-content-lane"] {
-	border-radius: 14px !important;
-}
-.messages-timeline-row-frame[data-t15a-run]:hover div[class*="chat-content-lane"] {
-	box-shadow:
-		inset 1px 0 0 var(--t15-edge-hi),
-		inset -1px 0 0 var(--t15-edge-hi) !important;
 }
 
 /* ---- item 10: group header pills identical to T3's own ----
@@ -164,7 +151,7 @@ li.t3l-shelf .t3l-shelf-btn {
 	height: 28px !important;
 	border-radius: 10px !important;
 	background-color: var(--t15-dock) !important;
-	box-shadow: inset 0 0 0 1px var(--t15-edge) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t15-edge) !important;
 }
 li.t3l-shelf .t3l-shelf-btn:hover {
 	background-color: var(--t15-hover) !important;
@@ -188,14 +175,14 @@ div.absolute.top-1\/2.left-3.pointer-events-auto {
    embeds a Clerk avatar <img>, so the rule shrank Settings to fit-content
    (691px). Gated to the real image viewer (it always carries the
    --media-width container) instead of any dialog holding an image. */
-[data-slot="dialog-popup"]:has(div[class*="max-w-[var(--media-width)]"]) {
+[data-slot="dialog-popup"]:has(div.max-w-\[var\(--media-width\)\]) {
 	width: fit-content !important;
 	height: fit-content !important;
 	max-width: calc(100vw - 32px) !important;
 	max-height: calc(100vh - 48px) !important;
 	min-width: 0 !important;
 }
-[data-slot="dialog-popup"]:has(img) div[class*="max-w-[var(--media-width)]"] {
+[data-slot="dialog-popup"]:has(img) div.max-w-\[var\(--media-width\)\] {
 	background: transparent !important;
 	box-shadow: none !important;
 	border: 0 !important;
@@ -208,14 +195,14 @@ div.absolute.top-1\/2.left-3.pointer-events-auto {
 [data-slot="sidebar-footer"] li {
 	min-width: 0 !important;
 }
-[data-slot="sidebar-footer"] li:has(> button[class*="rounded-full"]) {
+[data-slot="sidebar-footer"] li:has(> button.rounded-full) {
 	flex: none !important;
 	max-width: 2.5rem !important;
 	overflow: hidden !important;
 }
-[data-slot="sidebar-footer"] button[class*="rounded-full"],
-[data-slot="sidebar-footer"] button[class*="rounded-full"]::after,
-[data-slot="sidebar-footer"] button[class*="rounded-full"] [class*="rounded-full"] {
+[data-slot="sidebar-footer"] button:is(.\*\:after\:rounded-full,.\[\&\:\:-moz-progress-bar\]\:rounded-full,.\[\&\:\:-moz-range-thumb\]\:rounded-full,.\[\&\:\:-webkit-progress-bar\]\:rounded-full,.\[\&\:\:-webkit-progress-value\]\:rounded-full,.\[\&\:\:-webkit-scrollbar-thumb\]\:rounded-full,.\[\&\:\:-webkit-slider-thumb\]\:rounded-full,.\[\&_button\]\:rounded-full,.after\:rounded-full,.before\:rounded-full,.rounded-full),
+[data-slot="sidebar-footer"] button:is(.\*\:after\:rounded-full,.\[\&\:\:-moz-progress-bar\]\:rounded-full,.\[\&\:\:-moz-range-thumb\]\:rounded-full,.\[\&\:\:-webkit-progress-bar\]\:rounded-full,.\[\&\:\:-webkit-progress-value\]\:rounded-full,.\[\&\:\:-webkit-scrollbar-thumb\]\:rounded-full,.\[\&\:\:-webkit-slider-thumb\]\:rounded-full,.\[\&_button\]\:rounded-full,.after\:rounded-full,.before\:rounded-full,.rounded-full)::after,
+[data-slot="sidebar-footer"] button:is(.\*\:after\:rounded-full,.\[\&\:\:-moz-progress-bar\]\:rounded-full,.\[\&\:\:-moz-range-thumb\]\:rounded-full,.\[\&\:\:-webkit-progress-bar\]\:rounded-full,.\[\&\:\:-webkit-progress-value\]\:rounded-full,.\[\&\:\:-webkit-scrollbar-thumb\]\:rounded-full,.\[\&\:\:-webkit-slider-thumb\]\:rounded-full,.\[\&_button\]\:rounded-full,.after\:rounded-full,.before\:rounded-full,.rounded-full) :is(.\*\:after\:rounded-full,.\[\&\:\:-moz-progress-bar\]\:rounded-full,.\[\&\:\:-moz-range-thumb\]\:rounded-full,.\[\&\:\:-webkit-progress-bar\]\:rounded-full,.\[\&\:\:-webkit-progress-value\]\:rounded-full,.\[\&\:\:-webkit-scrollbar-thumb\]\:rounded-full,.\[\&\:\:-webkit-slider-thumb\]\:rounded-full,.\[\&_button\]\:rounded-full,.after\:rounded-full,.before\:rounded-full,.rounded-full) {
 	width: 2rem !important;
 	min-width: 2rem !important;
 	max-width: 2rem !important;
@@ -225,13 +212,13 @@ div.absolute.top-1\/2.left-3.pointer-events-auto {
 }
 /* the progress fill: rounded, contained in its track */
 [data-slot="sidebar-footer"] [role="progressbar"],
-[data-slot="sidebar-footer"] [class*="progress"] {
+[data-slot="sidebar-footer"] :is(.-progressaction,.\30 \?null\:vH\(i\)\,progress\:e\.progress\?\?null\,lastToolName\:null\,result\:e\.result\,error\:e\.status\=\=\=,.\[\&\:\:-moz-progress-bar\]\:bg-primary,.\[\&\:\:-moz-progress-bar\]\:rounded-full,.\[\&\:\:-webkit-progress-bar\]\:bg-muted,.\[\&\:\:-webkit-progress-bar\]\:rounded-full,.\[\&\:\:-webkit-progress-value\]\:bg-primary,.\[\&\:\:-webkit-progress-value\]\:rounded-full,.checkout_already_in_progress,.environment-data\:orchestration\:thread-find-progressive,.forced-colors\:\[\&\:\:-moz-progress-bar\]\:bg-\[Highlight\],.forced-colors\:\[\&\:\:-webkit-progress-value\]\:bg-\[Highlight\],.handoff_in_progress,.in_progress,.onprogress,.prepared-run\.progress,.preview-loading-progress,.progress,.progress\.background,.progressBar\.background,.progressbar,.progressif,.progressiveDone,.progressiveRead,.t\=mH\(e\.status\)\,n\=t\?e\.result\:e\.progress\,r\=t\?e\.progress\:e\.result\,i\=n\?\.trimStart\(\)\|\|r\?\.trimStart\(\)\|\|,.task\.progress,.welcomePage\.progress\.background,.welcomePage\.progress\.foreground) {
 	border-radius: 9999px !important;
 	overflow: hidden !important;
 	max-width: 100% !important;
 }
 [data-slot="sidebar-footer"] [role="progressbar"] > *,
-[data-slot="sidebar-footer"] [class*="progress"] > * {
+[data-slot="sidebar-footer"] :is(.-progressaction,.\30 \?null\:vH\(i\)\,progress\:e\.progress\?\?null\,lastToolName\:null\,result\:e\.result\,error\:e\.status\=\=\=,.\[\&\:\:-moz-progress-bar\]\:bg-primary,.\[\&\:\:-moz-progress-bar\]\:rounded-full,.\[\&\:\:-webkit-progress-bar\]\:bg-muted,.\[\&\:\:-webkit-progress-bar\]\:rounded-full,.\[\&\:\:-webkit-progress-value\]\:bg-primary,.\[\&\:\:-webkit-progress-value\]\:rounded-full,.checkout_already_in_progress,.environment-data\:orchestration\:thread-find-progressive,.forced-colors\:\[\&\:\:-moz-progress-bar\]\:bg-\[Highlight\],.forced-colors\:\[\&\:\:-webkit-progress-value\]\:bg-\[Highlight\],.handoff_in_progress,.in_progress,.onprogress,.prepared-run\.progress,.preview-loading-progress,.progress,.progress\.background,.progressBar\.background,.progressbar,.progressif,.progressiveDone,.progressiveRead,.t\=mH\(e\.status\)\,n\=t\?e\.result\:e\.progress\,r\=t\?e\.progress\:e\.result\,i\=n\?\.trimStart\(\)\|\|r\?\.trimStart\(\)\|\|,.task\.progress,.welcomePage\.progress\.background,.welcomePage\.progress\.foreground) > * {
 	border-radius: 9999px !important;
 }
 /* the footer button animates its width when an update runs: cap the slot so
@@ -244,8 +231,8 @@ div.absolute.top-1\/2.left-3.pointer-events-auto {
 	max-width: 100% !important;
 }
 /* the "0 of 1 updated" label row: its own modest pill, ellipsis, no stretch */
-[data-slot="sidebar-footer"] span[class*="text-xs"],
-[data-slot="sidebar-footer"] div[class*="text-xs"] {
+[data-slot="sidebar-footer"] span:is(.\@2xl\/pool\:text-xs,.\@max-\[560px\]\/composer-surface\:text-xs,.\[\&_button\]\:text-xs\!,.sm\:text-xs,.text-xs,.text-xs\!,.text-xs\/4,.text-xs\/5),
+[data-slot="sidebar-footer"] div:is(.\@2xl\/pool\:text-xs,.\@max-\[560px\]\/composer-surface\:text-xs,.\[\&_button\]\:text-xs\!,.sm\:text-xs,.text-xs,.text-xs\!,.text-xs\/4,.text-xs\/5) {
 	max-width: 100% !important;
 	overflow: hidden !important;
 	text-overflow: ellipsis !important;

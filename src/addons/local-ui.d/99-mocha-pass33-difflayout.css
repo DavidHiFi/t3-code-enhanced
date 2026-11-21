@@ -1,0 +1,48 @@
+/* T3 Code Enhanced pass 33 (2026-11-11, build 0.1.9-nightly.20261110.4478): the diffs panel
+   toolbar "Diff layout" segmented control (Stacked / Split view toggle). Stock paints the track
+   bg-input/40 and the checked segment dark:data-pressed:bg-input/72 - stock --input is zinc-300
+   light grey, so the control reads as two light blobs in the dark toolbar (owner report, with
+   the arrow at the Stacked/Split pair). Pass 22 docked the buttons around it but never touched
+   the group itself. Same treatment the Permissions popover got in pass 32: deep dark track with
+   a 1px grey resting edge, checked segment dark Mocha pill with a 1px lavender ring, unchecked
+   hover dark tint with a 1px blue ring. Scope: only this toggle group inside the right-panel
+   surface; settings pages and the composer are untouched. Rollback: delete this file, reload. */
+
+/* the segmented track: deep Mocha fill, one grey resting edge */
+html div[data-right-panel-surface-content] [data-surface-subheader] [data-slot="toggle-group"][data-variant="segmented"][aria-label="Diff layout"] {
+	background-color: rgb(17 17 27 / 0.55) !important;
+	border: 1px solid var(--t4-edge, rgb(108 112 134 / 0.34)) !important;
+	border-radius: 8px !important;
+	transition: background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease !important;
+}
+
+/* segments: rounded to sit inside the track (6px + 2px track padding = 8px outer) */
+html div[data-right-panel-surface-content] [data-surface-subheader] [data-slot="toggle-group"][aria-label="Diff layout"] > [data-slot="toggle"] {
+	background-color: transparent !important;
+	box-shadow: none !important;
+	border-radius: 6px !important;
+	color: #a6adc8 !important;
+	transition: background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease !important;
+}
+
+/* checked segment: dark Mocha pill, 1px lavender ring, light text - no light input wash.
+   Base UI renders the pressed state as a bare data-pressed attribute (empty value) and
+   omits it when unpressed (read from the shipped collapsible mapping), so key on presence. */
+html div[data-right-panel-surface-content] [data-surface-subheader] [data-slot="toggle-group"][aria-label="Diff layout"] > [data-slot="toggle"][data-pressed] {
+	background-color: rgb(49 50 68 / 0.85) !important;
+	box-shadow: var(--t4-ring-lav, inset 0 0 0 1.5px rgb(180 190 254 / 0.38)) !important;
+	color: #cdd6f4 !important;
+}
+
+/* unchecked hover: dark tint plus the blue ring - no light accent wash */
+html div[data-right-panel-surface-content] [data-surface-subheader] [data-slot="toggle-group"][aria-label="Diff layout"] > [data-slot="toggle"]:not([data-pressed]):hover {
+	background-color: rgb(49 50 68 / 0.6) !important;
+	box-shadow: var(--t4-ring-blue, inset 0 0 0 1.5px rgb(137 180 250 / 0.7)) !important;
+	color: #cdd6f4 !important;
+}
+
+/* keyboard focus keeps one ring, not two: the stock ring sits inside, quiet grey */
+html div[data-right-panel-surface-content] [data-surface-subheader] [data-slot="toggle-group"][aria-label="Diff layout"] > [data-slot="toggle"]:focus-visible {
+	outline: none !important;
+	box-shadow: var(--t4-ring-blue, inset 0 0 0 1.5px rgb(137 180 250 / 0.7)) !important;
+}

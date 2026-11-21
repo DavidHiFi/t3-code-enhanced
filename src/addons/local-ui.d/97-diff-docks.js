@@ -48,6 +48,13 @@
 			background-color: var(--t5-pill-hi) !important;
 			box-shadow: var(--t5-ring) !important;
 		}
+		/* pass 31h: Mocha blue-to-mauve scrollbar thumbs (page CSS cannot reach this shadow root) */
+		::-webkit-scrollbar-thumb, [data-code]::-webkit-scrollbar-thumb, [data-code]:hover::-webkit-scrollbar-thumb {
+			background: linear-gradient(180deg, rgb(137 180 250 / .62), rgb(203 166 247 / .62)) !important;
+			border-radius: 999px !important;
+		}
+		::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, rgb(137 180 250 / .85), rgb(203 166 247 / .85)) !important; }
+		::-webkit-scrollbar-track { background: transparent !important; }
 	`;
 	const TREE_CSS = `
 		/* Changes file rows: resting transparent, hover pill with blue edge; selected row keeps glow */
@@ -62,6 +69,13 @@
 		button[data-type="item"]:has([data-truncate-group-container]) [data-truncate-group-container] {
 			border-radius: 5px !important;
 		}
+		/* pass 31h: Mocha blue-to-mauve scrollbar thumbs (page CSS cannot reach this shadow root) */
+		::-webkit-scrollbar-thumb, [data-code]::-webkit-scrollbar-thumb, [data-code]:hover::-webkit-scrollbar-thumb {
+			background: linear-gradient(180deg, rgb(137 180 250 / .62), rgb(203 166 247 / .62)) !important;
+			border-radius: 999px !important;
+		}
+		::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, rgb(137 180 250 / .85), rgb(203 166 247 / .85)) !important; }
+		::-webkit-scrollbar-track { background: transparent !important; }
 	`;
 	const mark = (sr) => sr.querySelector('style[data-t3l-docks]');
 	const inject = (sr, css) => {
@@ -108,10 +122,31 @@
 			row.setAttribute('data-t3l-ba-row', '1');
 		}
 	};
+	// 2026-11-21 (speed): the text search over the whole timeline cost about 5 ms and ran up to five
+	// times a second while a reply streamed. It now runs when added nodes carry the label, plus a
+	// 3 s backstop; the cheap shadow-root and alert passes run only when such an element arrives.
+	let baDirty = true, hostDirty = true, lastBa = 0;
+	const HOSTS = 'diffs-container, file-tree-container, ' + ALERT_SEL;
+	const onMut = (recs) => {
+		for (const r of recs) for (const n of r.addedNodes) {
+			if (n.nodeType === 3) { if (!baDirty && n.data.includes(BA_TEXT)) baDirty = true; continue; }
+			if (n.nodeType !== 1) continue;
+			if (!hostDirty && (n.matches(HOSTS) || n.querySelector(HOSTS))) hostDirty = true;
+			if (!baDirty && n.textContent.includes(BA_TEXT)) baDirty = true;
+		}
+		if (hostDirty || baDirty || performance.now() - lastBa > 3000) schedule();
+	};
 	const scan = () => {
-		document.querySelectorAll('diffs-container,file-tree-container').forEach((el) => patch(el));
-		enforceAlerts();
-		markBaRows();
+		if (hostDirty) {
+			hostDirty = false;
+			document.querySelectorAll('diffs-container,file-tree-container').forEach((el) => patch(el));
+			enforceAlerts();
+		}
+		if (baDirty || performance.now() - lastBa > 3000) {
+			baDirty = false;
+			lastBa = performance.now();
+			markBaRows();
+		}
 	};
 	let queued = false, lastScan = 0;
 	const schedule = () => {
@@ -123,6 +158,6 @@
 		const run = () => { queued = false; lastScan = performance.now(); scan(); };
 		wait ? setTimeout(() => requestAnimationFrame(run), wait) : requestAnimationFrame(run);
 	};
-	new MutationObserver(schedule).observe(document.documentElement, { childList: true, subtree: true });
+	new MutationObserver(onMut).observe(document.documentElement, { childList: true, subtree: true });
 	scan();
 })();

@@ -1,0 +1,275 @@
+/* Pass 31g: blue-only hover and focus frames become the blue-to-mauve frame with a two-colour glow;
+   the reply box in a work run uses a 135deg gradient that stays continuous from row to row;
+   image glows in the thread are no longer cut off at the top or right edge; the environment row
+   at the top of the right dock gets the same rest edge and hover as the rows under it.
+   Red buttons stay red. Sizes, layout and rest looks are unchanged.
+   Rollback: delete this file and reload T3. */
+
+@property --p31g-a { syntax: "<color>"; inherits: false; initial-value: transparent; }
+@property --p31g-b { syntax: "<color>"; inherits: false; initial-value: transparent; }
+
+:root {
+	--p31g-grad: linear-gradient(135deg, #89b4fa, #cba6f7);
+	--p31g-glow: 0 0 14px -6px rgb(137 180 250 / 0.45), 0 0 22px -10px rgb(203 166 247 / 0.4);
+	--p31g-glow-tight: 0 0 8px -3px rgb(137 180 250 / 0.45), 0 0 12px -6px rgb(203 166 247 / 0.4);
+	/* two-tone edge for boxes that cannot carry an overlay frame (bare inputs, unpositioned
+	   controls): blue top and left, mauve right and bottom, same width on every side */
+	--p31g-two-tone: #89b4fa #cba6f7 #cba6f7 #89b4fa;
+}
+
+/* ===== 1. Work run reply box (pass 25 section 22) ===================================== */
+/* 135deg instead of 90deg, so mauve reaches the left edge too. The gradient is pinned to the
+   window (fixed) and repeats, so the rows that build one box line up with no seam. */
+html .messages-timeline-row-frame[data-t15a-run][data-t15a-run] div.chat-content-lane::after {
+	background: repeating-linear-gradient(135deg, var(--t25-ga) 0px, var(--t25-gb) 320px, var(--t25-ga) 640px) fixed !important;
+}
+/* glow around the whole lit box. Each row draws its own slice of one tall glow: the overlay
+   reaches 40px past the row and is cut back to the row, so slices meet with no bright seam. */
+html .messages-timeline-row-frame[data-t15a-run] > div.chat-content-lane::before {
+	content: "" !important;
+	position: absolute !important;
+	left: 0 !important;
+	right: 0 !important;
+	top: -40px !important;
+	bottom: -40px !important;
+	z-index: 2 !important;
+	border-radius: inherit !important;
+	box-shadow: var(--p31g-glow) !important;
+	clip-path: inset(40px -30px) !important;
+	opacity: 0 !important;
+	pointer-events: none !important;
+	transition: opacity 0.22s ease !important;
+}
+html .messages-timeline-row-frame[data-t15a-run][data-t15a-run-start] > div.chat-content-lane::before {
+	top: 0 !important;
+	clip-path: inset(-30px -30px 40px -30px) !important;
+}
+html .messages-timeline-row-frame[data-t15a-run][data-t15a-run-end] > div.chat-content-lane::before {
+	bottom: 0 !important;
+	clip-path: inset(40px -30px -30px -30px) !important;
+}
+html .messages-timeline-row-frame[data-t15a-run][data-t15a-run-start][data-t15a-run-end] > div.chat-content-lane::before {
+	top: 0 !important;
+	bottom: 0 !important;
+	clip-path: none !important;
+}
+html .messages-timeline-row-frame[data-t15a-run][data-t25-lit] > div.chat-content-lane::before {
+	opacity: 1 !important;
+}
+@media (prefers-reduced-motion: reduce) {
+	html .messages-timeline-row-frame[data-t15a-run] > div.chat-content-lane::before { transition: none !important; }
+}
+
+/* ===== 2. No clipped glows in the thread ================================================ */
+/* Each timeline row sits in a list container with contain: paint, which cut glows at the row's
+   top and bottom; the lane's one-axis overflow clip cut them at the right. Both now allow 20px.
+   overflow-clip-margin only works when both axes clip, so the lane clips both ways; the row
+   container already limited the vertical overflow, so nothing new is cut. */
+html .messages-timeline-scroll [style*="contain:"] {
+	overflow-clip-margin: 20px !important;
+}
+html .messages-timeline-row-frame > div.chat-content-lane[data-timeline-root="true"] {
+	overflow: clip !important;
+	overflow-clip-margin: 20px !important;
+}
+/* composer image chips: the scrolling row clipped the chip glow on all sides. The row gets 10px
+   of room on every side and gives it back with negative margins, so nothing moves. */
+html [data-chat-composer-body] div.snap-x.overflow-x-auto {
+	padding: 10px 10px calc(0.25rem + 10px) !important;
+	margin: -10px -10px calc(0.75rem - 10px) !important;
+	max-width: calc(100% + 20px) !important;
+	scroll-padding-inline: 10px !important;
+}
+
+/* ===== 3. Environment row at the top of the right dock ================================== */
+/* Same look as the dock rows under it (pass 25 section 16): quiet grey edge at rest, dark fill
+   with the blue-to-mauve frame and a tight glow on hover. Same 32px height, 9px radius, inset. */
+html body [data-thread-details-card] [data-thread-panel-run-context] span[data-composer-context-control] {
+	position: relative !important;
+	border-radius: 9px !important;
+	border-color: transparent !important;
+	transition: background-color 0.22s ease, box-shadow 0.22s ease !important;
+}
+html body [data-thread-details-card] [data-thread-panel-run-context] span[data-composer-context-control]::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: -1px !important;
+	z-index: 3 !important;
+	border-radius: inherit !important;
+		padding: 1.5px !important;
+	background: linear-gradient(100deg, var(--p31g-a), var(--p31g-b)) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	pointer-events: none !important;
+	--p31g-a: rgb(108 112 134 / 0.4);
+	--p31g-b: rgb(108 112 134 / 0.4);
+	transition: --p31g-a 0.22s ease, --p31g-b 0.22s ease !important;
+}
+html body [data-thread-details-card] [data-thread-panel-run-context] span[data-composer-context-control]:is(:hover, [data-p31g-hover])::after {
+	--p31g-a: #89b4fa;
+	--p31g-b: #cba6f7;
+	padding: 2px !important;
+}
+html body [data-thread-details-card] [data-thread-panel-run-context] span[data-composer-context-control]:is(:hover, [data-p31g-hover]) {
+	background-color: rgb(24 24 37 / 0.72) !important;
+	box-shadow: var(--p31g-glow-tight) !important;
+}
+
+/* ===== 4. Buttons: the blue edge from 87-hover-glow becomes the gradient frame ========== */
+/* Same selectors as 87 (same weight, this file loads later), so any pass that styles a button
+   more specifically still wins. Areas other passes own are left out: composer, status row,
+   right dock card, browser panel, sidebar footer, popups and menus, settings, toasts, brand dock. */
+/* positioned buttons: overlay frame (border goes clear, the frame sits on the border) */
+button[class*="border"]:not([disabled]):hover:where(:is(.relative, .absolute, .sticky, .fixed):not([class*=" after:"], [class^="after:"], :is(.\[\&\+\[data-slot\=composer-banner-attachment\]_\[data-composer-banner-surface\=attached\]\]\:before\:rounded-none,.\[\&\>\[data-slot\=settings-row\]\]\:rounded-none,.\[\&_\[data-slot\=settings-row\]\]\:rounded-none,.data-panel-open\:rounded-none,.in-\[\.range-middle\]\:rounded-none,.max-sm\:rounded-none,.rounded-none), [class*="destructive"], [aria-label^="Preview "]):not(:is([data-chat-composer-surface], [data-chat-composer-footer], [data-chat-thread-status-line], [data-thread-details-card], [data-thread-queue], [data-right-panel-tabbar], [data-right-panel-surface-content], [data-slot="sidebar-footer"], [data-t3local-cpanel], [data-app-modal][aria-label="Settings"], :is(.\[--toast-header-offset\:var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\]\!,.max-h-\[var\(--workspace-topbar-height\)\]\!,.min-h-\[var\(--workspace-topbar-height\)\],.min-h-\[var\(--workspace-topbar-height\)\]\!,.pb-\(--workspace-topbar-height\),.wco\:h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:max-h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:mt-\(--workspace-topbar-height\),.workspace-topbar-height), .dropdown-glass, [data-slot$="popup"], [data-sonner-toaster]) *)),
+button:is(.\#multiline-string-1-interp,.after\:ring-1,.dark\:ring-1,.data-\[popup-open\]\:ring-1,.focus-visible\:ring-1,.focus-within\:ring-1,.in-data-\[thread-context-over\]\:ring-1,.light\:ring-1,.multiline-string-1-interp,.ring-1):not([disabled]):hover:where(:is(.relative, .absolute, .sticky, .fixed):not([class*=" after:"], [class^="after:"], :is(.\[\&\+\[data-slot\=composer-banner-attachment\]_\[data-composer-banner-surface\=attached\]\]\:before\:rounded-none,.\[\&\>\[data-slot\=settings-row\]\]\:rounded-none,.\[\&_\[data-slot\=settings-row\]\]\:rounded-none,.data-panel-open\:rounded-none,.in-\[\.range-middle\]\:rounded-none,.max-sm\:rounded-none,.rounded-none), [class*="destructive"], [aria-label^="Preview "]):not(:is([data-chat-composer-surface], [data-chat-composer-footer], [data-chat-thread-status-line], [data-thread-details-card], [data-thread-queue], [data-right-panel-tabbar], [data-right-panel-surface-content], [data-slot="sidebar-footer"], [data-t3local-cpanel], [data-app-modal][aria-label="Settings"], :is(.\[--toast-header-offset\:var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\]\!,.max-h-\[var\(--workspace-topbar-height\)\]\!,.min-h-\[var\(--workspace-topbar-height\)\],.min-h-\[var\(--workspace-topbar-height\)\]\!,.pb-\(--workspace-topbar-height\),.wco\:h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:max-h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:mt-\(--workspace-topbar-height\),.workspace-topbar-height), .dropdown-glass, [data-slot$="popup"], [data-sonner-toaster]) *)),
+[data-panel-layout-controls] button:hover:where(:is(.relative, .absolute, .sticky, .fixed):not([class*=" after:"], [class^="after:"], :is(.\[\&\+\[data-slot\=composer-banner-attachment\]_\[data-composer-banner-surface\=attached\]\]\:before\:rounded-none,.\[\&\>\[data-slot\=settings-row\]\]\:rounded-none,.\[\&_\[data-slot\=settings-row\]\]\:rounded-none,.data-panel-open\:rounded-none,.in-\[\.range-middle\]\:rounded-none,.max-sm\:rounded-none,.rounded-none), [class*="destructive"])),
+button:focus-visible:where(:is(.relative, .absolute, .sticky, .fixed):not([class*=" after:"], [class^="after:"], :is(.\[\&\+\[data-slot\=composer-banner-attachment\]_\[data-composer-banner-surface\=attached\]\]\:before\:rounded-none,.\[\&\>\[data-slot\=settings-row\]\]\:rounded-none,.\[\&_\[data-slot\=settings-row\]\]\:rounded-none,.data-panel-open\:rounded-none,.in-\[\.range-middle\]\:rounded-none,.max-sm\:rounded-none,.rounded-none), [class*="destructive"], [aria-label^="Preview "]):not(:is([data-chat-composer-surface], [data-chat-composer-footer], [data-chat-thread-status-line], [data-thread-details-card], [data-thread-queue], [data-right-panel-tabbar], [data-right-panel-surface-content], [data-slot="sidebar-footer"], [data-t3local-cpanel], [data-app-modal][aria-label="Settings"], :is(.\[--toast-header-offset\:var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\]\!,.max-h-\[var\(--workspace-topbar-height\)\]\!,.min-h-\[var\(--workspace-topbar-height\)\],.min-h-\[var\(--workspace-topbar-height\)\]\!,.pb-\(--workspace-topbar-height\),.wco\:h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:max-h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:mt-\(--workspace-topbar-height\),.workspace-topbar-height), .dropdown-glass, [data-slot$="popup"], [data-sonner-toaster]) *)) {
+	border-color: transparent !important;
+	box-shadow: var(--p31g-glow) !important;
+	outline: none !important;
+}
+:where(button[class*="border"], button:is(.\#multiline-string-1-interp,.after\:ring-1,.dark\:ring-1,.data-\[popup-open\]\:ring-1,.focus-visible\:ring-1,.focus-within\:ring-1,.in-data-\[thread-context-over\]\:ring-1,.light\:ring-1,.multiline-string-1-interp,.ring-1), [data-panel-layout-controls] button):where(:is(.relative, .absolute, .sticky, .fixed):not([class*=" after:"], [class^="after:"], :is(.\[\&\+\[data-slot\=composer-banner-attachment\]_\[data-composer-banner-surface\=attached\]\]\:before\:rounded-none,.\[\&\>\[data-slot\=settings-row\]\]\:rounded-none,.\[\&_\[data-slot\=settings-row\]\]\:rounded-none,.data-panel-open\:rounded-none,.in-\[\.range-middle\]\:rounded-none,.max-sm\:rounded-none,.rounded-none), [class*="destructive"], [aria-label^="Preview "]):not(:is([data-chat-composer-surface], [data-chat-composer-footer], [data-chat-thread-status-line], [data-thread-details-card], [data-thread-queue], [data-right-panel-tabbar], [data-right-panel-surface-content], [data-slot="sidebar-footer"], [data-t3local-cpanel], [data-app-modal][aria-label="Settings"], :is(.\[--toast-header-offset\:var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\]\!,.max-h-\[var\(--workspace-topbar-height\)\]\!,.min-h-\[var\(--workspace-topbar-height\)\],.min-h-\[var\(--workspace-topbar-height\)\]\!,.pb-\(--workspace-topbar-height\),.wco\:h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:max-h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:mt-\(--workspace-topbar-height\),.workspace-topbar-height), .dropdown-glass, [data-slot$="popup"], [data-sonner-toaster]) *)):not([disabled]):is(:hover, :focus-visible)::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: -1px !important;
+	z-index: 3 !important;
+	border-radius: inherit !important;
+		padding: 1.5px !important;
+	background: var(--p31g-grad) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	pointer-events: none !important;
+}
+/* buttons drawn with a ring instead of a border: the frame sits on the box edge */
+:where(button:is(.\#multiline-string-1-interp,.after\:ring-1,.dark\:ring-1,.data-\[popup-open\]\:ring-1,.focus-visible\:ring-1,.focus-within\:ring-1,.in-data-\[thread-context-over\]\:ring-1,.light\:ring-1,.multiline-string-1-interp,.ring-1):not([class*="border"])):not([disabled]):is(:hover, :focus-visible)::after {
+	inset: 0 !important;
+}
+/* keyboard focus is the stronger 2px frame */
+:where(button[class*="border"], button:is(.\#multiline-string-1-interp,.after\:ring-1,.dark\:ring-1,.data-\[popup-open\]\:ring-1,.focus-visible\:ring-1,.focus-within\:ring-1,.in-data-\[thread-context-over\]\:ring-1,.light\:ring-1,.multiline-string-1-interp,.ring-1), [data-panel-layout-controls] button):not([disabled]):focus-visible::after {
+	padding: 2px !important;
+}
+/* unpositioned bordered buttons cannot carry an overlay: two-tone edge instead of plain blue */
+button[class*="border"]:not([disabled]):hover:where(:not(.relative, .absolute, .sticky, .fixed, [class*="destructive"], :is(.\[\&\+\[data-slot\=composer-banner-attachment\]_\[data-composer-banner-surface\=attached\]\]\:before\:rounded-none,.\[\&\>\[data-slot\=settings-row\]\]\:rounded-none,.\[\&_\[data-slot\=settings-row\]\]\:rounded-none,.data-panel-open\:rounded-none,.in-\[\.range-middle\]\:rounded-none,.max-sm\:rounded-none,.rounded-none)):not(:is([data-chat-composer-surface], [data-chat-composer-footer], [data-chat-thread-status-line], [data-thread-details-card], [data-thread-queue], [data-right-panel-tabbar], [data-right-panel-surface-content], [data-slot="sidebar-footer"], [data-t3local-cpanel], [data-app-modal][aria-label="Settings"], :is(.\[--toast-header-offset\:var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\]\!,.max-h-\[var\(--workspace-topbar-height\)\]\!,.min-h-\[var\(--workspace-topbar-height\)\],.min-h-\[var\(--workspace-topbar-height\)\]\!,.pb-\(--workspace-topbar-height\),.wco\:h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:max-h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:mt-\(--workspace-topbar-height\),.workspace-topbar-height), .dropdown-glass, [data-slot$="popup"], [data-sonner-toaster]) *)) {
+	border-color: var(--p31g-two-tone) !important;
+	box-shadow: var(--p31g-glow) !important;
+}
+/* red buttons stay red: red edge and a red glow, never blue or mauve */
+button[class*="destructive"]:not([disabled]):is(:hover, :focus-visible) {
+	border-color: rgb(243 139 168) !important;
+	box-shadow: 0 0 14px -6px rgb(243 139 168 / 0.55) !important;
+	outline: none !important;
+}
+
+/* ===== 5. Text fields ===================================================================== */
+/* bare inputs: two-tone edge (each :not() kept apart so these outrank 87's input rule) (an input cannot carry an overlay, and its fill is unknown) */
+input[class*="border"]:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(:is(.\[\&\:\:-moz-range-thumb\]\:border-0,.\[\&_\[data-markdown-details\]\]\:border-0,.\[\&_tr\:last-child\]\:border-0,.border-0), [class*="border-none"], :is(.\[\&\:\:-webkit-scrollbar-thumb\]\:border-transparent,.border-transparent,.border-transparent\!,.dark\:border-transparent), [aria-invalid="true"], [data-preview-url-input]):is(:hover, :focus),
+html body textarea[class*="border"]:not(:is(.\[\&\:\:-moz-range-thumb\]\:border-0,.\[\&_\[data-markdown-details\]\]\:border-0,.\[\&_tr\:last-child\]\:border-0,.border-0), [class*="border-none"], :is(.\[\&\:\:-webkit-scrollbar-thumb\]\:border-transparent,.border-transparent,.border-transparent\!,.dark\:border-transparent), [aria-invalid="true"]):is(:hover, :focus) {
+	border-color: var(--p31g-two-tone) !important;
+}
+input[class*="border"]:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(:is(.\[\&\:\:-moz-range-thumb\]\:border-0,.\[\&_\[data-markdown-details\]\]\:border-0,.\[\&_tr\:last-child\]\:border-0,.border-0), [class*="border-none"], :is(.\[\&\:\:-webkit-scrollbar-thumb\]\:border-transparent,.border-transparent,.border-transparent\!,.dark\:border-transparent), [aria-invalid="true"], [data-preview-url-input]):focus-visible,
+html body textarea[class*="border"]:not(:is(.\[\&\:\:-moz-range-thumb\]\:border-0,.\[\&_\[data-markdown-details\]\]\:border-0,.\[\&_tr\:last-child\]\:border-0,.border-0), [class*="border-none"], :is(.\[\&\:\:-webkit-scrollbar-thumb\]\:border-transparent,.border-transparent,.border-transparent\!,.dark\:border-transparent), [aria-invalid="true"]):focus-visible {
+	box-shadow: var(--p31g-glow) !important;
+	outline: none !important;
+}
+/* T3's input wrapper (span[data-slot="input-control"]) draws the edge and a blue focus ring:
+   overlay frame and glow instead; a field marked invalid keeps T3's red */
+html span[data-slot="input-control"]:not(:has([aria-invalid="true"])):is(:hover, :focus-within) {
+	border-color: transparent !important;
+}
+html span[data-slot="input-control"]:not(:has([aria-invalid="true"])):focus-within {
+	box-shadow: var(--p31g-glow) !important;
+}
+html span[data-slot="input-control"]:not(:has([aria-invalid="true"])):is(:hover, :focus-within)::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: -1px !important;
+	z-index: 3 !important;
+	border-radius: inherit !important;
+		padding: 1.5px !important;
+	background: var(--p31g-grad) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	pointer-events: none !important;
+}
+html span[data-slot="input-control"]:not(:has([aria-invalid="true"])):has(:focus-visible)::after {
+	padding: 2px !important;
+}
+
+/* ===== 6. Sidebar ========================================================================= */
+/* thread rows other than the card style (slim, folder): the card's frame (pass 25), not the
+   blue inset ring from 87. Rows are relative and clip their content, so the frame sits inside. */
+html [data-slot="sidebar-inner"] [data-testid^="sidebar-row-"]:not([data-testid="sidebar-row-card"]):is(:hover, :focus-visible) {
+	box-shadow: none !important;
+}
+html [data-slot="sidebar-inner"] [data-testid^="sidebar-row-"]:not([data-testid="sidebar-row-card"]):is(:hover, :focus-visible)::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: 0 !important;
+	z-index: 3 !important;
+	border-radius: inherit !important;
+	padding: 2px !important;
+	background: linear-gradient(100deg, #89b4fa, #cba6f7) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	pointer-events: none !important;
+}
+/* card rows: keyboard focus gets the same frame as hover instead of T3's blue inset ring */
+html [data-slot="sidebar-inner"] [data-testid="sidebar-row-card"][data-testid="sidebar-row-card"]:focus-visible {
+	box-shadow: none !important;
+}
+html [data-slot="sidebar-inner"] [data-testid="sidebar-row-card"][data-testid="sidebar-row-card"][data-testid="sidebar-row-card"]:focus-visible::after {
+	--t25-ga: #89b4fa;
+	--t25-gb: #cba6f7;
+	padding: 2px !important;
+}
+/* section header rows (h-8, control radius): give them a box for the frame; their children are
+   in-flow, so nothing moves */
+html [data-slot="sidebar-inner"] [data-sidebar-row].rounded-\(--control-radius\):not([data-testid]) {
+	position: relative !important;
+}
+html [data-slot="sidebar-inner"] [data-sidebar-row].rounded-\(--control-radius\):not([data-testid]):is(:hover, :focus-visible) {
+	box-shadow: none !important;
+}
+html [data-slot="sidebar-inner"] [data-sidebar-row].rounded-\(--control-radius\):not([data-testid]):is(:hover, :focus-visible)::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: 0 !important;
+	z-index: 3 !important;
+	border-radius: inherit !important;
+		padding: 1.5px !important;
+	background: linear-gradient(100deg, #89b4fa, #cba6f7) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	pointer-events: none !important;
+}
+html [data-slot="sidebar-inner"] [data-sidebar-row].rounded-\(--control-radius\):not([data-testid]):focus-visible::after {
+	padding: 2px !important;
+}
+/* resize rail: the dock's right edge lights mauve with a blue-and-mauve glow (was blue only) */
+html [data-slot="sidebar-inner"][data-slot="sidebar-inner"]:has(> [data-slot="sidebar-rail"]:hover),
+html [data-slot="sidebar-inner"][data-slot="sidebar-inner"]:has(> [data-slot="sidebar-rail"]:active) {
+	border-right-color: #cba6f7 !important;
+	box-shadow:
+		2px 0 16px -4px rgb(137 180 250 / 0.45),
+		4px 0 22px -10px rgb(203 166 247 / 0.5),
+		0 16px 36px -14px rgb(17 17 27 / 0.85) !important;
+}
+html [data-slot="sidebar-rail"][data-slot="sidebar-rail"]:hover {
+	color: #cba6f7 !important;
+}
+
+/* ===== 7. Bordered docks from 87-hover-glow: two-tone edge and two-colour glow ============ */
+/* These boxes are see-through glass or have no box for an overlay, so the edge is two-tone. */
+html nav[aria-label$="breadcrumb"] > ol:hover,
+html [data-panel-layout-controls]:hover,
+html [data-slot="sidebar"] [data-slot="sidebar-inner"]:hover,
+html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"]:hover,
+html [data-slot="sidebar-inner"] div.flex.items-center.gap-1:has(> div [aria-label="Search threads"]):is(:hover, :focus-within) {
+	border-color: var(--p31g-two-tone) !important;
+	box-shadow: var(--p31g-glow), inset 0 1px 0 var(--t3d-sheen, transparent) !important;
+}

@@ -79,10 +79,14 @@
 		for (const sec of SECTIONS) {
 			const rows = sectionRows[sec.name];
 			let head = ul.querySelector(`:scope > li.t3l-shelf[data-t3l-shelf="${sec.name}"]`);
-			if (!rows.length) { if (head) head.remove(); continue; }
+			// pass 30: Active keeps its header with a 0 count when every thread is working,
+			// so the group never vanishes; it sits right after T3's active marker.
+			const keep = sec.name === 'active' ? ul.querySelector(':scope > li[data-testid="sidebar-active-placeholder"]') : null;
+			if (!rows.length && !keep) { if (head) head.remove(); continue; }
 			if (!head) head = make(sec);
-			const anchor = rows[0];
-			if (head.nextElementSibling !== anchor) ul.insertBefore(head, anchor);
+			if (rows.length) { if (head.nextElementSibling !== rows[0]) ul.insertBefore(head, rows[0]); }
+			else if (head.previousElementSibling !== keep) keep.after(head);
+			head.toggleAttribute('data-t3l-empty', !rows.length);
 			const n = String(rows.length);
 			const count = head.querySelector('.t3l-shelf-count');
 			if (count.textContent !== n) count.textContent = n;

@@ -1,0 +1,94 @@
+/* T3 Code Enhanced pass 31j (2026-11-10): owner's polish list.
+   1. Environment row (top of the right dock): no edge at rest, the frame shows on hover only.
+   2. Model picker search and browser URL bar: one rounded edge. The inner input wrapper drew its
+      own square gradient frame (pass 31g text-field rule) inside the rounded field; it is off here,
+      the outer field keeps its frame.
+   3. Brand dock: the galaxy backdrop is 80px tall with square corners and poked out of the 12px
+      rounded dock; the dock now clips it to its own radius.
+   4. Brand dock edge: 1.5px at rest, 2px on hover (was 1px, looked thin and jagged).
+   5. Draft rows in the sidebar: grey rest edge and blue-to-mauve hover frame like thread rows.
+   Rollback: delete this file and reload T3. */
+
+/* 1. environment row: transparent frame at rest */
+html body [data-thread-details-card] [data-thread-panel-run-context] span[data-composer-context-control][data-composer-context-control]:not(:hover, [data-p31g-hover])::after {
+	--p31g-a: transparent;
+	--p31g-b: transparent;
+}
+
+/* 2. search fields: the inner wrapper and the input draw nothing */
+html :is(
+	[data-model-picker-content] > div:is(.bg-muted\/40,.hover\:bg-muted\/40) > div.pt-2\.5 > div:is(.\*\:data-slot\:has-\[\~\[data-slot\]\]\:border-b-0,.\*\:not-first\:border-border\/50,.\*\:not-last\:border-b-0,.\@min-\[48rem\]\/providers\:border-b-0,.\[\&_tr\]\:border-b,.\[\.border-b\]\:pb-\[calc\(--spacing\(3\)-1px\)\],.\[\:hover\,\[data-pressed\]\]\:border-border,.border-b,.border-b-2,.border-background,.border-be,.border-blue-500\/70,.border-border,.border-border\/30,.border-border\/40,.border-border\/45,.border-border\/50,.border-border\/60,.border-border\/65,.border-border\/70,.border-border\/80,.border-box,.border-bs,.hover\:border-border,.hover\:border-border\/70,.in-data-\[preview-panel-mode\=inline\]\:border-b-transparent,.last\:border-b-0,.max-sm\:border-b-0,.not-last\:border-b),
+	[data-surface-subheader] [data-slot="input-group"].group\/address
+) :is(span[data-slot="input-control"], span[data-slot="input-control"]:is(:hover, :focus-within)) {
+	border-color: transparent !important;
+	box-shadow: none !important;
+	outline: none !important;
+	background: transparent !important;
+	border-radius: inherit !important;
+}
+html :is(
+	[data-model-picker-content] > div:is(.bg-muted\/40,.hover\:bg-muted\/40) > div.pt-2\.5 > div:is(.\*\:data-slot\:has-\[\~\[data-slot\]\]\:border-b-0,.\*\:not-first\:border-border\/50,.\*\:not-last\:border-b-0,.\@min-\[48rem\]\/providers\:border-b-0,.\[\&_tr\]\:border-b,.\[\.border-b\]\:pb-\[calc\(--spacing\(3\)-1px\)\],.\[\:hover\,\[data-pressed\]\]\:border-border,.border-b,.border-b-2,.border-background,.border-be,.border-blue-500\/70,.border-border,.border-border\/30,.border-border\/40,.border-border\/45,.border-border\/50,.border-border\/60,.border-border\/65,.border-border\/70,.border-border\/80,.border-box,.border-bs,.hover\:border-border,.hover\:border-border\/70,.in-data-\[preview-panel-mode\=inline\]\:border-b-transparent,.last\:border-b-0,.max-sm\:border-b-0,.not-last\:border-b),
+	[data-surface-subheader] [data-slot="input-group"].group\/address
+) span[data-slot="input-control"]:is(*, :hover, :focus-within, :has(:focus-visible))::after,
+html :is(
+	[data-model-picker-content] > div:is(.bg-muted\/40,.hover\:bg-muted\/40) > div.pt-2\.5 > div:is(.\*\:data-slot\:has-\[\~\[data-slot\]\]\:border-b-0,.\*\:not-first\:border-border\/50,.\*\:not-last\:border-b-0,.\@min-\[48rem\]\/providers\:border-b-0,.\[\&_tr\]\:border-b,.\[\.border-b\]\:pb-\[calc\(--spacing\(3\)-1px\)\],.\[\:hover\,\[data-pressed\]\]\:border-border,.border-b,.border-b-2,.border-background,.border-be,.border-blue-500\/70,.border-border,.border-border\/30,.border-border\/40,.border-border\/45,.border-border\/50,.border-border\/60,.border-border\/65,.border-border\/70,.border-border\/80,.border-box,.border-bs,.hover\:border-border,.hover\:border-border\/70,.in-data-\[preview-panel-mode\=inline\]\:border-b-transparent,.last\:border-b-0,.max-sm\:border-b-0,.not-last\:border-b),
+	[data-surface-subheader] [data-slot="input-group"].group\/address
+) span[data-slot="input-control"]::before {
+	content: none !important;
+	display: none !important;
+}
+html :is(
+	[data-model-picker-content] > div:is(.bg-muted\/40,.hover\:bg-muted\/40) > div.pt-2\.5 > div:is(.\*\:data-slot\:has-\[\~\[data-slot\]\]\:border-b-0,.\*\:not-first\:border-border\/50,.\*\:not-last\:border-b-0,.\@min-\[48rem\]\/providers\:border-b-0,.\[\&_tr\]\:border-b,.\[\.border-b\]\:pb-\[calc\(--spacing\(3\)-1px\)\],.\[\:hover\,\[data-pressed\]\]\:border-border,.border-b,.border-b-2,.border-background,.border-be,.border-blue-500\/70,.border-border,.border-border\/30,.border-border\/40,.border-border\/45,.border-border\/50,.border-border\/60,.border-border\/65,.border-border\/70,.border-border\/80,.border-box,.border-bs,.hover\:border-border,.hover\:border-border\/70,.in-data-\[preview-panel-mode\=inline\]\:border-b-transparent,.last\:border-b-0,.max-sm\:border-b-0,.not-last\:border-b),
+	[data-surface-subheader] [data-slot="input-group"].group\/address
+) input:is(*, :hover, :focus, :focus-visible) {
+	border-color: transparent !important;
+	box-shadow: none !important;
+	outline: none !important;
+}
+
+/* 3 + 4. brand dock: clip the galaxy to the radius, thicker smooth edge */
+html body [data-slot="sidebar-inner"] div.relative.flex:is(.\[--toast-header-offset\:var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\]\!,.max-h-\[var\(--workspace-topbar-height\)\]\!,.min-h-\[var\(--workspace-topbar-height\)\],.min-h-\[var\(--workspace-topbar-height\)\]\!,.pb-\(--workspace-topbar-height\),.wco\:h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:max-h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:mt-\(--workspace-topbar-height\),.workspace-topbar-height) {
+	border-radius: 12px !important;
+	overflow: clip !important;
+}
+html body [data-slot="sidebar-inner"] div.relative.flex:is(.\[--toast-header-offset\:var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\]\!,.max-h-\[var\(--workspace-topbar-height\)\]\!,.min-h-\[var\(--workspace-topbar-height\)\],.min-h-\[var\(--workspace-topbar-height\)\]\!,.pb-\(--workspace-topbar-height\),.wco\:h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:max-h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:mt-\(--workspace-topbar-height\),.workspace-topbar-height) > .sidebar-stage-backdrop {
+	border-radius: inherit !important;
+	clip-path: inset(0 round 12px) !important;
+}
+html body [data-slot="sidebar-inner"] div.relative.flex:is(.\[--toast-header-offset\:var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\]\!,.max-h-\[var\(--workspace-topbar-height\)\]\!,.min-h-\[var\(--workspace-topbar-height\)\],.min-h-\[var\(--workspace-topbar-height\)\]\!,.pb-\(--workspace-topbar-height\),.wco\:h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:max-h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:mt-\(--workspace-topbar-height\),.workspace-topbar-height)::after {
+	padding: 1.5px !important;
+}
+html body [data-slot="sidebar-inner"] div.relative.flex:is(.\[--toast-header-offset\:var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\]\!,.max-h-\[var\(--workspace-topbar-height\)\]\!,.min-h-\[var\(--workspace-topbar-height\)\],.min-h-\[var\(--workspace-topbar-height\)\]\!,.pb-\(--workspace-topbar-height\),.wco\:h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:max-h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:mt-\(--workspace-topbar-height\),.workspace-topbar-height):hover::after {
+	padding: 2px !important;
+}
+
+/* 5. draft rows: the thread row frame */
+html [data-slot="sidebar-inner"] [data-testid="sidebar-draft-row"] {
+	position: relative !important;
+	transition: background-color 0.22s ease !important;
+}
+html [data-slot="sidebar-inner"] [data-testid="sidebar-draft-row"]::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: 0 !important;
+	z-index: 3 !important;
+	border-radius: inherit !important;
+		padding: 1.5px !important;
+	background: linear-gradient(100deg, var(--p31j-a), var(--p31j-b)) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	pointer-events: none !important;
+	--p31j-a: rgb(108 112 134 / 0.4);
+	--p31j-b: rgb(108 112 134 / 0.4);
+}
+html [data-slot="sidebar-inner"] [data-testid="sidebar-draft-row"]:is(:hover, :focus-visible)::after {
+	--p31j-a: #89b4fa;
+	--p31j-b: #cba6f7;
+	padding: 2px !important;
+}
+html [data-slot="sidebar-inner"] [data-testid="sidebar-draft-row"][data-testid="sidebar-draft-row"]:is(:hover, :focus-visible) {
+	background-color: rgb(24 24 37 / 0.72) !important;
+	box-shadow: none !important;
+	outline: none !important;
+}

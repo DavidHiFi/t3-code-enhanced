@@ -1,0 +1,90 @@
+/* Workspace lists and Usage share one frame per control, with frost on the toolbar. */
+@scope (html[data-window-material]:not([data-t3local-extendedglass-off]) :is(
+  .\@container\/issue-list, .\@container\/pr-list,
+  header.\@container\/usage-header
+)) {
+  /* Speed (2026-11-21): the usage root is the header itself. A div:has(> header) root made every
+     text change anywhere in the app re-check this scope, about 65 ms per sidebar timer tick. */
+  :scope {
+    --workspace-edge: rgb(108 112 134 / .58);
+    --workspace-fill: rgb(24 24 37 / .7);
+    --workspace-hover: #242436;
+    --workspace-gradient: linear-gradient(100deg, #89b4fa, #cba6f7);
+  }
+
+  .flex.flex-wrap.items-center.gap-2:has(> :is(.\@lg\/issue-list\:basis-0, .\@lg\/pr-list\:basis-0)),
+  :scope:is(header) {
+    border: 1px solid var(--workspace-edge) !important;
+    border-radius: 12px !important;
+    background: rgb(30 30 46 / .8) !important;
+    backdrop-filter: var(--t3-real-blur, blur(22px)) !important;
+  }
+
+  .flex.flex-wrap.items-center.gap-2:has(> :is(.\@lg\/issue-list\:basis-0, .\@lg\/pr-list\:basis-0)) {
+    padding: 6px;
+  }
+
+  :scope:is(header) {
+    margin: 6px 8px;
+  }
+
+  :is(
+    .flex.flex-wrap.items-center.gap-2:has(> :is(.\@lg\/issue-list\:basis-0, .\@lg\/pr-list\:basis-0)) > button,
+    header.\@container\/usage-header :is(button[data-slot], [role="tab"]),
+    :is(.\@lg\/issue-list\:basis-0, .\@lg\/pr-list\:basis-0) [data-slot="input-group"],
+    .\[contain-intrinsic-block-size\:56\.5px\],
+    header.\@container\/usage-header a[href^="/usage"]
+  ) {
+    border: 1.5px solid var(--workspace-edge) !important;
+    border-radius: 9px !important;
+    background: var(--workspace-fill) padding-box !important;
+    box-shadow: none !important;
+    font-family: inherit !important;
+  }
+
+  :is(
+    .flex.flex-wrap.items-center.gap-2:has(> :is(.\@lg\/issue-list\:basis-0, .\@lg\/pr-list\:basis-0)) > button,
+    header.\@container\/usage-header :is(button[data-slot], [role="tab"]),
+    :is(.\@lg\/issue-list\:basis-0, .\@lg\/pr-list\:basis-0) [data-slot="input-group"],
+    .\[contain-intrinsic-block-size\:56\.5px\],
+    header.\@container\/usage-header a[href^="/usage"]
+  ):not(:disabled, [aria-disabled="true"]):is(
+    :hover, :focus-visible, :focus-within, [data-popup-open], [aria-expanded="true"],
+    [aria-selected="true"], [aria-pressed="true"], [data-state="on"], [data-checked],
+    :has(> button[aria-current="true"])
+  ) {
+    border-color: transparent !important;
+    background:
+      linear-gradient(var(--workspace-hover), var(--workspace-hover)) padding-box,
+      var(--workspace-gradient) border-box !important;
+    outline: none !important;
+    box-shadow: 0 0 8px rgb(137 180 250 / .15) !important;
+  }
+
+  .\[contain-intrinsic-block-size\:56\.5px\] > button,
+  :is(.\@lg\/issue-list\:basis-0, .\@lg\/pr-list\:basis-0) :is(input, [data-slot="input-control"]) {
+    background: transparent !important;
+    font-family: inherit !important;
+    box-shadow: none !important;
+  }
+
+  tr.hover\:bg-muted\/50:hover {
+    background-color: var(--workspace-hover) !important;
+  }
+}
+
+/* Reuse the Settings frame, including its existing masked edge. */
+html nav[data-workspace-area="settings-nav"] [data-settings-section]::after {
+  --t28-a: rgb(108 112 134 / .40);
+  --t28-b: rgb(108 112 134 / .40);
+}
+
+html nav[data-workspace-area="settings-nav"] [data-settings-section]:is(:hover, :focus-visible, [data-active="true"], [aria-current="page"])::after {
+  --t28-a: #89b4fa;
+  --t28-b: #cba6f7;
+}
+
+html nav[data-workspace-area="settings-nav"] [data-settings-section]:is(:hover, :focus-visible, [data-active="true"], [aria-current="page"]) {
+  outline: none !important;
+  box-shadow: 0 0 8px rgb(137 180 250 / .15) !important;
+}

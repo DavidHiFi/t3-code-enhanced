@@ -8,13 +8,6 @@
    ========================================================================== */
 
 /* ---- 1. brand dock: "Enhanced" accent pill (span from 99-pass15b.js) + hover glow ---- */
-[data-slot="sidebar-inner"] a[aria-label="T3 Code home"] {
-	transition: var(--t15-ease) !important;
-	border-radius: 8px !important;
-}
-[data-slot="sidebar-inner"] a[aria-label="T3 Code home"]:hover {
-	box-shadow: var(--t15-ring), var(--t15-glow) !important;
-}
 /* the Nightly badge yields width before the row overflows */
 [data-slot="sidebar-inner"] div:has(> div > div > a[aria-label="T3 Code home"]) [data-environment-identification="pill"] {
 	min-width: 0 !important;
@@ -41,9 +34,6 @@
 	margin: 0 !important;
 	transition: var(--t15-ease) !important;
 }
-[data-slot="sidebar-inner"] a[aria-label="T3 Code home"]:hover .t3l-enh {
-	box-shadow: 0 0 10px -2px rgb(203 166 247 / 0.5) !important;
-}
 
 /* ---- 2. back/forward arrows: never render in the sidebar header ----
    The stock pair (div.hidden.items-center.md:flex in the brand row) flashes for
@@ -68,13 +58,9 @@
 	background: transparent !important;
 	box-shadow: none !important;
 }
-[data-slot="sidebar"]:has([data-slot="sidebar-rail"]:hover) [data-slot="sidebar-inner"],
-[data-slot="sidebar"]:has([data-slot="sidebar-rail"]:active) [data-slot="sidebar-inner"] {
+[data-slot="sidebar-inner"][data-slot="sidebar-inner"]:has(> [data-slot="sidebar-rail"]:hover),
+[data-slot="sidebar-inner"][data-slot="sidebar-inner"]:has(> [data-slot="sidebar-rail"]:active) {
 	border-right-color: rgb(137 180 250 / 0.8) !important;
-	box-shadow:
-		inset -1px 0 0 rgb(137 180 250 / 0.55),
-		2px 0 16px -4px rgb(137 180 250 / 0.55),
-		0 16px 36px -14px rgb(17 17 27 / 0.85) !important;
 }
 
 /* ---- 5. timeline minimap pill: grows to hold its hover-revealed turn chevrons ----
@@ -88,17 +74,17 @@
 div.absolute.top-1\/2.left-3.pointer-events-auto {
 	transition: height 0.15s ease !important;
 }
-div.absolute.top-1\/2.left-3.pointer-events-auto > span.absolute[class*="bottom-[calc"],
-div.absolute.top-1\/2.left-3.pointer-events-auto > span.absolute[class*="top-[calc"] {
+div.absolute.top-1\/2.left-3.pointer-events-auto > span.absolute.bottom-\[calc\(100\%\+6px\)\],
+div.absolute.top-1\/2.left-3.pointer-events-auto > span.absolute:is(.data-\[position\*\=top\]\:top-\[calc\(var\(--toast-inset\)\+var\(--toast-header-offset\)\)\],.top-\[calc\(100\%\+6px\)\],.top-\[calc\(var\(--workspace-controls-top\)-env\(safe-area-inset-top\)\)\]) {
 	left: 50% !important;
 	translate: -50% 0 !important;
 	transform: none !important;
 }
-div.absolute.top-1\/2.left-3.pointer-events-auto > span.absolute[class*="bottom-[calc"] {
+div.absolute.top-1\/2.left-3.pointer-events-auto > span.absolute.bottom-\[calc\(100\%\+6px\)\] {
 	top: 2px !important;
 	bottom: auto !important;
 }
-div.absolute.top-1\/2.left-3.pointer-events-auto > span.absolute[class*="top-[calc"] {
+div.absolute.top-1\/2.left-3.pointer-events-auto > span.absolute:is(.data-\[position\*\=top\]\:top-\[calc\(var\(--toast-inset\)\+var\(--toast-header-offset\)\)\],.top-\[calc\(100\%\+6px\)\],.top-\[calc\(var\(--workspace-controls-top\)-env\(safe-area-inset-top\)\)\]) {
 	bottom: 2px !important;
 	top: auto !important;
 }
@@ -126,17 +112,12 @@ span.group\/sidebar-status-slot button.-mr-1 {
 	overflow: hidden !important;
 	flex: none !important;
 }
-[data-slot="sidebar-footer"] li:has(> button.rounded-full) {
-	flex: none !important;
-	max-width: 2.5rem !important;
-	overflow: hidden !important;
-}
 /* the button stays a circle so its own edge and T3's inner progress overlay
    (an absolute rounded-full child, pass 8 rounds it to 10px) coincide: no
    double edge at the corners of the pass-6 8px square. */
 html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] button.rounded-full,
 html [data-slot="sidebar-footer"] button.rounded-full::after,
-html [data-slot="sidebar-footer"] button.rounded-full [class*="rounded-full"] {
+html [data-slot="sidebar-footer"] button.rounded-full :is(.\*\:after\:rounded-full,.\[\&\:\:-moz-progress-bar\]\:rounded-full,.\[\&\:\:-moz-range-thumb\]\:rounded-full,.\[\&\:\:-webkit-progress-bar\]\:rounded-full,.\[\&\:\:-webkit-progress-value\]\:rounded-full,.\[\&\:\:-webkit-scrollbar-thumb\]\:rounded-full,.\[\&\:\:-webkit-slider-thumb\]\:rounded-full,.\[\&_button\]\:rounded-full,.after\:rounded-full,.before\:rounded-full,.rounded-full) {
 	border-radius: 9999px !important;
 }
 
@@ -146,9 +127,7 @@ html [data-slot="sidebar-footer"] button.rounded-full [class*="rounded-full"] {
    the tokens layer, so it wins ties at equal specificity. */
 html[data-window-material] [role="menu"],
 html[data-window-material] [role="listbox"],
-html[data-window-material] [data-slot$="popup"]:not([data-slot$="-positioner"]):not([data-slot$="-trigger"]),
-html[data-window-material] [data-slot="menu-content"],
-html[data-window-material] [data-slot="context-menu-content"] {
+html[data-window-material] [data-slot$="popup"]:not([data-slot$="-positioner"]):not([data-slot$="-trigger"]){
 	background-color: var(--t15-solid) !important;
 	-webkit-backdrop-filter: var(--t15-blur-deep) !important;
 	backdrop-filter: var(--t15-blur-deep) !important;
@@ -169,13 +148,9 @@ nav[data-workspace-area="settings-nav"] div.flex.h-8.items-center.gap-2 {
 
 /* ---- 3. group shelves (with 90-section-shelves.js): pill re-pointed at the
    pass-15 material ladder; the old --t6-* vars are gone ---- */
-li.t3l-shelf {
-	margin: 0 2px !important;
-	height: 32px !important;
-}
 .t3l-shelf-btn {
 	background-color: var(--t15-dock) !important;
-	box-shadow: inset 0 0 0 1px var(--t15-edge) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t15-edge) !important;
 	transition: var(--t15-ease) !important;
 	border-radius: 10px !important;
 }

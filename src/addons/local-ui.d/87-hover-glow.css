@@ -38,8 +38,8 @@ nav[aria-label$="breadcrumb"] > ol,
 :is(.dropdown-glass, .dialog-glass, .alert-glass) :is([role="option"], [role="menuitem"], [role="menuitemradio"], [role="menuitemcheckbox"], button, input),
 [data-slot="sidebar-rail"],
 button[class*="border"],
-button[class*="ring-1"],
-[class*="badge"],
+button:is(.\#multiline-string-1-interp,.after\:ring-1,.dark\:ring-1,.data-\[popup-open\]\:ring-1,.focus-visible\:ring-1,.focus-within\:ring-1,.in-data-\[thread-context-over\]\:ring-1,.light\:ring-1,.multiline-string-1-interp,.ring-1),
+:is(.\&\&\!Q\,showInstanceBadge\:dn\.has\(a\.instanceId\)\,showNewBadge\:a\.badge\=\=\=,.badge,.badge-alert,.badge-cent,.badge-check,.badge-dollar-sign,.badge-euro,.badge-indian-rupee,.badge-info,.badge-japanese-yen,.badge-minus,.badge-percent,.badge-plus,.badge-pound-sterling,.badge-question-mark,.badge-russian-ruble,.badge-swiss-franc,.badge-turkish-lira,.badge-x,.badge\.background,.badge\.foreground,.badger,.data-prompt-stash-badge,.file-badge,.has-\[\>\:last-child\[data-slot\=badge\]\]\:-me-1\.5,.has-\[\>\:last-child\[data-slot\=badge\]\]\:-ms-1\.5,.name_badge,.s\=o\,c\=e\.badgeContent\?\?),
 input,
 textarea {
 	transition: border-color var(--t3h-ease), box-shadow var(--t3h-ease), background-color var(--t3h-ease), color var(--t3h-ease), --chat-composer-outline var(--t3h-ease) !important;
@@ -62,44 +62,38 @@ nav[aria-label$="breadcrumb"] > ol:hover,
 .chat-markdown pre:not(.chat-markdown-codeblock pre):hover,
 .chat-markdown .chat-markdown-table-container:hover,
 [data-changed-files-state]:hover,
-:is(.dropdown-glass, .dialog-glass, .alert-glass):not([class*="rounded-none"]):hover {
+:is(.dropdown-glass, .dialog-glass, .alert-glass):not(:is(.\[\&\+\[data-slot\=composer-banner-attachment\]_\[data-composer-banner-surface\=attached\]\]\:before\:rounded-none,.\[\&\>\[data-slot\=settings-row\]\]\:rounded-none,.\[\&_\[data-slot\=settings-row\]\]\:rounded-none,.data-panel-open\:rounded-none,.in-\[\.range-middle\]\:rounded-none,.max-sm\:rounded-none,.rounded-none)):hover {
 	border-color: var(--t3h-blue) !important;
 	box-shadow: var(--t3h-glow), inset 0 1px 0 var(--t3d-sheen) !important;
 }
 
 /* ---- the composer: T3 draws its frame with --chat-composer-outline on ::after ---- */
-html.dark [data-chat-composer-main-surface][data-chat-composer-main-surface][data-chat-composer-main-surface]:is(:hover, :focus-within) {
-	--chat-composer-outline: rgb(137 180 250 / 0.85) !important;
-}
-[class*="before:bg-(--chat-composer-glass-surface)"]:is(:hover, :focus-within)::before {
-	box-shadow: 0 0 18px -4px rgb(137 180 250 / 0.4), 0 12px 30px -14px rgb(17 17 27 / 0.85) !important;
-}
 
 /* ---- user message bubble ---- */
 .bg-message:hover {
-	box-shadow: inset 0 0 0 1px var(--t3h-blue), var(--t3h-glow) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t3h-blue), var(--t3h-glow) !important;
 }
 
 /* ---- thread rows: inset-ring edges turn blue ---- */
 [data-slot="sidebar-inner"] [data-sidebar-row]:hover {
-	box-shadow: inset 0 0 0 1px rgb(137 180 250 / 0.7), var(--t3h-glow) !important;
+	box-shadow: inset 0 0 0 1.5px rgb(137 180 250 / 0.7), var(--t3h-glow) !important;
 	border-radius: 12px !important;
 }
-[data-slot="sidebar-inner"] :is([class~="bg-sidebar-row-active"], [class~="bg-sidebar-row-selected"]):hover {
-	box-shadow: inset 0 0 0 1px var(--t3h-blue), var(--t3h-glow) !important;
+[data-slot="sidebar-inner"] :is(.bg-sidebar-row-active, .bg-sidebar-row-selected):hover {
+	box-shadow: inset 0 0 0 1.5px var(--t3h-blue), var(--t3h-glow) !important;
 }
 
 /* ---- menu and picker items, small bordered controls, badges, inputs ---- */
 :is(.dropdown-glass, .dialog-glass, .alert-glass) :is([role="option"], [role="menuitem"], [role="menuitemradio"], [role="menuitemcheckbox"]):is(:hover, [data-highlighted]) {
-	box-shadow: inset 0 0 0 1px rgb(137 180 250 / 0.7) !important;
+	box-shadow: inset 0 0 0 1.5px rgb(137 180 250 / 0.7) !important;
 }
 button[class*="border"]:not([disabled]):hover,
-button[class*="ring-1"]:not([disabled]):hover,
-[data-slot="sidebar-inner"] [class*="badge"]:hover,
+button:is(.\#multiline-string-1-interp,.after\:ring-1,.dark\:ring-1,.data-\[popup-open\]\:ring-1,.focus-visible\:ring-1,.focus-within\:ring-1,.in-data-\[thread-context-over\]\:ring-1,.light\:ring-1,.multiline-string-1-interp,.ring-1):not([disabled]):hover,
+[data-slot="sidebar-inner"] :is(.\&\&\!Q\,showInstanceBadge\:dn\.has\(a\.instanceId\)\,showNewBadge\:a\.badge\=\=\=,.badge,.badge-alert,.badge-cent,.badge-check,.badge-dollar-sign,.badge-euro,.badge-indian-rupee,.badge-info,.badge-japanese-yen,.badge-minus,.badge-percent,.badge-plus,.badge-pound-sterling,.badge-question-mark,.badge-russian-ruble,.badge-swiss-franc,.badge-turkish-lira,.badge-x,.badge\.background,.badge\.foreground,.badger,.data-prompt-stash-badge,.file-badge,.has-\[\>\:last-child\[data-slot\=badge\]\]\:-me-1\.5,.has-\[\>\:last-child\[data-slot\=badge\]\]\:-ms-1\.5,.name_badge,.s\=o\,c\=e\.badgeContent\?\?):hover,
 [data-panel-layout-controls] button:hover,
 [data-chat-composer-footer] button:not([disabled]):hover {
 	border-color: var(--t3h-blue) !important;
-	box-shadow: inset 0 0 0 1px rgb(137 180 250 / 0.6), var(--t3h-glow) !important;
+	box-shadow: inset 0 0 0 1.5px rgb(137 180 250 / 0.6), var(--t3h-glow) !important;
 }
 input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):is(:hover, :focus),
 textarea:is(:hover, :focus) {
@@ -109,7 +103,6 @@ textarea:is(:hover, :focus) {
 /* ---- the sidebar resize rail ---- */
 [data-slot="sidebar-rail"]:hover::after {
 	background-color: var(--t3h-blue) !important;
-	box-shadow: 0 0 10px rgb(137 180 250 / 0.6) !important;
 }
 [data-slot="sidebar-rail"]:hover {
 	color: var(--t3h-blue) !important;

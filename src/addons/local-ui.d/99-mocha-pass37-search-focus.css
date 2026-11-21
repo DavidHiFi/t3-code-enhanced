@@ -1,0 +1,45 @@
+/* Pass 37 (2026-11-12): one frame per search box, build 0.1.10-nightly.20261112.4564.
+   Owner defect: a duplicate squarer border lights up outside the rounded frame on
+   hover, in the sidebar search and on the Keybindings settings page.
+
+   1. Sidebar. Stock 0.1.10 draws a rounded border on the whole sidebar column
+      (floating variant, radius 16) and 87-hover-glow + 31g light it blue on hover,
+      so hovering the sidebar shows a second frame outside every dock's own frame.
+      The column is a surface, not a box: its border and stock shadow step aside at
+      rest and on hover. The docks, rail and footer own every edge; the 31g
+      rail-active edge has higher specificity and still wins while it is active.
+   2. Settings, Keybindings. The section header card around the search row draws a
+      second squared frame outside the InputGroup field's own rounded border. The
+      row and its direct parent lose border, outline and shadow (pseudo layers
+      included); the InputGroup keeps its frame. Scoped to the keybindings search
+      by its aria-label, so the rule is dormant everywhere else.
+
+   Verified by live injection on build 4564 (sidebar); the keybindings rule is
+   selector-validated and goes live when that page next opens. Rollback: delete
+   this file and reload T3.
+   2026-11-13: the parent selector used a nested :has(), which this Electron rejects,
+   so the whole keybindings rule dropped. Rewritten as one :has() with a descendant.
+   2026-11-21: the parent rule's subject was any div, so every typed word re-checked
+   every div on the page (about 1 ms each). Narrowed with :where() to the
+   settings-group card it always lands on; same specificity, same element. */
+
+html [data-slot="sidebar-container"][data-slot="sidebar-container"] > [data-slot="sidebar-inner"][data-slot="sidebar-inner"],
+html [data-slot="sidebar-container"][data-slot="sidebar-container"] > [data-slot="sidebar-inner"][data-slot="sidebar-inner"]:hover,
+html [data-slot="sidebar-container"][data-slot="sidebar-container"] > [data-slot="sidebar-inner"][data-slot="sidebar-inner"]:focus-within {
+	border-color: transparent !important;
+	box-shadow: none !important;
+}
+
+html div.flex.flex-wrap.items-center.gap-2:has(input[aria-label="Search keybindings"]),
+html div:where([data-slot="settings-group"]):has(> div.flex.flex-wrap.items-center.gap-2 input[aria-label="Search keybindings"]) {
+	border: 0 !important;
+	outline: 0 !important;
+	box-shadow: none !important;
+}
+html div.flex.flex-wrap.items-center.gap-2:has(input[aria-label="Search keybindings"])::before,
+html div.flex.flex-wrap.items-center.gap-2:has(input[aria-label="Search keybindings"])::after,
+html div:where([data-slot="settings-group"]):has(> div.flex.flex-wrap.items-center.gap-2 input[aria-label="Search keybindings"])::before,
+html div:where([data-slot="settings-group"]):has(> div.flex.flex-wrap.items-center.gap-2 input[aria-label="Search keybindings"])::after {
+	border: 0 !important;
+	box-shadow: none !important;
+}

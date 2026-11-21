@@ -1,0 +1,81 @@
+/* Pass 47 (2026-11-14): account menu and account window, one surface each.
+   Owner: "boxes within boxes in the wrong colour ... where it says DavidHiFi, a squared ugly element".
+   The sign-in library (Clerk) draws its account menu and its account window as an outer glass card
+   with a second card inside it: a lighter oklch fill, its own 10.7px radius, its own shadow ring, and
+   1px wider than the outer card, so it poked past the rounded edge. The menu's outer card had no fill,
+   so the "Secured by" strip was see-through. Every Clerk inner card is now clear and the outer card
+   owns the material (the T3 menu glass), the radius and the one 1.5px edge.
+   Rows follow pass 31b: clear at rest, dark fill plus the blue to mauve frame on hover, dark fill plus
+   a grey edge for the chosen row. Dividers inside the card are 1px.
+   Rollback: delete this file and reload T3. */
+
+@property --p47-a { syntax: "<color>"; inherits: false; initial-value: transparent; }
+@property --p47-b { syntax: "<color>"; inherits: false; initial-value: transparent; }
+
+/* ---------- 1. the outer cards own material, radius and edge ---------- */
+/* the menu card is the floating element itself (placed with position and inset), so it keeps its own position */
+html .cl-userButtonPopoverCard {
+	border: 0 !important;
+	border-radius: 12px !important;
+	background: rgb(30 30 46 / .86) !important;
+	-webkit-backdrop-filter: var(--t3-real-blur, blur(24px)) saturate(1.3) !important;
+	backdrop-filter: var(--t3-real-blur, blur(24px)) saturate(1.3) !important;
+	box-shadow: 0 16px 40px -16px rgb(17 17 27 / .92) !important;
+	overflow: hidden !important;
+}
+/* account menu: one divider under the name, one above the footer, none between the two actions */
+html .cl-userButtonPopoverActions {
+	border: 0 !important;
+	border-top: 1px solid rgb(108 112 134 / .4) !important;
+	padding: 4px 6px !important;
+}
+html :is(.cl-navbarButton[data-active="true"], .cl-navbarButton.cl-active) {
+	background: rgb(24 24 37 / .5) !important;
+	--p47-a: rgb(108 112 134 / .4);
+	--p47-b: rgb(108 112 134 / .4);
+}
+
+/* ---------- 4. sidebar search row: one dock, one edge ---------- */
+/* The dock drew its edge, then the search field and the three-icon group each drew a second edge
+   3px inside it, so the row read as a double border with boxes in a box. Pass 38 already said
+   "the search row owns its frame"; the inner parts now go clear and a 1px divider splits them. */
+html [data-slot="sidebar-inner"] div.flex.items-center.gap-1:has(> div [aria-label="Search threads"]) > div {
+	background-color: transparent !important;
+	box-shadow: none !important;
+}
+html [data-slot="sidebar-inner"] div.flex.items-center.gap-1:has(> div [aria-label="Search threads"]) > div.flex.shrink-0.items-center {
+	border-left: 1px solid rgb(108 112 134 / .4) !important;
+	border-radius: 0 !important;
+	padding-left: 4px !important;
+}
+
+/* ---------- 5. notices: the close button sits inside the corner ---------- */
+/* T3 hangs the round close button 6px past the top-right corner of every notice, so a circle
+   with its own edge poked out of the rounded card. It now sits inside the corner as a quiet icon
+   button, and the text keeps clear of it. */
+html div:has(> [data-slot="toast-close"]) {
+	top: 10px !important;
+	right: 8px !important;
+}
+html [data-slot="toast-close"] {
+	border: 0 !important;
+	border-radius: 8px !important;
+	background: transparent !important;
+	box-shadow: none !important;
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+}
+html [data-slot="toast-close"]:is(:hover, :focus-visible) {
+	background: rgb(24 24 37 / .72) !important;
+	color: #cdd6f4 !important;
+}
+html :is([data-slot="toast-popup"], [data-slot="toast-viewport"] .dropdown-glass):has(> div > [data-slot="toast-close"]) > div:not(:has(> [data-slot="toast-close"])) {
+	padding-right: 36px !important;
+}
+
+/* ---------- 6. model button: room between the model name and the effort ---------- */
+/* "Halo Sparks (auto)Max" and "5.5 Medium": the effort label sat 4px after the model name, less
+   than one space in this font, so the two read as one word. */
+html button[data-chat-provider-model-picker] span:has(> [data-composer-control-label]) {
+	margin-left: 5px !important;
+}

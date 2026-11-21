@@ -1,0 +1,29 @@
+/* T3 Code Enhanced pass 31i (2026-11-10): the last plain-blue hover edges turn blue-to-mauve.
+   p31g's audit listed what was still plain blue in other passes' areas. These all draw a solid
+   1px edge (inset shadow or border-color), so a two-tone edge is used: blue on top and left,
+   mauve on bottom and right. No masked frame is added here, so no element gets a second line.
+   Rollback: delete this file and reload. */
+
+/* shared ring token (pass 5 / pass 15): details card buttons, script rows, menu items, and the
+   diff and file panels' shadow roots, which inherit the token */
+:root:root {
+	--t5-ring: inset 1.5px 1.5px 0 0 rgb(137 180 250 / 0.8), inset -1.5px -1.5px 0 0 rgb(203 166 247 / 0.8) !important;
+	--t15-ring: inset 1.5px 1.5px 0 0 rgb(137 180 250 / 0.8), inset -1.5px -1.5px 0 0 rgb(203 166 247 / 0.8) !important;
+}
+
+/* user message bubble (87 gave it a plain blue inset ring on hover) */
+html .bg-message.bg-message:hover {
+	box-shadow: inset 1.5px 1.5px 0 0 rgb(137 180 250 / 0.85), inset -1.5px -1.5px 0 0 rgb(203 166 247 / 0.85),
+		0 0 14px -4px rgb(137 180 250 / 0.35), 0 0 18px -5px rgb(203 166 247 / 0.3) !important;
+}
+
+/* code blocks, tables, changed files, the intent line: real borders, so two-tone border-color */
+html :is(
+	[data-user-message-intent],
+	.chat-markdown .chat-markdown-codeblock,
+	.chat-markdown pre:not(.chat-markdown-codeblock pre),
+	.chat-markdown .chat-markdown-table-container,
+	[data-changed-files-state]
+):hover {
+	border-color: #89b4fa #cba6f7 #cba6f7 #89b4fa !important;
+}

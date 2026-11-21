@@ -54,7 +54,8 @@ function saveSettings(patch) {
 	const file = path.join(t3Dir, "local-patches.json");
 	const all = readJson(file, null);
 	if (!all) return false;
-	all.enhancedUpdates = { ...settings(), ...patch };
+	const raw = all.enhancedUpdates && typeof all.enhancedUpdates === "object" ? all.enhancedUpdates : {};
+	all.enhancedUpdates = { ...raw, ...settings(), ...patch };
 	fs.writeFileSync(file, JSON.stringify(all, null, "\t") + "\n");
 	return true;
 }
@@ -134,6 +135,7 @@ function snapshot() {
 		busy: g.busy,
 		finish: s.finish && s.finishFor === inst.version ? s.finish : null, // "reload" | "restart" after an install
 		settings: settings(),
+		t3Staged: g.t3Staged || null, // a downloaded T3 build already patched, so it installs in seconds
 	};
 }
 
@@ -269,9 +271,134 @@ function handle(msg, window) {
 	}
 }
 
+// ---- instant T3 Code updates --------------------------------------------------------------------
+// T3's own updater downloads a new build into %LOCALAPPDATA%\t3code-updater\pending. As soon as it
+// lands, the helper script (-Stage) unpacks it and patches a copy of its files in the background.
+// When the owner clicks "restart and install", electron-updater spawns the installer with
+// "--force-run". We drop that flag and start the helper (-Finish), which waits for the installer,
+// drops the already patched files in and starts T3 once. Without the helper nothing changes.
+const updaterDir = path.join(process.env.LOCALAPPDATA || "", "t3code-updater");
+
+function helperPath() {
+	const all = readJson(path.join(t3Dir, "local-patches.json"), {});
+	const own = all.enhancedUpdates && all.enhancedUpdates.t3Helper;
+	return [own, path.join(installDir, "lib", "t3-instant-update.ps1")].find((p) => typeof p === "string" && p && fs.existsSync(p)) || null;
+}
+
+const numbers = (v) => (String(v || "").match(/\d+/g) || []).map(Number);
+function laterBuild(a, b) {
+	const x = numbers(a), y = numbers(b);
+	for (let i = 0; i < Math.max(x.length, y.length); i++) if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0);
+	return false;
+}
+
+function runHelper(args, spawn) {
+	const helper = helperPath();
+	if (!helper) return null;
+	try {
+		const child = (spawn || require("child_process").spawn)(pwsh(), ["-NoProfile", "-ExecutionPolicy", "Bypass", "-WindowStyle", "Hidden", "-File", helper, ...args], {
+			detached: true,
+			stdio: "ignore",
+			windowsHide: true,
+		});
+		child.on("error", (error) => log(`helper ${args[0]} failed to start: ${error.message}`));
+		child.unref();
+		return child.pid ? child : null;
+	} catch (error) {
+		log(`helper ${args[0]} failed to start: ${error.message}`);
+		return null;
+	}
+}
+
+// the pending build, if it is newer than the running one: { installer, version, length }
+function pendingBuild() {
+	const info = readJson(path.join(updaterDir, "pending", "update-info.json"), null);
+	const name = info && info.fileName;
+	if (!name) return null;
+	const installer = path.join(updaterDir, "pending", name);
+	const version = (/(\d+\.\d+\.\d+(?:-[\w.]+?)?)(?:-x64)?\.exe$/i.exec(name) || [])[1];
+	let length = 0;
+	try {
+		length = fs.statSync(installer).size;
+	} catch {
+		return null;
+	}
+	const { app } = require("electron");
+	if (!version || !laterBuild(version, app.getVersion())) return null;
+	return { installer, version, length };
+}
+
+function stagedFor(build) {
+	if (!build) return false;
+	const m = readJson(path.join(installDir, "staged", path.basename(build.installer, ".exe"), "manifest.json"), null);
+	return !!(m && m.ok && Number(m.installerLength) === build.length);
+}
+
+function stageCheck() {
+	try {
+		const build = pendingBuild();
+		const staged = stagedFor(build);
+		if (g.t3Staged !== (staged ? build.version : null)) {
+			g.t3Staged = staged ? build.version : null;
+			push();
+		}
+		if (!build || staged) return;
+		const key = `${build.installer}:${build.length}`;
+		if (g.stageTried && g.stageTried.key === key && Date.now() - g.stageTried.at < 30 * 60e3) return;
+		g.stageTried = { key, at: Date.now() };
+		const child = runHelper(["-Stage", "-Installer", build.installer]);
+		if (child) {
+			log(`staging T3 ${build.version}`);
+			child.on("exit", () => setTimeout(stageCheck, 1000));
+		}
+	} catch (error) {
+		log(`stage check failed: ${error.message}`);
+	}
+}
+
+function hookInstaller() {
+	if (g.spawnHooked) return;
+	const cp = require("child_process");
+	const original = cp.spawn;
+	g.spawnHooked = true;
+	cp.spawn = function (cmd, args, options) {
+		try {
+			const list = Array.isArray(args) ? args : [];
+			const inUpdater = (p) => typeof p === "string" && /\.exe$/i.test(p) && path.resolve(p).toLowerCase().startsWith(updaterDir.toLowerCase() + path.sep);
+			const installer = [cmd, ...list].find(inUpdater);
+			if (installer && list.includes("--updated") && list.includes("/S") && list.includes("--force-run") && helperPath()) {
+				const child = runHelper(["-Finish", "-T3Pid", String(process.pid), "-Installer", installer], original);
+				if (child) {
+					log(`instant update: installer ${path.basename(installer)} runs without --force-run, helper ${child.pid} finishes it`);
+					args = list.filter((a) => a !== "--force-run");
+				}
+			}
+		} catch (error) {
+			log(`installer hook: ${error.message}`);
+		}
+		return original.call(this, cmd, args, options);
+	};
+	// a new download triggers staging; the watch is per process, like the hook
+	try {
+		let timer = null;
+		const watcher = fs.watch(updaterDir, { recursive: true }, () => {
+			clearTimeout(timer);
+			timer = setTimeout(stageCheck, 20e3);
+		});
+		watcher.on("error", () => {});
+		watcher.unref && watcher.unref();
+	} catch {}
+	const first = setTimeout(stageCheck, 60e3);
+	first.unref && first.unref();
+}
+
 module.exports = {
 	attach(window) {
 		g.window = window;
+		// a window load finishes a "reload"; a new process finishes a "restart"
+		if (g.state.finish === "reload" || (g.state.finish === "restart" && !g.bootSeen)) saveState({ finish: null });
+		g.bootSeen = true;
+		hookInstaller();
 		// a stale "busy" from a window that reloaded mid-check is cleared by the check itself
 		schedule();
 	},

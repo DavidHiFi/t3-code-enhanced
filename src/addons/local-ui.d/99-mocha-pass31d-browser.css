@@ -1,0 +1,103 @@
+/* T3 Mocha rice, pass 31d (2026-11-10): browser panel.
+   1. URL bar: grey rest edge on a dark fill; hover and focus get the dark fill plus the blue to mauve
+      frame (same look as the script dock hover). Kills T3's light grey hover wash. Sits 8px below the tab row so it
+      no longer crowds the tab row.
+   2. Loading bar: smooth blue to mauve gradient, same 2px height, no blue glow.
+   3. Tab pills and panel buttons: grey rest edge, blue to mauve hover frame, no inner glow.
+   Frame and fill share one box and one radius (1px masked ::after), so no double line.
+   Rollback: delete this file and reload T3. */
+
+@layer theme {
+  /* ---- 1. URL bar ---- */
+  html [data-surface-subheader] [data-slot="input-group"].group\/address {
+    position: relative !important;
+    border-color: transparent !important;
+    border-radius: 8px !important;
+    background: var(--t15-dock-in, rgb(17 17 27 / .72)) !important;
+    box-shadow: inset 0 0 0 1.5px var(--t15-edge, rgb(108 112 134 / .4)) !important;
+    transition: background-color .15s ease, box-shadow .15s ease !important;
+    --t28-a: transparent;
+    --t28-b: transparent;
+  }
+  html [data-surface-subheader] [data-slot="input-group"].group\/address:is(:hover, :focus-within) {
+    background: linear-gradient(100deg, rgb(137 180 250 / .09), rgb(203 166 247 / .09)), rgb(24 24 37 / .75) !important;
+    box-shadow: none !important;
+    --t28-a: #89b4fa;
+    --t28-b: #cba6f7;
+  }
+  html [data-surface-subheader] [data-slot="input-group"].group\/address::before {
+    display: none !important;
+    content: none !important;
+  }
+  html [data-surface-subheader] [data-slot="input-group"].group\/address input[data-preview-url-input] {
+    background: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+  /* the "open in system browser" button inside the bar: no box of its own */
+  html [data-surface-subheader] [data-slot="input-group"].group\/address button {
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+  html [data-surface-subheader] [data-slot="input-group"].group\/address button:hover {
+    background: rgb(49 50 68 / .55) !important;
+  }
+  html form[data-surface-subheader]:has(input[data-preview-url-input]) {
+    margin-top: 8px !important; /* pass 15 gave some subheaders 5px; this sets 8px for the browser bar */
+  }
+
+  /* ---- 2. loading bar ---- */
+  html .preview-loading-progress {
+    background: linear-gradient(90deg, #89b4fa, #cba6f7) !important;
+    box-shadow: none !important;
+  }
+
+  /* ---- 3. tab pills and panel buttons: rest edge ---- */
+  html div[data-right-panel-tabbar] div.group\/tab,
+  html div[data-right-panel-tabbar] button:not(div.group\/tab button),
+  html form[data-surface-subheader]:has(input[data-preview-url-input]) button:not([data-slot="input-group"] button) {
+    position: relative !important;
+    border-radius: 8px !important;
+    background-color: var(--t15-dock-in, rgb(17 17 27 / .72)) !important;
+    box-shadow: inset 0 0 0 1.5px var(--t15-edge, rgb(108 112 134 / .4)) !important;
+    --t28-a: transparent;
+    --t28-b: transparent;
+  }
+  /* active tab and pressed buttons: a quiet raised dock, still one grey edge */
+  html div[data-right-panel-tabbar] div.group\/tab[data-active-tab="true"],
+  html div[data-right-panel-tabbar] button[data-pressed]:not(div.group\/tab button),
+  html form[data-surface-subheader]:has(input[data-preview-url-input]) button[data-pressed]:not([data-slot="input-group"] button) {
+    background-color: var(--t15-hover-hi, rgb(58 60 76 / .66)) !important;
+  }
+  /* hover: dark fill plus the gradient frame, never the grey wash or inner glow */
+  html div[data-right-panel-tabbar] div.group\/tab:hover,
+  html div[data-right-panel-tabbar] button:not(div.group\/tab button):is(:hover, :focus-visible),
+  html form[data-surface-subheader]:has(input[data-preview-url-input]) button:not([data-slot="input-group"] button):not(:disabled):is(:hover, :focus-visible) {
+    background: linear-gradient(100deg, rgb(137 180 250 / .09), rgb(203 166 247 / .09)), rgb(24 24 37 / .75) !important;
+    box-shadow: none !important;
+    --t28-a: #89b4fa;
+    --t28-b: #cba6f7;
+  }
+  html form[data-surface-subheader]:has(input[data-preview-url-input]) button:disabled {
+    opacity: .45 !important;
+  }
+
+  /* one frame layer, shared by every control above (transparent until hover sets the colours) */
+  html [data-surface-subheader] [data-slot="input-group"].group\/address::after,
+  html div[data-right-panel-tabbar] div.group\/tab::after,
+  html div[data-right-panel-tabbar] button:not(div.group\/tab button)::after,
+  html form[data-surface-subheader]:has(input[data-preview-url-input]) button:not([data-slot="input-group"] button)::after {
+    content: "" !important;
+    display: block !important;
+    position: absolute !important;
+    inset: 0 !important;
+		padding: 1.5px !important;
+    border: 0 !important;
+    border-radius: inherit !important;
+    background: linear-gradient(100deg, var(--t28-a, transparent), var(--t28-b, transparent)) !important;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+    mask-composite: exclude !important;
+    box-shadow: none !important;
+    pointer-events: none !important;
+  }
+}

@@ -54,9 +54,19 @@
     sync(li);
   }
 
+  // 2026-11-21 (speed): skip batches that cannot touch the arrows (streamed reply text)
+  const NAVISH = "button, nav, ol, li, svg";
+  const touches = (recs) => {
+    for (const r of recs) {
+      if (r.type === "attributes") return true;
+      for (const list of [r.addedNodes, r.removedNodes]) for (const n of list)
+        if (n.nodeType === 1 && (n.matches(NAVISH) || n.querySelector(NAVISH))) return true;
+    }
+    return false;
+  };
   let queued = false;
-  new MutationObserver(() => {
-    if (queued) return;
+  new MutationObserver((recs) => {
+    if (queued || !touches(recs)) return;
     queued = true;
     requestAnimationFrame(() => {
       queued = false;

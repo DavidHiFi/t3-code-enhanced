@@ -14,9 +14,7 @@
 ul[role="tree"][aria-label="Threads"] {
 	min-height: 0 !important;
 }
-ul[role="tree"][aria-label="Threads"] > li[data-t3l-lead] {
-	margin-top: 0 !important;
-}
+
 ul[role="tree"][aria-label="Threads"] > li[data-testid="sidebar-working-header"],
 ul[role="tree"][aria-label="Threads"] > li[data-testid="sidebar-settled-header"] {
 	margin-top: 0 !important;

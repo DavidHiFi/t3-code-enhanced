@@ -1,0 +1,267 @@
+/* Pass 31b (2026-11-10): menus, popups and the light hover wash.
+   1. Select popups (update channel): one frame. The popup and the glass panel inside it each drew a
+      rounded border with different radii, so dots showed at the corners. Inner panel is now plain.
+   2. Comboboxes (branch picker "Search refs..."): same double frame (glass span + popup inside it);
+      search icon centred on the input text.
+   3. Right-click menu (Copy full path): menu keeps its own frame; the item has no ring of its own,
+      only a dark fill.
+   4. Settings > Providers "Add provider": same rest edge, fill, radius and hover frame as the
+      provider cards (pass 28 / 29a).
+   5. Every menu, select, combobox, command and autocomplete row: no light grey #585b70 highlight with
+      the lavender bar (80-contrast) and no light --accent wash. Clear at rest, dark fill plus the blue
+      to mauve frame on hover or highlight, dark fill plus grey edge for the chosen row. Buttons that
+      use T3's hover:bg-accent family get a dark --accent and the gradient frame on hover.
+      Left alone: composer, model picker, slash drawer, chat timeline (p31a); browser panel (p31d).
+   6. "Some requests are slow" toast: the expandable row gets a full dock (padding, radius, rest edge,
+      hover frame) instead of the clipped band from bg-muted; the toast keeps one frame.
+   [data-p31b-hover] is a test hook: the verification probes set it to show the hover look.
+   Rollback: delete this file and reload T3. */
+
+@property --p31b-a { syntax: "<color>"; inherits: false; initial-value: transparent; }
+@property --p31b-b { syntax: "<color>"; inherits: false; initial-value: transparent; }
+
+@layer theme {
+	/* ---------- 1 + 2. one frame per popup ---------- */
+	/* the inner half of a nested pair goes plain and follows the outer radius */
+	html :is(
+		[data-slot="select-popup"] > .dropdown-glass,
+		.dropdown-glass > [data-slot="combobox-popup"],
+		.dropdown-glass > [data-slot="autocomplete-popup"]
+	) {
+		border: 0 !important;
+		border-radius: inherit !important;
+		background: transparent !important;
+		box-shadow: none !important;
+		-webkit-backdrop-filter: none !important;
+		backdrop-filter: none !important;
+	}
+	/* the outer frame: one 1px frame drawn by ::after inside the box (clip-safe for overflow-hidden
+	   menus), grey at rest, blue to mauve on hover; no border, no inner sheen line, no inner glow */
+	html :is(
+		[data-slot="select-popup"],
+		[data-slot="menu-popup"],
+		.dropdown-glass:has(> [data-slot="combobox-popup"]),
+		.dropdown-glass:has(> [data-slot="autocomplete-popup"]),
+		.dropdown-glass[data-context-menu]
+	):not([data-chat-composer-floating-layer]):not(:is(.\[\&\+\[data-slot\=composer-banner-attachment\]_\[data-composer-banner-surface\=attached\]\]\:before\:rounded-none,.\[\&\>\[data-slot\=settings-row\]\]\:rounded-none,.\[\&_\[data-slot\=settings-row\]\]\:rounded-none,.data-panel-open\:rounded-none,.in-\[\.range-middle\]\:rounded-none,.max-sm\:rounded-none,.rounded-none)) {
+		border: 0 !important;
+		box-shadow: 0 16px 40px -16px rgb(17 17 27 / .92) !important;
+		--p31b-a: rgb(108 112 134 / .55);
+		--p31b-b: rgb(108 112 134 / .55);
+	}
+	html [data-slot="select-popup"] { position: relative !important; }
+	html :is(
+		[data-slot="select-popup"],
+		[data-slot="menu-popup"],
+		.dropdown-glass:has(> [data-slot="combobox-popup"]),
+		.dropdown-glass:has(> [data-slot="autocomplete-popup"]),
+		.dropdown-glass[data-context-menu]
+	):not([data-chat-composer-floating-layer]):not(:is(.\[\&\+\[data-slot\=composer-banner-attachment\]_\[data-composer-banner-surface\=attached\]\]\:before\:rounded-none,.\[\&\>\[data-slot\=settings-row\]\]\:rounded-none,.\[\&_\[data-slot\=settings-row\]\]\:rounded-none,.data-panel-open\:rounded-none,.in-\[\.range-middle\]\:rounded-none,.max-sm\:rounded-none,.rounded-none)):is(:hover, [data-p31b-hover]) {
+		--p31b-a: #89b4fa;
+		--p31b-b: #cba6f7;
+	}
+	/* the scroll arrows of a long select paint a popover-coloured fade with their own corner radius */
+	html [data-slot="select-popup"] > :is([data-slot="select-scroll-up-arrow"], [data-slot="select-scroll-down-arrow"])::before {
+		background: transparent !important;
+	}
+
+	/* 2. search field in a combobox popup: icon centred on the input line. Pass 41 rebuilt these rows
+	   as one rounded field and centres the icon with top 50% + translateY(-50%). This rule's old
+	   top 0 / bottom .375rem / margin auto won on cascade layers while pass 41's transform still
+	   applied, so the centred icon was shifted up half its height and out of the box top
+	   (owner: "fix the magnifying glass position", 2026-11-16). Both rules now carry the same
+	   recipe, so no cascade order can decide the result. */
+	html [data-slot="combobox-popup"] div.relative:is(.\*\:data-slot\:has-\[\~\[data-slot\]\]\:border-b-0,.\*\:not-first\:border-border\/50,.\*\:not-last\:border-b-0,.\@min-\[48rem\]\/providers\:border-b-0,.\[\&_tr\]\:border-b,.\[\.border-b\]\:pb-\[calc\(--spacing\(3\)-1px\)\],.\[\:hover\,\[data-pressed\]\]\:border-border,.border-b,.border-b-2,.border-background,.border-be,.border-blue-500\/70,.border-border,.border-border\/30,.border-border\/40,.border-border\/45,.border-border\/50,.border-border\/60,.border-border\/65,.border-border\/70,.border-border\/80,.border-box,.border-bs,.hover\:border-border,.hover\:border-border\/70,.in-data-\[preview-panel-mode\=inline\]\:border-b-transparent,.last\:border-b-0,.max-sm\:border-b-0,.not-last\:border-b):is(.has-data-\[align\=block-start\]\:\*\*\:\[input\]\:pb-1\.5,.pb-1\.5) > svg:is(.-top-1\.5,.top-1\.5):is(.-left-0\.5,.after\:left-0,.data-\[position\*\=center\]\:left-0,.data-\[position\*\=left\]\:left-0,.group-data-\[side\=right\]\:left-0,.left-0,.left-0\.5,.left-0\.75) {
+		top: 50% !important;
+		bottom: auto !important;
+		margin-block: 0 !important;
+		left: 9px !important;
+		translate: none !important;
+		transform: translateY(-50%) !important;
+	}
+
+	/* ---------- 5. rows in menus, selects, comboboxes, command lists ---------- */
+	html :is(
+		[data-slot="select-item"],
+		[data-slot="menu-item"],
+		[data-slot="menu-checkbox-item"],
+		[data-slot="menu-radio-item"],
+		[data-slot="menu-sub-trigger"],
+		[data-slot="combobox-item"],
+		[data-slot="command-item"],
+		[data-slot="autocomplete-item"]
+	):not(:is([data-model-picker-content], [data-composer-command-drawer], [data-chat-composer-floating-layer], [data-preview-panel-mode]) *) {
+		--accent: rgb(24 24 37 / .72);
+		--accent-foreground: #cdd6f4;
+		position: relative;
+		border-radius: 8px !important;
+		background-color: transparent !important;
+		box-shadow: none !important;
+		transition: background-color .18s ease, --p31b-a .18s ease, --p31b-b .18s ease !important;
+	}
+	/* chosen value / ticked row: dark fill, grey edge */
+	html :is(
+		[data-slot="select-item"][data-selected],
+		[data-slot="combobox-item"][data-selected],
+		[data-slot="command-item"][data-selected],
+		[data-slot="menu-checkbox-item"][data-checked],
+		[data-slot="menu-radio-item"][data-checked]
+	):not(:is([data-model-picker-content], [data-composer-command-drawer], [data-chat-composer-floating-layer], [data-preview-panel-mode]) *) {
+		background-color: rgb(24 24 37 / .5) !important;
+		--p31b-a: rgb(108 112 134 / .4);
+		--p31b-b: rgb(108 112 134 / .4);
+	}
+	/* hover / keyboard highlight / open submenu: dark fill, blue to mauve frame */
+	html :is(
+		[data-slot="select-item"],
+		[data-slot="menu-item"],
+		[data-slot="menu-checkbox-item"],
+		[data-slot="menu-radio-item"],
+		[data-slot="menu-sub-trigger"],
+		[data-slot="combobox-item"],
+		[data-slot="command-item"],
+		[data-slot="autocomplete-item"]
+	):not(:is([data-model-picker-content], [data-composer-command-drawer], [data-chat-composer-floating-layer], [data-preview-panel-mode]) *):is(:hover:not([data-disabled]), [data-highlighted], [aria-selected="true"], [data-popup-open], [data-p31b-hover]) {
+		background-color: rgb(24 24 37 / .72) !important;
+		color: #cdd6f4 !important;
+		--p31b-a: #89b4fa;
+		--p31b-b: #cba6f7;
+	}
+
+	/* ---------- 3. right-click menu (contextMenuFallback): fill only, the menu owns the frame ---------- */
+
+
+
+	/* ---------- 5. buttons with T3's light hover:bg-accent family ---------- */
+	/* the utilities paint var(--accent); a dark --accent makes hover, pressed and open states dark */
+	html :is(
+		:is(.\[button\&\,a\&\]\:hover\:bg-accent\/50,.aria-pressed\:hover\:bg-accent\/80,.dark\:hover\:bg-accent,.group-hover\:bg-accent\/60,.hover\:bg-accent,.hover\:bg-accent\/10,.hover\:bg-accent\/20,.hover\:bg-accent\/40,.hover\:bg-accent\/45,.hover\:bg-accent\/50,.hover\:bg-accent\/60,.hover\:bg-accent\/70,.not-in-data-selected\:hover\:bg-accent),
+		.data-pressed\:bg-accent,
+		:is(.aria-pressed\:bg-accent,.aria-pressed\:bg-accent\/60),
+		.data-popup-open\:bg-accent,
+		.has-data-highlighted\:bg-accent
+	):not([data-slot$="-item"]):not([role^="menuitem"]):not([role="option"]):not(:is([data-timeline-root], [data-chat-composer-surface], [data-chat-composer-floating-layer], [data-model-picker-content], [data-preview-panel-mode], .dropdown-glass[data-context-menu]) *) {
+		--accent: rgb(24 24 37 / .72);
+		--accent-foreground: #cdd6f4;
+	}
+	/* literal white washes (sidebar toggle, back/forward) */
+	html :is(.\[\:hover\,\[data-pressed\]\]\:bg-white\/10, :is(.dark\:hover\:bg-white\/5,.dark\:hover\:bg-white\/\[0\.075\],.dark\:hover\:bg-white\/\[0\.08\])):not(:is([data-timeline-root], [data-chat-composer-surface], [data-preview-panel-mode], [data-thread-details-card]) *):is(:hover, [data-pressed], [data-p31b-hover]) {
+		background-color: rgb(24 24 37 / .72) !important;
+	}
+	/* gradient frame on hover for those buttons (their ::after is unused) */
+	html button:is(
+		:is(.\[button\&\,a\&\]\:hover\:bg-accent\/50,.aria-pressed\:hover\:bg-accent\/80,.dark\:hover\:bg-accent,.group-hover\:bg-accent\/60,.hover\:bg-accent,.hover\:bg-accent\/10,.hover\:bg-accent\/20,.hover\:bg-accent\/40,.hover\:bg-accent\/45,.hover\:bg-accent\/50,.hover\:bg-accent\/60,.hover\:bg-accent\/70,.not-in-data-selected\:hover\:bg-accent),
+		.\[\:hover\,\[data-pressed\]\]\:bg-white\/10
+	):not([data-slot$="-item"]):not([role^="menuitem"]):not(:is([data-timeline-root], [data-chat-composer-surface], [data-chat-composer-floating-layer], [data-model-picker-content], [data-preview-panel-mode], .dropdown-glass[data-context-menu]) *):is(:hover:not(:disabled), [data-p31b-hover]) {
+		box-shadow: none !important;
+		--p31b-a: #89b4fa;
+		--p31b-b: #cba6f7;
+	}
+
+	/* ---------- 4. Settings > Providers: Add provider = provider card ---------- */
+	html [data-app-modal][aria-label="Settings"] button.hover\:bg-muted\/25.py-3.gap-3:not([data-slot]) {
+		position: relative !important;
+		margin: 4px 6px !important;
+		width: calc(100% - 12px) !important;
+		border: 0 !important;
+		border-radius: 10px !important;
+		background: rgb(24 24 37 / .4) !important;
+		box-shadow: none !important;
+		--p31b-a: rgb(108 112 134 / .4);
+		--p31b-b: rgb(108 112 134 / .4);
+		transition: background-color .22s ease, color .22s ease, --p31b-a .22s ease, --p31b-b .22s ease !important;
+	}
+	html [data-app-modal][aria-label="Settings"] button.hover\:bg-muted\/25.py-3.gap-3:not([data-slot]):is(:hover, :focus-visible, [data-p31b-hover]) {
+		background: linear-gradient(100deg, rgb(137 180 250 / .09), rgb(203 166 247 / .09)), rgb(24 24 37 / .75) !important;
+		color: #cdd6f4 !important;
+		--p31b-a: #89b4fa;
+		--p31b-b: #cba6f7;
+	}
+
+	/* ---------- 6. slow-requests toast row ---------- */
+	html .dropdown-glass div[role="button"][aria-expanded].group.hover\:bg-muted\/40 {
+		position: relative !important;
+		box-sizing: border-box !important;
+		margin-top: 4px !important;
+		padding: 4px 6px 4px 8px !important;
+		align-items: center !important;
+		border-radius: 8px !important;
+		background: var(--t15-dock-in, rgb(17 17 27 / .44)) !important;
+		box-shadow: none !important;
+		--p31b-a: rgb(108 112 134 / .4);
+		--p31b-b: rgb(108 112 134 / .4);
+		transition: background-color .18s ease, --p31b-a .18s ease, --p31b-b .18s ease !important;
+	}
+	html .dropdown-glass div[role="button"][aria-expanded].group.hover\:bg-muted\/40:is(:hover, :focus-visible, [data-p31b-hover]) {
+		background: rgb(24 24 37 / .72) !important;
+		--p31b-a: #89b4fa;
+		--p31b-b: #cba6f7;
+	}
+	/* the toast itself: one grey frame, gradient on hover, no inner glow */
+	html .dropdown-glass:has(> * [data-slot="toast-description"]):not(:is(.\[\&\+\[data-slot\=composer-banner-attachment\]_\[data-composer-banner-surface\=attached\]\]\:before\:rounded-none,.\[\&\>\[data-slot\=settings-row\]\]\:rounded-none,.\[\&_\[data-slot\=settings-row\]\]\:rounded-none,.data-panel-open\:rounded-none,.in-\[\.range-middle\]\:rounded-none,.max-sm\:rounded-none,.rounded-none)) {
+		border: 0 !important;
+		box-shadow: 0 16px 40px -16px rgb(17 17 27 / .92) !important;
+		--p31b-a: rgb(108 112 134 / .55);
+		--p31b-b: rgb(108 112 134 / .55);
+	}
+	html .dropdown-glass:has(> * [data-slot="toast-description"]):not(:is(.\[\&\+\[data-slot\=composer-banner-attachment\]_\[data-composer-banner-surface\=attached\]\]\:before\:rounded-none,.\[\&\>\[data-slot\=settings-row\]\]\:rounded-none,.\[\&_\[data-slot\=settings-row\]\]\:rounded-none,.data-panel-open\:rounded-none,.in-\[\.range-middle\]\:rounded-none,.max-sm\:rounded-none,.rounded-none)):is(:hover, [data-p31b-hover]) {
+		--p31b-a: #89b4fa;
+		--p31b-b: #cba6f7;
+	}
+}
+
+/* ---------- shared 1px mask frame (the same box and radius as its owner) ---------- */
+html :is(
+	[data-slot="select-item"],
+	[data-slot="menu-item"],
+	[data-slot="menu-checkbox-item"],
+	[data-slot="menu-radio-item"],
+	[data-slot="menu-sub-trigger"],
+	[data-slot="combobox-item"],
+	[data-slot="command-item"],
+	[data-slot="autocomplete-item"]
+):not(:is([data-model-picker-content], [data-composer-command-drawer], [data-chat-composer-floating-layer], [data-preview-panel-mode]) *)::after,
+html button:is(:is(.\[button\&\,a\&\]\:hover\:bg-accent\/50,.aria-pressed\:hover\:bg-accent\/80,.dark\:hover\:bg-accent,.group-hover\:bg-accent\/60,.hover\:bg-accent,.hover\:bg-accent\/10,.hover\:bg-accent\/20,.hover\:bg-accent\/40,.hover\:bg-accent\/45,.hover\:bg-accent\/50,.hover\:bg-accent\/60,.hover\:bg-accent\/70,.not-in-data-selected\:hover\:bg-accent), .\[\:hover\,\[data-pressed\]\]\:bg-white\/10):not([data-slot$="-item"]):not([role^="menuitem"]):not(:is([data-timeline-root], [data-chat-composer-surface], [data-chat-composer-floating-layer], [data-model-picker-content], [data-preview-panel-mode], .dropdown-glass[data-context-menu]) *)::after,
+html [data-app-modal][aria-label="Settings"] button.hover\:bg-muted\/25.py-3.gap-3:not([data-slot])::after,
+html .dropdown-glass div[role="button"][aria-expanded].group.hover\:bg-muted\/40::after {
+	content: "" !important;
+	/* the colours are set on the owner; a registered non-inherited property needs an explicit inherit to reach ::after */
+	--p31b-a: inherit !important;
+	--p31b-b: inherit !important;
+	position: absolute !important;
+	inset: 0 !important;
+	z-index: 1 !important;
+		padding: 1.5px !important;
+	border-radius: inherit !important;
+	background: linear-gradient(100deg, var(--p31b-a), var(--p31b-b)) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	pointer-events: none !important;
+	transition: --p31b-a .18s ease, --p31b-b .18s ease !important;
+}
+/* popup frames: the popup has no border, so the frame sits on its padding box edge */
+html :is(
+	[data-slot="select-popup"],
+	[data-slot="menu-popup"],
+	.dropdown-glass:has(> [data-slot="combobox-popup"]),
+	.dropdown-glass:has(> [data-slot="autocomplete-popup"]),
+	.dropdown-glass[data-context-menu],
+	.dropdown-glass:has(> * [data-slot="toast-description"])
+):not([data-chat-composer-floating-layer]):not(:is(.\[\&\+\[data-slot\=composer-banner-attachment\]_\[data-composer-banner-surface\=attached\]\]\:before\:rounded-none,.\[\&\>\[data-slot\=settings-row\]\]\:rounded-none,.\[\&_\[data-slot\=settings-row\]\]\:rounded-none,.data-panel-open\:rounded-none,.in-\[\.range-middle\]\:rounded-none,.max-sm\:rounded-none,.rounded-none))::after {
+	content: "" !important;
+	/* the colours are set on the owner; a registered non-inherited property needs an explicit inherit to reach ::after */
+	--p31b-a: inherit !important;
+	--p31b-b: inherit !important;
+	position: absolute !important;
+	inset: 0 !important;
+	z-index: 60 !important;
+		padding: 1.5px !important;
+	border-radius: inherit !important;
+	background: linear-gradient(100deg, var(--p31b-a), var(--p31b-b)) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	pointer-events: none !important;
+	transition: --p31b-a .2s ease, --p31b-b .2s ease !important;
+}

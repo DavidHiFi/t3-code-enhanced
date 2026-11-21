@@ -9,22 +9,14 @@
    Ctrl+Shift+R. Notes: notes\2026-11-02-t3-mocha-docks.md */
 
 html[data-window-material] {
-	--t3-real-blur: blur(26px) !important;
-	--t3-real-blur-lit: blur(26px) !important;
 	--t3d-blur: blur(22px) saturate(1.35) !important;
 	--t3d-tint: rgb(24 24 37 / 0.66) !important;
-	--t3g-panel: rgb(17 17 27 / 0.42);
-	--t3g-blur: blur(18px) saturate(1.3);
-}
-html:not([data-window-material]) {
-	--t3g-panel: #181825;
-	--t3g-blur: none;
 }
 
 /* ---- composer box: mantle glass with a real edge ----
    Three attribute selectors outrank 60-menu-glass.css, which set the surface to --muted (surface0,
    the "too bright" grey). The frame border is T3's own ::after drawn with --chat-composer-outline. */
-html.dark [class*="composer-surface"][class*="composer-surface"][class*="composer-surface"],
+html.dark :is(.\@container\/composer-surface,.\@max-\[320px\]\/composer-surface\:sr-only,.\@max-\[420px\]\/composer-surface\:sr-only,.\@max-\[480px\]\/composer-surface\:hidden,.\@max-\[560px\]\/composer-surface\:flex-col,.\@max-\[560px\]\/composer-surface\:gap-0\.5,.\@max-\[560px\]\/composer-surface\:items-start,.\@max-\[560px\]\/composer-surface\:text-xs,.\@max-\[640px\]\/composer-surface\:sr-only,.\@xl\/composer-surface\:flex,.\@xl\/composer-surface\:hidden,.\@xl\/composer-surface\:ml-auto,.dark\:group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:shadow-none,.data-chat-composer-surface,.group-data-context-row\/composer-surface\:before\:-z-1,.group-data-context-row\/composer-surface\:before\:absolute,.group-data-context-row\/composer-surface\:before\:backdrop-blur-\(--glass-blur\),.group-data-context-row\/composer-surface\:before\:backdrop-saturate-\(--glass-saturation\),.group-data-context-row\/composer-surface\:before\:bg-\(--chat-composer-glass-surface\)\/\(--glass-opacity\),.group-data-context-row\/composer-surface\:before\:inset-0,.group-data-context-row\/composer-surface\:before\:pointer-events-none,.group-data-context-row\/composer-surface\:before\:rounded-2xl,.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:\*\*\:data-\[chat-composer-mobile-collapsed\=true\]\:min-h-\[calc\(1rem\+1px\)\],.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:after\:block,.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:after\:hidden,.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:backdrop-blur-\(--glass-blur\),.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:backdrop-saturate-\(--glass-saturation\),.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:before\:hidden,.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:bg-\(--chat-composer-glass-surface\)\/\(--glass-opacity\),.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:shadow-composer,.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:shadow-none,.group\/composer-surface):is(.\@container\/composer-surface,.\@max-\[320px\]\/composer-surface\:sr-only,.\@max-\[420px\]\/composer-surface\:sr-only,.\@max-\[480px\]\/composer-surface\:hidden,.\@max-\[560px\]\/composer-surface\:flex-col,.\@max-\[560px\]\/composer-surface\:gap-0\.5,.\@max-\[560px\]\/composer-surface\:items-start,.\@max-\[560px\]\/composer-surface\:text-xs,.\@max-\[640px\]\/composer-surface\:sr-only,.\@xl\/composer-surface\:flex,.\@xl\/composer-surface\:hidden,.\@xl\/composer-surface\:ml-auto,.dark\:group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:shadow-none,.data-chat-composer-surface,.group-data-context-row\/composer-surface\:before\:-z-1,.group-data-context-row\/composer-surface\:before\:absolute,.group-data-context-row\/composer-surface\:before\:backdrop-blur-\(--glass-blur\),.group-data-context-row\/composer-surface\:before\:backdrop-saturate-\(--glass-saturation\),.group-data-context-row\/composer-surface\:before\:bg-\(--chat-composer-glass-surface\)\/\(--glass-opacity\),.group-data-context-row\/composer-surface\:before\:inset-0,.group-data-context-row\/composer-surface\:before\:pointer-events-none,.group-data-context-row\/composer-surface\:before\:rounded-2xl,.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:\*\*\:data-\[chat-composer-mobile-collapsed\=true\]\:min-h-\[calc\(1rem\+1px\)\],.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:after\:block,.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:after\:hidden,.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:backdrop-blur-\(--glass-blur\),.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:backdrop-saturate-\(--glass-saturation\),.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:before\:hidden,.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:bg-\(--chat-composer-glass-surface\)\/\(--glass-opacity\),.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:shadow-composer,.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:shadow-none,.group\/composer-surface):is(.\@container\/composer-surface,.\@max-\[320px\]\/composer-surface\:sr-only,.\@max-\[420px\]\/composer-surface\:sr-only,.\@max-\[480px\]\/composer-surface\:hidden,.\@max-\[560px\]\/composer-surface\:flex-col,.\@max-\[560px\]\/composer-surface\:gap-0\.5,.\@max-\[560px\]\/composer-surface\:items-start,.\@max-\[560px\]\/composer-surface\:text-xs,.\@max-\[640px\]\/composer-surface\:sr-only,.\@xl\/composer-surface\:flex,.\@xl\/composer-surface\:hidden,.\@xl\/composer-surface\:ml-auto,.dark\:group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:shadow-none,.data-chat-composer-surface,.group-data-context-row\/composer-surface\:before\:-z-1,.group-data-context-row\/composer-surface\:before\:absolute,.group-data-context-row\/composer-surface\:before\:backdrop-blur-\(--glass-blur\),.group-data-context-row\/composer-surface\:before\:backdrop-saturate-\(--glass-saturation\),.group-data-context-row\/composer-surface\:before\:bg-\(--chat-composer-glass-surface\)\/\(--glass-opacity\),.group-data-context-row\/composer-surface\:before\:inset-0,.group-data-context-row\/composer-surface\:before\:pointer-events-none,.group-data-context-row\/composer-surface\:before\:rounded-2xl,.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:\*\*\:data-\[chat-composer-mobile-collapsed\=true\]\:min-h-\[calc\(1rem\+1px\)\],.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:after\:block,.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:after\:hidden,.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:backdrop-blur-\(--glass-blur\),.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:backdrop-saturate-\(--glass-saturation\),.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:before\:hidden,.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:bg-\(--chat-composer-glass-surface\)\/\(--glass-opacity\),.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:shadow-composer,.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:shadow-none,.group\/composer-surface),
 html.dark [data-chat-composer-main-surface][data-chat-composer-main-surface],
 html.dark [data-composer-banner-surface][data-composer-banner-surface] {
 	--chat-composer-glass-surface: #181825 !important;
@@ -34,11 +26,11 @@ html.dark [data-composer-banner-surface][data-composer-banner-surface] {
 	--chat-composer-attached-outline: rgb(108 112 134 / 0.45) !important;
 	--chat-composer-highlight: rgb(180 190 254 / 0.08) !important;
 }
-html[data-window-material] [class*="before:bg-(--chat-composer-glass-surface)"]::before {
+html[data-window-material] :is(.before\:bg-\(--chat-composer-glass-surface\)\/\(--glass-opacity\),.group-data-context-row\/composer-surface\:before\:bg-\(--chat-composer-glass-surface\)\/\(--glass-opacity\),.not-supports-\[\(\(backdrop-filter\:blur\(1px\)\)_or_\(-webkit-backdrop-filter\:blur\(1px\)\)\)\]\:before\:bg-\(--chat-composer-glass-surface\))::before {
 	-webkit-backdrop-filter: blur(22px) saturate(1.35) !important;
 	backdrop-filter: blur(22px) saturate(1.35) !important;
 }
-[class*="before:bg-(--chat-composer-glass-surface)"]::before {
+:is(.before\:bg-\(--chat-composer-glass-surface\)\/\(--glass-opacity\),.group-data-context-row\/composer-surface\:before\:bg-\(--chat-composer-glass-surface\)\/\(--glass-opacity\),.not-supports-\[\(\(backdrop-filter\:blur\(1px\)\)_or_\(-webkit-backdrop-filter\:blur\(1px\)\)\)\]\:before\:bg-\(--chat-composer-glass-surface\))::before {
 	box-shadow: 0 12px 30px -14px rgb(17 17 27 / 0.85) !important;
 }
 
@@ -88,16 +80,16 @@ html[data-window-material] [class*="before:bg-(--chat-composer-glass-surface)"]:
 [data-slot="sidebar-inner"] a[aria-label="T3 Code home"] {
 	border-color: var(--t3d-edge-strong) !important;
 }
-html[data-t3l-brand-dock] div.pointer-events-none.fixed[class*="left-[var(--workspace-controls-left)]"] {
+html[data-t3l-brand-dock] div.pointer-events-none.fixed.left-\[var\(--workspace-controls-left\)\] {
 	transform: translate(var(--t3l-tog-x, 0px), var(--t3l-tog-y, 0px)) !important;
 	z-index: 60 !important;
 }
 
 /* ---- blur material instead of flat dark fills ---- */
 /* pinned thread cards in the sidebar */
-[data-slot="sidebar-inner"] [data-testid="sidebar-row-card"]:not([class~="bg-sidebar-row-active"]):not([class~="bg-sidebar-row-selected"]) {
+[data-slot="sidebar-inner"] [data-testid="sidebar-row-card"]:not(.bg-sidebar-row-active):not(.bg-sidebar-row-selected) {
 	background-color: rgb(49 50 68 / 0.3) !important;
-	box-shadow: inset 0 0 0 1px rgb(108 112 134 / 0.22) !important;
+	box-shadow: inset 0 0 0 1.5px rgb(108 112 134 / 0.22) !important;
 	border-radius: 12px !important;
 }
 /* code blocks, tables, changed-files card, details card */
@@ -130,15 +122,15 @@ html[data-window-material] :is(.dropdown-glass, .dialog-glass, .alert-glass) {
 	-webkit-backdrop-filter: blur(26px) saturate(1.35) !important;
 	backdrop-filter: blur(26px) saturate(1.35) !important;
 }
-:is(.dropdown-glass, .dialog-glass, .alert-glass):not([class*="rounded-none"]) {
+:is(.dropdown-glass, .dialog-glass, .alert-glass):not(:is(.\[\&\+\[data-slot\=composer-banner-attachment\]_\[data-composer-banner-surface\=attached\]\]\:before\:rounded-none,.\[\&\>\[data-slot\=settings-row\]\]\:rounded-none,.\[\&_\[data-slot\=settings-row\]\]\:rounded-none,.data-panel-open\:rounded-none,.in-\[\.range-middle\]\:rounded-none,.max-sm\:rounded-none,.rounded-none)) {
 	border: 1px solid var(--t3d-edge-strong) !important;
 	box-shadow: 0 18px 40px -16px rgb(17 17 27 / 0.9), inset 0 1px 0 var(--t3d-sheen) !important;
 }
 /* inner panes painted with --muted (surface0, the light grey): provider rail, effort panel */
-:is(.dropdown-glass, .dialog-glass, .alert-glass, [data-slot$="popup"]) :is([class*="bg-muted/"], [class~="bg-muted"], [class*="bg-secondary"]) {
+:is(.dropdown-glass, .dialog-glass, .alert-glass, [data-slot$="popup"]) :is(:is(.bg-muted\/10,.bg-muted\/15,.bg-muted\/20,.bg-muted\/24,.bg-muted\/25,.bg-muted\/30,.bg-muted\/32,.bg-muted\/35,.bg-muted\/40,.bg-muted\/45,.bg-muted\/48,.bg-muted\/50,.bg-muted\/55,.bg-muted\/60,.bg-muted\/72,.bg-muted\/8,.even\:bg-muted\/30,.focus-visible\:bg-muted\/25,.has-aria-expanded\:bg-muted\/50,.has-focus-visible\:bg-muted\/50,.hover\:bg-muted\/15,.hover\:bg-muted\/20,.hover\:bg-muted\/25,.hover\:bg-muted\/30,.hover\:bg-muted\/35,.hover\:bg-muted\/40,.hover\:bg-muted\/50,.hover\:bg-muted\/60), .bg-muted, :is(.\[\:active\,\[data-pressed\]\]\:bg-secondary\/80,.\[\:hover\,\[data-pressed\]\]\:bg-secondary\/90,.\[button\&\,a\&\]\:hover\:bg-secondary\/90,.bg-secondary)) {
 	background-color: rgb(17 17 27 / 0.38) !important;
 }
-:is(.dropdown-glass, .dialog-glass, .alert-glass, [data-slot$="popup"]) [class*="border-border"] {
+:is(.dropdown-glass, .dialog-glass, .alert-glass, [data-slot$="popup"]) :is(.\*\:not-first\:border-border\/50,.\[\:hover\,\[data-pressed\]\]\:border-border,.border-border,.border-border\/30,.border-border\/40,.border-border\/45,.border-border\/50,.border-border\/60,.border-border\/65,.border-border\/70,.border-border\/80,.hover\:border-border,.hover\:border-border\/70) {
 	border-color: rgb(108 112 134 / 0.4) !important;
 }
 :is(.dropdown-glass, .dialog-glass, .alert-glass, [data-slot$="popup"]) input {
@@ -147,6 +139,6 @@ html[data-window-material] :is(.dropdown-glass, .dialog-glass, .alert-glass) {
 }
 :is(.dropdown-glass, .dialog-glass, .alert-glass, [data-slot$="popup"]) :is([data-highlighted], [aria-selected="true"], [data-selected]) {
 	background-color: rgb(49 50 68 / 0.75) !important;
-	box-shadow: inset 0 0 0 1px rgb(180 190 254 / 0.28) !important;
+	box-shadow: inset 0 0 0 1.5px rgb(180 190 254 / 0.28) !important;
 	border-radius: 8px !important;
 }

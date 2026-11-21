@@ -1,0 +1,71 @@
+/* T3 Code Enhanced pass 31l (2026-11-10): hover frames that wrap cleanly.
+   1. Top-right buttons (thread details, terminal drawer, right panel, maximize): the hover frame sat
+      one pixel inside the button's grey rest ring, so at the corners the grey ring showed outside the
+      gradient and the curve looked jagged and doubled. The frame now covers the button's outer edge
+      exactly and the grey ring goes away on hover.
+   2. Picture tiles in messages: the picture is drawn on its own GPU layer, which the rounded tile did
+      not clip, so its corners poked over the frame and the frame looked cut and thinner there. The
+      picture and its button are now clipped to the tile's curve and the frame sits above them.
+   3. Several pictures in one message sit in a grid that clipped its tiles square, drew a faint square
+      ring over their corners and showed a light line between them. The grid now draws nothing and
+      clips nothing; each tile keeps its own round frame with a small gap.
+   All rules sit in @layer theme: a !important there beats the layered !important rules
+   that drew the old frames.
+   Rollback: delete this file and reload T3. */
+@layer theme {
+
+/* 1. top-right buttons */
+html body :is([data-panel-layout-controls], [data-workspace-titlebar-controls], header[data-chat-header]) button:not(nav[aria-label$="breadcrumb"] button):not([disabled]):is(:hover, :focus-visible) {
+	box-shadow: 0 0 14px -6px rgb(137 180 250 / 0.45), 0 0 22px -10px rgb(203 166 247 / 0.4) !important;
+	border-color: transparent !important;
+	outline: none !important;
+}
+html body :is([data-panel-layout-controls], [data-workspace-titlebar-controls], header[data-chat-header]) button:not(nav[aria-label$="breadcrumb"] button):not([disabled]):is(:hover, :focus-visible)::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: -1px !important;
+	z-index: 3 !important;
+	border-radius: 9px !important;
+	padding: 2px !important;
+	background: linear-gradient(135deg, #89b4fa, #cba6f7) !important;
+	box-shadow: none !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	pointer-events: none !important;
+}
+
+/* 2. picture tiles: clip the picture to the curve, frame on top */
+html :is(div[data-t3l-pv], div[data-t3l-pvz], div[data-chat-composer-expanded-image]) {
+	isolation: isolate !important;
+}
+html :is(div[data-t3l-pv], div[data-t3l-pvz], div[data-chat-composer-expanded-image]) > button[aria-label^="Preview "] {
+	border-radius: inherit !important;
+	overflow: hidden !important;
+	clip-path: inset(0 round 10px) !important;
+}
+html :is(div[data-t3l-pv], div[data-t3l-pvz], div[data-chat-composer-expanded-image]) img:is(*, :hover) {
+	clip-path: inset(0 round 10px) !important;
+	box-shadow: none !important;
+}
+html :is(div[data-t3l-pv], div[data-t3l-pvz], div[data-chat-composer-expanded-image])::after {
+	z-index: 20 !important;
+	box-shadow: none !important;
+	transform: translateZ(0);
+}
+
+/* 3. multi-picture grid: no square clip, ring or seam around the tiles */
+html div.grid:has(> div[data-t3l-pv], > div[data-t3l-pvz]) {
+	overflow: visible !important;
+	background: transparent !important;
+	gap: 4px !important;
+	border-radius: 0 !important;
+}
+html div.grid:has(> div[data-t3l-pv], > div[data-t3l-pvz])::after {
+	content: none !important;
+	box-shadow: none !important;
+}
+html div.grid:has(> div[data-t3l-pv], > div[data-t3l-pvz]) > :is(div[data-t3l-pv], div[data-t3l-pvz]) {
+	border-radius: 10px !important;
+}
+}

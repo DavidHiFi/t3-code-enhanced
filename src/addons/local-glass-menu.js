@@ -1,4 +1,4 @@
-// Glass right-click menus for T3 Code. Loaded by ~/.t3/local-main.cjs on every window load.
+// Glass right-click menus for T3 Code (2026-10-24). Loaded by ~/.t3/local-main.cjs on every window load.
 // T3 shows its context menus (thread, project, message) as native Windows menus, which CSS cannot
 // theme or blur. local-main.cjs hands each native popup to window.__t3GlassMenu.show(items, pos)
 // instead; this draws it as a .dropdown-glass panel and resolves with the chosen item's index path

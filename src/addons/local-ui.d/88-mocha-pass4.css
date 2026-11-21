@@ -3,12 +3,12 @@
    pass over the model/provider picker. Rollback: delete this file and reload (Ctrl+Shift+R). */
 
 :root {
-	--t4-edge: rgb(108 112 134 / 0.34);
+	--t4-edge: rgb(108 112 134 / 0.46);
 	--t4-tint: rgb(17 17 27 / 0.34);
 	--t4-pane: rgb(17 17 27 / 0.42);
 	--t4-blue: #89b4fa;
-	--t4-ring-blue: inset 0 0 0 1px rgb(137 180 250 / 0.7);
-	--t4-ring-lav: inset 0 0 0 1px rgb(180 190 254 / 0.38);
+	--t4-ring-blue: inset 0 0 0 1.5px rgb(137 180 250 / 0.7);
+	--t4-ring-lav: inset 0 0 0 1.5px rgb(180 190 254 / 0.38);
 	--t4-glow: 0 0 14px -3px rgb(137 180 250 / 0.45);
 }
 
@@ -102,8 +102,8 @@ ul[role="tree"][aria-label="Threads"] > [data-testid="sidebar-draft-divider"] {
    left edge anchored, smooth width transition (reduced-motion: none). The
    chevrons are pinned inside the pill by 99-mocha-pass15-b.css, so the old
    hover height growth (-27px) is gone; the width covers them instead. */
-[data-testid="timeline-minimap"] div[class*="top-1/2"][class*="left-3"] { isolation: isolate; }
-[data-testid="timeline-minimap"] div[class*="top-1/2"][class*="left-3"]::before {
+[data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4) { isolation: isolate; }
+[data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4)::before {
 	content: "";
 	position: absolute;
 	z-index: -1;
@@ -119,16 +119,16 @@ ul[role="tree"][aria-label="Threads"] > [data-testid="sidebar-draft-divider"] {
 	pointer-events: none;
 	transition: top 0.2s ease, bottom 0.2s ease, width 0.18s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
-[data-testid="timeline-minimap"] div[class*="top-1/2"][class*="left-3"]:hover::before,
-[data-testid="timeline-minimap"] div[class*="top-1/2"][class*="left-3"]:focus-within::before {
+[data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4):hover::before,
+[data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4):focus-within::before {
 	width: 46px;
 	border-color: var(--t4-blue);
 	box-shadow: var(--t4-glow), inset 0 1px 0 rgb(180 190 254 / 0.08);
 }
-[data-testid="timeline-minimap"] div[class*="top-1/2"][class*="left-3"]:hover > [data-slot="tooltip-trigger"] { opacity: 1 !important; }
+[data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4):hover > [data-slot="tooltip-trigger"] { opacity: 1 !important; }
 [data-testid="timeline-minimap"] [data-minimap-strip] { background-color: rgb(166 173 200 / 0.5) !important; }
 [data-testid="timeline-minimap"] [data-minimap-strip][data-in-view="true"] { background-color: var(--t4-blue) !important; box-shadow: 0 0 6px rgb(137 180 250 / 0.6); }
-[data-testid="timeline-minimap"] button > div[class*="bg-border"] { opacity: 0.6; }
+[data-testid="timeline-minimap"] button > div:is(.before\:bg-border\/45,.bg-border,.bg-border\/40,.bg-border\/60,.bg-border\/70,.bg-border\/80,.data-popup-open\:\[\&_\[data-slot\=select-icon\]\]\:before\:bg-border\/65,.group-has-\[\[data-popup-open\]\]\/details-split\:bg-border\/65,.group-hover\/details-split\:bg-border\/65,.group-hover\:bg-border,.hover\:\[\&_\[data-slot\=select-icon\]\]\:before\:bg-border\/65) { opacity: 0.6; }
 
 /* ---------- thread status line ("Waiting on ...  Stop", goals, side-chat prompts) ---------- */
 [data-chat-thread-status-line] {
@@ -177,13 +177,12 @@ html[data-window-material] [data-changed-files-state][data-changed-files-state] 
 }
 
 /* ---------- model / provider picker ---------- */
-[data-slot="popover-popup"]:has([data-model-picker-content]) { border-radius: 16px !important; }
 
 /* inner docks: provider rail, model list, effort list, bottom bar */
 [data-model-picker-sidebar],
-[data-model-picker-content] > div[class*="bg-muted/40"],
+[data-model-picker-content] > div:is(.bg-muted\/40,.hover\:bg-muted\/40),
 [data-model-picker-effort],
-[data-slot="popover-popup"] div[class*="border-t"][class*="bg-muted/40"]:has([aria-label="Fast Mode"]) {
+[data-slot="popover-popup"] div:is(.\*\:\[\[data-slot\]\~\[data-slot\]\]\:border-t-0,.\*\:not-first\:border-t,.\*\:not-first\:border-t-0,.\[\&\+\[data-slot\=composer-banner-attachment\]_\[data-composer-banner-surface\=attached\]\]\:before\:border-t-0,.\[\&\:\:-webkit-scrollbar-thumb\]\:border-transparent,.\[\.border-t\]\:pt-\[calc\(--spacing\(3\)-1px\)\],.\[section\:not\(\:has\(\>div\:last-child\:empty\)\)\~\&\]\:border-t,.border-t,.border-t-0,.border-transparent,.border-transparent\!,.dark\:border-transparent,.first\:border-t-0,.forced-colors\:border-t-2,.in-\[\[data-slot\=dialog-popup\]\:has\(\[data-slot\=dialog-footer\]\:not\(\.border-t\)\)\]\:pb-1,.max-md\:border-t,.max-md\:first\:border-t-0,.max-sm\:border-t,.md\:border-t-0,.not-first\:border-t):is(.bg-muted\/40,.hover\:bg-muted\/40):has([aria-label="Fast Mode"]) {
 	background: var(--t4-pane) !important;
 	border: 1px solid var(--t4-edge) !important;
 	border-radius: 12px !important;
@@ -191,15 +190,15 @@ html[data-window-material] [data-changed-files-state][data-changed-files-state] 
 	transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
 }
 [data-model-picker-sidebar] { margin: 6px 0 6px 6px !important; }
-[data-model-picker-content] > div[class*="bg-muted/40"] { margin: 6px !important; }
+[data-model-picker-content] > div:is(.bg-muted\/40,.hover\:bg-muted\/40) { margin: 6px !important; }
 [data-model-picker-effort] { margin: 6px 6px 6px 0 !important; }
-[data-slot="popover-popup"] div[class*="border-t"][class*="bg-muted/40"]:has([aria-label="Fast Mode"]) { margin: 0 6px 6px !important; }
-:is([data-model-picker-sidebar], [data-model-picker-content] > div[class*="bg-muted/40"], [data-model-picker-effort], [data-slot="popover-popup"] div[class*="border-t"][class*="bg-muted/40"]:has([aria-label="Fast Mode"])):hover {
+[data-slot="popover-popup"] div:is(.\*\:\[\[data-slot\]\~\[data-slot\]\]\:border-t-0,.\*\:not-first\:border-t,.\*\:not-first\:border-t-0,.\[\&\+\[data-slot\=composer-banner-attachment\]_\[data-composer-banner-surface\=attached\]\]\:before\:border-t-0,.\[\&\:\:-webkit-scrollbar-thumb\]\:border-transparent,.\[\.border-t\]\:pt-\[calc\(--spacing\(3\)-1px\)\],.\[section\:not\(\:has\(\>div\:last-child\:empty\)\)\~\&\]\:border-t,.border-t,.border-t-0,.border-transparent,.border-transparent\!,.dark\:border-transparent,.first\:border-t-0,.forced-colors\:border-t-2,.in-\[\[data-slot\=dialog-popup\]\:has\(\[data-slot\=dialog-footer\]\:not\(\.border-t\)\)\]\:pb-1,.max-md\:border-t,.max-md\:first\:border-t-0,.max-sm\:border-t,.md\:border-t-0,.not-first\:border-t):is(.bg-muted\/40,.hover\:bg-muted\/40):has([aria-label="Fast Mode"]) { margin: 0 6px 6px !important; }
+:is([data-model-picker-sidebar], [data-model-picker-content] > div:is(.bg-muted\/40,.hover\:bg-muted\/40), [data-model-picker-effort], [data-slot="popover-popup"] div:is(.\*\:\[\[data-slot\]\~\[data-slot\]\]\:border-t-0,.\*\:not-first\:border-t,.\*\:not-first\:border-t-0,.\[\&\+\[data-slot\=composer-banner-attachment\]_\[data-composer-banner-surface\=attached\]\]\:before\:border-t-0,.\[\&\:\:-webkit-scrollbar-thumb\]\:border-transparent,.\[\.border-t\]\:pt-\[calc\(--spacing\(3\)-1px\)\],.\[section\:not\(\:has\(\>div\:last-child\:empty\)\)\~\&\]\:border-t,.border-t,.border-t-0,.border-transparent,.border-transparent\!,.dark\:border-transparent,.first\:border-t-0,.forced-colors\:border-t-2,.in-\[\[data-slot\=dialog-popup\]\:has\(\[data-slot\=dialog-footer\]\:not\(\.border-t\)\)\]\:pb-1,.max-md\:border-t,.max-md\:first\:border-t-0,.max-sm\:border-t,.md\:border-t-0,.not-first\:border-t):is(.bg-muted\/40,.hover\:bg-muted\/40):has([aria-label="Fast Mode"])):hover {
 	border-color: rgb(137 180 250 / 0.75) !important;
 	box-shadow: var(--t4-glow), inset 0 1px 0 rgb(180 190 254 / 0.06) !important;
 }
 /* header rules inside the panes */
-:is([data-model-picker-content], [data-model-picker-effort]) [class*="border-b"] { border-color: var(--t4-edge) !important; }
+:is([data-model-picker-content], [data-model-picker-effort]) :is(.\*\:data-slot\:has-\[\~\[data-slot\]\]\:border-b-0,.\*\:not-first\:border-border\/50,.\*\:not-last\:border-b-0,.\@min-\[48rem\]\/providers\:border-b-0,.\[\&_tr\]\:border-b,.\[\.border-b\]\:pb-\[calc\(--spacing\(3\)-1px\)\],.\[\:hover\,\[data-pressed\]\]\:border-border,.border-b,.border-b-2,.border-background,.border-be,.border-blue-500\/70,.border-border,.border-border\/30,.border-border\/40,.border-border\/45,.border-border\/50,.border-border\/60,.border-border\/65,.border-border\/70,.border-border\/80,.border-box,.border-bs,.hover\:border-border,.hover\:border-border\/70,.in-data-\[preview-panel-mode\=inline\]\:border-b-transparent,.last\:border-b-0,.max-sm\:border-b-0,.not-last\:border-b) { border-color: var(--t4-edge) !important; }
 
 /* provider rail */
 [data-model-picker-provider] button {
@@ -208,10 +207,10 @@ html[data-window-material] [data-changed-files-state][data-changed-files-state] 
 }
 [data-model-picker-provider] button:not([disabled]):hover { background: rgb(49 50 68 / 0.6) !important; box-shadow: var(--t4-ring-blue), var(--t4-glow) !important; }
 [data-model-picker-provider] button[aria-pressed="true"]:not(:hover) { background: rgb(49 50 68 / 0.75) !important; box-shadow: var(--t4-ring-lav) !important; }
-[data-model-picker-selected-indicator] { background: var(--t4-blue) !important; box-shadow: 0 0 8px rgb(137 180 250 / 0.7); }
+[data-model-picker-selected-indicator] { background: var(--t4-blue) !important; }
 
 /* search field */
-[data-model-picker-content] div[class*="border-b"]:has([data-slot="combobox-input"]) {
+[data-model-picker-content] div:is(.\*\:data-slot\:has-\[\~\[data-slot\]\]\:border-b-0,.\*\:not-first\:border-border\/50,.\*\:not-last\:border-b-0,.\@min-\[48rem\]\/providers\:border-b-0,.\[\&_tr\]\:border-b,.\[\.border-b\]\:pb-\[calc\(--spacing\(3\)-1px\)\],.\[\:hover\,\[data-pressed\]\]\:border-border,.border-b,.border-b-2,.border-background,.border-be,.border-blue-500\/70,.border-border,.border-border\/30,.border-border\/40,.border-border\/45,.border-border\/50,.border-border\/60,.border-border\/65,.border-border\/70,.border-border\/80,.border-box,.border-bs,.hover\:border-border,.hover\:border-border\/70,.in-data-\[preview-panel-mode\=inline\]\:border-b-transparent,.last\:border-b-0,.max-sm\:border-b-0,.not-last\:border-b):has([data-slot="combobox-input"]) {
 	border: 1px solid var(--t4-edge) !important;
 	border-radius: 10px !important;
 	padding: 3px 8px !important;
@@ -219,8 +218,8 @@ html[data-window-material] [data-changed-files-state][data-changed-files-state] 
 	transform: none !important;
 	transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
 }
-[data-model-picker-content] div[class*="border-b"]:has([data-slot="combobox-input"]):is(:hover, :focus-within) { border-color: rgb(137 180 250 / 0.8) !important; box-shadow: var(--t4-glow) !important; }
-[data-model-picker-content] div[class*="border-b"]:has([data-slot="combobox-input"]) > svg { left: 9px !important; top: 50% !important; transform: translateY(-50%); }
+[data-model-picker-content] div:is(.\*\:data-slot\:has-\[\~\[data-slot\]\]\:border-b-0,.\*\:not-first\:border-border\/50,.\*\:not-last\:border-b-0,.\@min-\[48rem\]\/providers\:border-b-0,.\[\&_tr\]\:border-b,.\[\.border-b\]\:pb-\[calc\(--spacing\(3\)-1px\)\],.\[\:hover\,\[data-pressed\]\]\:border-border,.border-b,.border-b-2,.border-background,.border-be,.border-blue-500\/70,.border-border,.border-border\/30,.border-border\/40,.border-border\/45,.border-border\/50,.border-border\/60,.border-border\/65,.border-border\/70,.border-border\/80,.border-box,.border-bs,.hover\:border-border,.hover\:border-border\/70,.in-data-\[preview-panel-mode\=inline\]\:border-b-transparent,.last\:border-b-0,.max-sm\:border-b-0,.not-last\:border-b):has([data-slot="combobox-input"]):is(:hover, :focus-within) { border-color: rgb(137 180 250 / 0.8) !important; box-shadow: var(--t4-glow) !important; }
+[data-model-picker-content] div:is(.\*\:data-slot\:has-\[\~\[data-slot\]\]\:border-b-0,.\*\:not-first\:border-border\/50,.\*\:not-last\:border-b-0,.\@min-\[48rem\]\/providers\:border-b-0,.\[\&_tr\]\:border-b,.\[\.border-b\]\:pb-\[calc\(--spacing\(3\)-1px\)\],.\[\:hover\,\[data-pressed\]\]\:border-border,.border-b,.border-b-2,.border-background,.border-be,.border-blue-500\/70,.border-border,.border-border\/30,.border-border\/40,.border-border\/45,.border-border\/50,.border-border\/60,.border-border\/65,.border-border\/70,.border-border\/80,.border-box,.border-bs,.hover\:border-border,.hover\:border-border\/70,.in-data-\[preview-panel-mode\=inline\]\:border-b-transparent,.last\:border-b-0,.max-sm\:border-b-0,.not-last\:border-b):has([data-slot="combobox-input"]) > svg { left: 9px !important; top: 50% !important; transform: translateY(-50%); }
 
 /* model rows */
 [data-model-picker-content] [role="option"] { border-radius: 8px !important; transition: background-color 0.2s ease, box-shadow 0.2s ease !important; }

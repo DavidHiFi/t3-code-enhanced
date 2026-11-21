@@ -1,5 +1,5 @@
 /* T3 Mocha rice, pass 24 (2026-11-09): frosted floating surfaces, title-bar seam, update button.
-   Rollback: delete this file and reload T3.
+   Rollback: delete this file and reload T3. Notes: H:\System Configuration\notes\2026-11-09-t3-pass24-menus-titlebar.md
 
    1. Menus, popups, tooltips, dialogs: plain blur(26px) over a transparent window leaves the sharp
       text showing through (Chromium draws the blur, then the sharp page shows at 1 - fill). This
@@ -20,7 +20,7 @@ html[data-window-material][data-window-material] :is(
 	[data-slot="menu-content"],
 	[data-slot="context-menu-content"],
 	[data-slot$="popup"]:not([data-slot$="-positioner"]):not([data-slot$="-trigger"])
-):not([class*="rounded-none"]) {
+):not(:is(.\[\&\+\[data-slot\=composer-banner-attachment\]_\[data-composer-banner-surface\=attached\]\]\:before\:rounded-none,.\[\&\>\[data-slot\=settings-row\]\]\:rounded-none,.\[\&_\[data-slot\=settings-row\]\]\:rounded-none,.data-panel-open\:rounded-none,.in-\[\.range-middle\]\:rounded-none,.max-sm\:rounded-none,.rounded-none)) {
 	background-color: var(--t24-frost-fill) !important;
 	background-image: none !important;
 	-webkit-backdrop-filter: var(--t24-frost) !important;

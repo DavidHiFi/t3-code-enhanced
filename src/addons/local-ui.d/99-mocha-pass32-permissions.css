@@ -1,0 +1,41 @@
+/* T3 Code Enhanced pass 32 (2026-11-11, build 0.1.9-nightly.20261110.4478): the composer
+   Permissions popover segmented control. Stock draws the checked item as bg-input/72 and the
+   track as bg-input/40 (stock --input is zinc-300, a light grey) with no border anywhere - the
+   "ugly light pill" the owner flagged. This pins the same treatment the Fast Mode switch in the
+   model picker already has (pass 4): deep dark track with a 1px grey resting edge, checked item
+   dark Mocha pill with a 1px lavender ring, unchecked hover dark with a 1px blue ring.
+   Scope: only the [data-composer-permissions] popover; the ultracode toggle and the model
+   picker use their own markup. Verified live in the app cascade on 2026-11-11 2:55 am
+   (reports\2026-11-11-t3-pass32-permissions\). Rollback: delete this file and reload T3. */
+
+/* the segmented track: deep Mocha fill, one grey resting edge, inner radius follows outer */
+[data-composer-permissions] > .bg-input\/40 {
+	background-color: rgb(17 17 27 / 0.55) !important;
+	border: 1px solid var(--t4-edge, rgb(108 112 134 / 0.34)) !important;
+	border-radius: 9px !important;
+	transition: background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease !important;
+}
+
+/* items: rounded to sit inside the track (6px + 2px padding = 8px outer) */
+[data-composer-permissions] [role="menuitemradio"] {
+	border-radius: 7px !important;
+	transition: background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease !important;
+}
+
+/* checked: dark Mocha pill, 1px lavender ring, light text */
+[data-composer-permissions] [role="menuitemradio"][data-checked] {
+	background-color: rgb(49 50 68 / 0.85) !important;
+	box-shadow: var(--t4-ring-lav, inset 0 0 0 1.5px rgb(180 190 254 / 0.38)) !important;
+	color: #cdd6f4 !important;
+}
+
+/* any hovered or keyboard-highlighted item gets light text */
+[data-composer-permissions] [role="menuitemradio"]:is(:hover, [data-highlighted]) {
+	color: #cdd6f4 !important;
+}
+
+/* unchecked hover/highlight: dark tint plus the blue ring - no light accent wash */
+[data-composer-permissions] [role="menuitemradio"]:not([data-checked]):is(:hover, [data-highlighted]) {
+	background-color: rgb(49 50 68 / 0.6) !important;
+	box-shadow: var(--t4-ring-blue, inset 0 0 0 1.5px rgb(137 180 250 / 0.7)) !important;
+}

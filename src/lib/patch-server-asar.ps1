@@ -682,7 +682,7 @@ function Resolve-Galaxy([string]$direction) {
 # group). Same length: the added code is paid for by shortening the
 # "pair again" tooltip, which only shows when the client may not run terminal commands
 # (2026-10-24; see notes\2026-10-24-t3-patch-hardening.md).
-function Resolve-ScriptButtons([string]$direction) {
+function Resolve-ScriptButtonsV1([string]$direction) {
     $bq = [string]$bt
     $anchor = 'role:' + $bq + 'group' + $bq + ',"aria-label":' + $bq + 'Project scripts' + $bq
     $tipStock = 'Pair this client again with permission to run terminal commands.'
@@ -789,6 +789,267 @@ function Resolve-ScriptButtons([string]$direction) {
         $edits += @{ Kind = 'region'; Patch = 'scriptbuttons'; Off = [int64]($dataOffset + $chunk.Offset + $bodyStart); Old = $region; New = $oldRegion; Chunk = $chunk; ChunkText = $text }
     }
     return @{ State = 'PATCHED'; Detail = "$short, one button per script (tooltip '$tipFound')"; Edits = $edits }
+}
+
+$script:SbTplStock = @'
+~e~?(0,~$~.jsxs)(~v~,{role:`group`,"aria-label":`Project scripts`,..._?{className:~ow~,ref:~y~}:{},children:[(0,~$~.jsxs)(~yo~,{children:[(0,~$~.jsxs)(~Un~,{render:(0,~$~.jsx)(~dw~,{size:`xs`,variant:~_~?`ghost`:`outline`,part:`primary`,panel:~_~,className:~_~?void 0:`w-7 sm:w-6 @3xl/header-actions:w-auto!`,"aria-label":`Run ${~e~.name}`,"data-toolbar-control":``,"aria-disabled":!~l~||void 0,onClick:()=>~l~?.(~e~)}),children:[(0,~$~.jsx)(~zb~,{icon:~e~~%~,..._?{className:~nw~}:{}}),(0,~$~.jsx)(`span`,{className:~Oa~(`sr-only @3xl/header-actions:not-sr-only @3xl/header-actions:ml-0.5`,~_~&&~Oa~(`not-sr-only ml-0 truncate`,`[text-box:trim-both_cap_alphabetic] overflow-x-clip overflow-y-visible`)),children:~e~.name})]}),(0,~$~.jsx)(~qe~,{side:`top`,children:~l~?`Run ${~e~.name}`:`Pair this client again with permission to run terminal commands.`})]}),~_~?(0,~$~.jsx)(`span`,{"aria-hidden":`true`,className:~lw~}):(0,~$~.jsx)(~hw~,{className:`hidden @3xl/header-actions:block`}),(0,~$~.jsxs)(~Pe~,{open:~S~.scripts,onOpenChange:~e~=>~C~({presentation:~m~,scripts:~e~,imports:!1}),children:[(0,~$~.jsx)(~ii~,{render:(0,~$~.jsx)(~dw~,{size:~_~?`sm`:`icon-xs`,variant:~_~?`ghost`:`outline`,part:`secondary`,panel:~_~,"aria-label":`Script actions`}),children:(0,~$~.jsx)(~te~,{className:~_~?~rw~:`size-4`})}),(0,~$~.jsx)(~Qi~,{align:`end`,..._?{anchor:~y~}:{},className:~_~?`w-(--anchor-width)`:void 0,children:~M~})]})]}):~o~.length>0||~n~.length>0?~_~?(0,~$~.jsxs)(`div`,{role:`group`,"aria-label":`Project actions`,className:~ow~,ref:~y~,children:[(0,~$~.jsxs)(~dw~,{size:`sm`,variant:`ghost`,part:`primary`,"aria-label":`Project actions`,onClick:()=>~C~({presentation:~m~,scripts:!1,imports:!0}),children:[(0,~$~.jsx)(~Ae~,{className:~nw~}),(0,~$~.jsx)(`span`,{className:~Oa~(`min-w-0 truncate`,~XC~),children:`Actions`})]}),(0,~$~.jsx)(`span`,{"aria-hidden":`true`,className:~lw~}),(0,~$~.jsxs)(~Pe~,{highlightItemOnHover:!1,open:~S~.imports,onOpenChange:~e~=>~C~({presentation:~m~,scripts:!1,imports:~e~}),children:[(0,~$~.jsx)(~ii~,{render:(0,~$~.jsx)(~dw~,{size:`sm`,variant:`ghost`,part:`secondary`,"aria-label":`Choose project action`}),children:(0,~$~.jsx)(~te~,{className:~rw~})}),(0,~$~.jsx)(~Qi~,{align:`end`,anchor:~y~,className:`w-(--anchor-width)`,children:~M~})]})]}):(0,~$~.jsxs)(~Pe~,{highlightItemOnHover:!1,open:~S~.imports,onOpenChange:~e~=>~C~({presentation:~m~,scripts:!1,imports:~e~}),children:[(0,~$~.jsxs)(~ii~,{render:(0,~$~.jsx)(~Yt~,{size:`xs`,variant:`outline`,"aria-label":`Project actions`}),children:[(0,~$~.jsx)(~Ae~,{className:`size-3.5`}),(0,~$~.jsx)(`span`,{className:`sr-only @3xl/header-actions:not-sr-only @3xl/header-actions:ml-0.5`,children:`Actions`}),(0,~$~.jsx)(~te~,{className:`size-3.5`})]}),(0,~$~.jsx)(~Qi~,{align:`end`,children:~M~})]}):(0,~$~.jsxs)(~yo~,{children:[(0,~$~.jsxs)(~Un~,{render:(0,~$~.jsx)(~dw~,{size:`xs`,variant:~_~?`ghost`:`outline`,part:`row`,panel:~_~,className:~_~?void 0:`w-7 sm:w-6 @3xl/header-actions:w-auto!`,"aria-label":~_~?`Add project script`:`Add action`,"data-toolbar-control":``,onClick:~r~}),children:[(0,~$~.jsx)(~xe~,{className:`size-3.5`}),(0,~$~.jsx)(`span`,{className:~Oa~(`sr-only @3xl/header-actions:not-sr-only @3xl/header-actions:ml-0.5`,~_~&&~Oa~(`not-sr-only ml-0.5`,`[text-box:trim-both_cap_alphabetic] overflow-x-clip overflow-y-visible`)),children:~_~?`Add project script`:`Add action`})]}),(0,~$~.jsx)(~qe~,{side:`top`,children:~_~?`Add project script`:`Add action`})]})
+'@
+$script:SbTplV3 = @'
+[~e~&&~o~.map((~e~,~I~,~L~,~Z~=~o~[~I~+1])=>(0,~$~.jsxs)(~v~,{role:`group`,"aria-label":`Project scripts`,className:~ow~,ref:~Z~?~L~=>~y~[~I~]=~L~:~y~,draggable:!0,onDragStart:~L~=>~L~.dataTransfer.setData(`t3sb`,~I~),onDragOver:~L~=>~L~.preventDefault(),onDrop:~L~=>{~L~=~L~.dataTransfer.getData(`t3sb`);let ~Z~=[...~o~];~L~&&~L~!=~I~&&(~Z~.splice(~I~,0,...~Z~.splice(~L~,1)),~d~(~Z~))},children:[(0,~$~.jsxs)(~yo~,{children:[(0,~$~.jsxs)(~Un~,{render:(0,~$~.jsx)(~dw~,{size:`xs`,variant:`ghost`,part:`primary`,panel:~_~,"aria-label":`Run ${~e~.name}`,"data-toolbar-control":``,"aria-disabled":!~l~||void 0,onClick:()=>~l~?.(~e~)}),children:[(0,~$~.jsx)(~zb~,{icon:~e~~%~,..._?{className:~nw~}:{}}),(0,~$~.jsx)(`span`,{className:~Oa~(`sr-only @3xl/header-actions:not-sr-only @3xl/header-actions:ml-0.5`,~_~&&~Oa~(`not-sr-only ml-0 truncate`,`[text-box:trim-both_cap_alphabetic] overflow-x-clip overflow-y-visible`)),children:~e~.name})]}),(0,~$~.jsx)(~qe~,{side:`top`,children:~l~?`Run ${~e~.name}`:`Re-pair.`})]}),~_~?(0,~$~.jsx)(`span`,{"aria-hidden":`true`,className:~lw~}):!~hw~,(0,~$~.jsxs)(~Pe~,{open:~S~.scripts==~I~+1,onOpenChange:~e~=>~C~({presentation:~m~,scripts:~e~&&~I~+1,imports:!1}),children:[(0,~$~.jsx)(~ii~,{render:(0,~$~.jsx)(~dw~,{size:`sm`,variant:`ghost`,part:`secondary`,panel:~_~,"aria-label":`Script actions`}),children:(0,~$~.jsx)(~te~,{className:~rw~})}),(0,~$~.jsx)(~Qi~,{align:`end`,anchor:~Z~?()=>~y~[~I~]:~y~,className:`w-(--anchor-width)`,children:[(0,~$~.jsxs)(~_a~,{onClick:()=>~s~(~e~),children:[(0,~$~.jsx)(~T_~,{className:`size-4`}),`Edit`]}),(0,~$~.jsxs)(~_a~,{variant:`destructive`,onClick:()=>~pd~()?.dialogs.confirm(`Remove ${~e~.name}?`,{variant:`destructive`}).then(~n~=>~n~&&~t~[~#~](~e~.id)),children:[(0,~$~.jsx)(~ke~,{className:`size-4`}),`Remove`]}),~f~]})]})]})),!~e~&&(~o~.length>0||~n~.length>0)?(0,~$~.jsxs)(`div`,{role:`group`,"aria-label":`Project actions`,className:~ow~,ref:~y~,children:[(0,~$~.jsxs)(~dw~,{size:`sm`,variant:`ghost`,part:`primary`,"aria-label":`Project actions`,onClick:()=>~C~({presentation:~m~,scripts:!1,imports:!0}),children:[(0,~$~.jsx)(~Ae~,{className:~nw~}),(0,~$~.jsx)(`span`,{className:~Oa~(`min-w-0 truncate`,~XC~),children:`Actions`})]}),(0,~$~.jsx)(`span`,{"aria-hidden":`true`,className:~lw~}),(0,~$~.jsxs)(~Pe~,{highlightItemOnHover:!1,open:~S~.imports,onOpenChange:~e~=>~C~({presentation:~m~,scripts:!1,imports:~e~}),children:[(0,~$~.jsx)(~ii~,{render:(0,~$~.jsx)(~dw~,{size:`sm`,variant:`ghost`,part:`secondary`,"aria-label":`Choose project action`}),children:(0,~$~.jsx)(~te~,{className:~rw~})}),(0,~$~.jsx)(~Qi~,{align:`end`,anchor:~y~,className:`w-(--anchor-width)`,children:~M~})]}),!~Yt~]}):(0,~$~.jsxs)(~yo~,{children:[(0,~$~.jsxs)(~Un~,{render:(0,~$~.jsx)(~dw~,{size:`xs`,variant:`ghost`,part:`row`,panel:~_~,"aria-label":`Add project script`,"data-toolbar-control":``,onClick:~r~}),children:[(0,~$~.jsx)(~xe~,{className:`size-3.5`}),(0,~$~.jsx)(`span`,{className:~Oa~(`sr-only @3xl/header-actions:not-sr-only @3xl/header-actions:ml-0.5`,~_~&&~Oa~(`not-sr-only ml-0.5`,`[text-box:trim-both_cap_alphabetic] overflow-x-clip overflow-y-visible`)),children:`Add project script`})]}),(0,~$~.jsx)(~qe~,{side:`top`,children:`Add project script`})]})]
+'@
+# Pass 30/31 (2026-11-09, 2026-11-10): one button per script; each button's menu holds Edit and a
+# red Remove (asks first) plus the t3.json import list when there is one. "Add project script" is its
+# own button under the last script. Pass 31: a script button can be dragged above or below another
+# (saved through T3's own project-script save, as an Edit would be), and a script that opens a page
+# reuses its browser tab instead of opening a second one. Three parts, one patch name:
+#   dock  - the run-button/actions/add block, rewritten from a template; ~name~ marks a minified name
+#           read from the chunk, so a rebuild with new names still matches. Name tables are
+#           case-sensitive (m and M differ). The older form (2026-10-24) is recognised by
+#           Resolve-ScriptButtonsV1 and upgraded in place. The toolbar-only variants are dropped.
+#   order - updateProjectScript also takes a whole reordered list (one line in the save hook).
+#   tab   - opening a preview URL first looks for the tab this thread already opened for that URL.
+# Same length everywhere: shorter error messages and a dropped source-map comment pay for the code.
+function ConvertTo-SbRegex([string]$tpl, [hashtable]$groups) {
+    $sb = New-Object System.Text.StringBuilder
+    [void]$sb.Append('(?<![\w$])')
+    $seen = [hashtable]::new([StringComparer]::Ordinal)
+    foreach ($p in [regex]::Split($tpl, '(~[^~]+~)')) {
+        if ($p.Length -gt 2 -and $p.StartsWith('~') -and $p.EndsWith('~')) {
+            $n = $p.Substring(1, $p.Length - 2)
+            if (-not $groups.ContainsKey($n)) { $groups[$n] = 'g' + $groups.Count }
+            $g = $groups[$n]
+            $pat = if ($n -eq '#') { '\d+' } elseif ($n -eq '%') { '\.icon|/\*i\*/' } else { $I }
+            if ($seen.ContainsKey($n)) { [void]$sb.Append('\k<' + $g + '>') }
+            else { $seen[$n] = $true; [void]$sb.Append('(?<' + $g + '>' + $pat + ')') }
+        } elseif ($p.Length) { [void]$sb.Append([regex]::Escape($p)) }
+    }
+    return $sb.ToString()
+}
+function Format-SbTemplate([string]$tpl, [hashtable]$names) {
+    $out = New-Object System.Text.StringBuilder
+    foreach ($p in [regex]::Split($tpl, '(~[^~]+~)')) {
+        if ($p.Length -gt 2 -and $p.StartsWith('~') -and $p.EndsWith('~')) {
+            $n = $p.Substring(1, $p.Length - 2)
+            if (-not $names.ContainsKey($n)) { throw "scriptbuttons: no value for ~$n~" }
+            [void]$out.Append($names[$n])
+        } else { [void]$out.Append($p) }
+    }
+    return $out.ToString()
+}
+function Get-SbNames([System.Text.RegularExpressions.Match]$m, [hashtable]$groups) {
+    $names = [hashtable]::new([StringComparer]::Ordinal)
+    foreach ($k in $groups.Keys) { if ($m.Groups[$groups[$k]].Success) { $names[$k] = $m.Groups[$groups[$k]].Value } }
+    return $names
+}
+function Resolve-SbDock([string]$direction) {
+    $bq = [string]$bt
+    $anchor = 'role:' + $bq + 'group' + $bq + ',"aria-label":' + $bq + 'Project scripts' + $bq
+    $cands = @($script:files | Where-Object { $_.Path -match '/client/assets/[^/]*\.js$' })
+    $hits = @()
+    foreach ($c in $cands) {
+        $t = Get-ChunkText $c.Offset $c.Size
+        if ($t.Contains($anchor)) { $hits += [pscustomobject]@{ Chunk = $c; Text = $t } }
+    }
+    if ($hits.Count -ne 1) { return @{ State = 'UNKNOWN'; Detail = "project-scripts anchor found in $($hits.Count) chunks (expected 1)"; Edits = @() } }
+    $chunk = $hits[0].Chunk; $text = $hits[0].Text
+    $short = "chunk $(Split-Path $chunk.Path -Leaf)"
+    $at = $text.IndexOf($anchor, [StringComparison]::Ordinal)
+    $winStart = [Math]::Max(0, $at - 400)
+    $win = $text.Substring($winStart, [Math]::Min(5000, $text.Length - $winStart))
+    $gS = [hashtable]::new([StringComparer]::Ordinal); $reS = ConvertTo-SbRegex $script:SbTplStock $gS
+    $gV = [hashtable]::new([StringComparer]::Ordinal); $reV = (ConvertTo-SbRegex $script:SbTplV3 $gV) + '(?<pad> *)'
+    # new form already in place
+    $mv = [regex]::Matches($win, $reV)
+    if ($mv.Count -gt 1) { return @{ State = 'UNKNOWN'; Detail = "new script menu matched $($mv.Count) times"; Edits = @() } }
+    if ($mv.Count -eq 1) {
+        $m = $mv[0]
+        $names = Get-SbNames $m $gV
+        $stockText = Format-SbTemplate $script:SbTplStock $names
+        if ($stockText.Length -gt $m.Length) { return @{ State = 'UNKNOWN'; Detail = 'stock rebuild is longer than the patched block'; Edits = @() } }
+        $edits = @()
+        if ($direction -eq 'stock') {
+            $edits += @{ Kind = 'region'; Patch = 'scriptbuttons'; Off = [int64]($dataOffset + $chunk.Offset + $winStart + $m.Index); Old = $m.Value; New = $stockText + (' ' * ($m.Length - $stockText.Length)); Chunk = $chunk; ChunkText = $text }
+        }
+        return @{ State = 'PATCHED'; Detail = "dock: one button per script, Edit/Remove menus, drag order"; Edits = $edits }
+    }
+    # older per-script form: rebuild its stock text in memory, then go on as if stock
+    $work = $text; $workWinStart = $winStart; $extra = 0; $from = 'stock'
+    $v1 = Resolve-ScriptButtonsV1 'stock'
+    if ($v1.State -eq 'PATCHED') {
+        if ($direction -eq 'stock') { return $v1 }
+        $e1 = @($v1.Edits)[0]
+        $rel = [int]($e1.Off - $dataOffset - $chunk.Offset)
+        $stockPart = $e1.New.TrimEnd(' ')
+        $extra = $e1.Old.Length - $stockPart.Length
+        $work = $text.Substring(0, $rel) + $stockPart + $text.Substring($rel + $e1.Old.Length)
+        $from = 'older per-script form'
+    } elseif ($v1.State -ne 'ORIGINAL') {
+        return @{ State = 'UNKNOWN'; Detail = $v1.Detail; Edits = @() }
+    }
+    $wwin = $work.Substring($workWinStart, [Math]::Min(5000, $work.Length - $workWinStart))
+    $ms = [regex]::Matches($wwin, $reS)
+    if ($ms.Count -ne 1) { return @{ State = 'UNKNOWN'; Detail = "stock script dock matched $($ms.Count) times (expected 1)"; Edits = @() } }
+    $m = $ms[0]
+    $names = Get-SbNames $m $gS
+    $startRel = $workWinStart + $m.Index
+    $spanLen = $m.Length + $extra
+    $state = 'ORIGINAL'
+    $detail = if ($from -eq 'stock') { "dock: one split button" } else { "dock: older per-script menus (upgrade pending)" }
+    if ($direction -ne 'patched') { return @{ State = $state; Detail = $detail; Edits = @() } }
+    # names the new block needs that the stock block does not use
+    $esc = { param($s) [regex]::Escape($s) }
+    $fnStart = $work.LastIndexOf('function ', $startRel, [StringComparison]::Ordinal)
+    if ($fnStart -lt 0) { return @{ State = 'UNKNOWN'; Detail = 'script dock component start not found'; Edits = @() } }
+    $comp = $work.Substring($fnStart, [Math]::Min($work.Length - $fnStart, ($startRel - $fnStart) + $m.Length + 2500))
+    $J = & $esc $names['$']
+    $upd = [regex]::Match($comp, ('onUpdateScript:(?<u>@I@),onDeleteScript:').Replace('@I@', $I))
+    if (-not $upd.Success) { return @{ State = 'UNKNOWN'; Detail = 'update callback not found'; Edits = @() } }
+    $del = [regex]::Match($comp, ('onDeleteScript:(?<d>@I@)\}=').Replace('@I@', $I))
+    $slot = [regex]::Match($comp, ('let (?<O>@I@);(?<t>@I@)\[(?<n>\d+)\]===(?<d>@I@)\?\k<O>=\k<t>\[\d+\]:\(\k<O>=(?<q>@I@)=>void \k<d>\(\k<q>\),\k<t>\[\k<n>\]=\k<d>').Replace('@I@', $I))
+    if (-not $del.Success -or -not $slot.Success -or $slot.Groups['d'].Value -ne $del.Groups['d'].Value -or -not $comp.Contains('onDelete:' + $slot.Groups['O'].Value + ',')) { return @{ State = 'UNKNOWN'; Detail = 'delete callback cache slot not found'; Edits = @() } }
+    $edit = [regex]::Match($comp, ('"aria-label":' + $bq + 'Edit \$\{(?<q>@I@)\.name\}' + $bq + ',onPointerDown:@I@,onClick:(?<w>@I@)=>\{\k<w>\.preventDefault\(\),\k<w>\.stopPropagation\(\),(?<s>@I@)\(\k<q>\)\},children:\(0,' + $J + '\.jsx\)\((?<pen>@I@),\{className:' + $bq + 'size-3\.5' + $bq + '\}\)').Replace('@I@', $I))
+    if (-not $edit.Success) { return @{ State = 'UNKNOWN'; Detail = 'edit handler not found'; Edits = @() } }
+    $item = [regex]::Match($comp, ('\(0,' + $J + '\.jsxs\)\((?<a>@I@),\{density:@I@,onClick:' + (& $esc $names['r']) + ',children:\[').Replace('@I@', $I))
+    if (-not $item.Success) { return @{ State = 'UNKNOWN'; Detail = 'menu item component not found'; Edits = @() } }
+    $frag = [regex]::Match($comp, ('\((?<j>@I@)=\(0,' + $J + '\.jsxs\)\(' + $J + '\.Fragment,\{children:\[@I@,(?<f>@I@),@I@\]\}\)[^;]*;let ' + (& $esc $names['M']) + '=\k<j>[;,]').Replace('@I@', $I))
+    if (-not $frag.Success) { return @{ State = 'UNKNOWN'; Detail = 't3.json import list not found'; Edits = @() } }
+    $bin = [regex]::Match($text, ('\((?<v>@I@)=\(0,' + $J + '\.jsx\)\((?<ke>@I@),\{\}\),.{0,160}?"aria-label":' + $bq + 'Delete side chat' + $bq + ',[^}]{0,80}children:\k<v>\}').Replace('@I@', $I))
+    if (-not $bin.Success) { return @{ State = 'UNKNOWN'; Detail = 'bin icon not found'; Edits = @() } }
+    $dlg = [regex]::Matches($text, ('(?<![\w$.])(?<pd>@I@)\(\)\?\.dialogs\.confirm\(').Replace('@I@', $I))
+    if ($dlg.Count -lt 1) { return @{ State = 'UNKNOWN'; Detail = 'confirm dialog helper not found'; Edits = @() } }
+    $names['t'] = $slot.Groups['t'].Value; $names['#'] = $slot.Groups['n'].Value
+    $names['s'] = $edit.Groups['s'].Value; $names['T_'] = $edit.Groups['pen'].Value
+    $names['_a'] = $item.Groups['a'].Value; $names['f'] = $frag.Groups['f'].Value
+    $names['ke'] = $bin.Groups['ke'].Value; $names['pd'] = $dlg[0].Groups['pd'].Value
+    $names['d'] = $upd.Groups['u'].Value
+    # three names for the map callback that nothing in or around the block uses
+    $taken = @($names.Values)
+    $free = @()
+    foreach ($ch in [char[]]'ILZQWKJHGFDSAPMNBXUTRYqjkzxwp') {
+        $cs = [string]$ch
+        if ($taken -cnotcontains $cs -and -not [regex]::IsMatch($m.Value, '(?<![\w$])' + [regex]::Escape($cs) + '(?![\w$])')) { $free += $cs }
+        if ($free.Count -eq 3) { break }
+    }
+    if ($free.Count -lt 3) { return @{ State = 'UNKNOWN'; Detail = 'no free names for the map callback'; Edits = @() } }
+    $names['I'] = $free[0]; $names['L'] = $free[1]; $names['Z'] = $free[2]
+    $new = Format-SbTemplate $script:SbTplV3 $names
+    if ($new.Length -gt $spanLen) { return @{ State = 'UNKNOWN'; Detail = "new script menu is $($new.Length - $spanLen) chars too long"; Edits = @() } }
+    $new += (' ' * ($spanLen - $new.Length))
+    $old = $text.Substring($startRel, $spanLen)
+    $edits = @(@{ Kind = 'region'; Patch = 'scriptbuttons'; Off = [int64]($dataOffset + $chunk.Offset + $startRel); Old = $old; New = $new; Chunk = $chunk; ChunkText = $text })
+    return @{ State = $state; Detail = $detail; Edits = $edits }
+}
+function Get-SbFreeNames([string]$text, [int]$count) {
+    $free = @()
+    foreach ($ch in [char[]]'KFGHJQWXYZNOPU') {
+        $cs = [string]$ch
+        if (-not [regex]::IsMatch($text, '(?<![\w$])' + [regex]::Escape($cs) + '(?![\w$])')) { $free += $cs }
+        if ($free.Count -eq $count) { break }
+    }
+    return ,$free
+}
+# order: updateProjectScript(list) saves a reordered list through the same settings write as Edit.
+function Resolve-SbOrder([string]$direction) {
+    $bq = [string]$bt
+    $msgS = $bq + 'The script was deleted, but its keyboard shortcut could not be removed because permission changed.' + $bq
+    $msgP = $bq + 'Deleted; shortcut not removed.' + $bq
+    $mid = '(?<mid>[\s\S]{0,4000}?=async\((?<a>@I@),@I@\)=>\{if\(!(?<r>@I@)\)return @I@\(void 0\);)'
+    $tail = '(?=let @I@=@I@\.find\(@I@=>@I@\.id===\k<a>\);if\(!@I@\)return @I@\(@I@\(Error\(' + $bq + 'Script not found\.' + $bq + '\)\)\);[\s\S]{0,300}?return (?<m>@I@)\(\{projectId:\k<r>\.id,)'
+    $reS = ([regex]::Escape($msgS) + $mid + $tail).Replace('@I@', $I)
+    $reP = ([regex]::Escape($msgP) + $mid + 'if\(\k<a>\.map\)return (?<m2>@I@)\(\{projectId:\k<r>\.id,nextScripts:\k<a>\}\);(?<pad> *)' + $tail).Replace('@I@', $I)
+    $hits = @()
+    foreach ($c in @($script:files | Where-Object { $_.Path -match '/client/assets/[^/]*\.js$' })) {
+        $t = Get-ChunkText $c.Offset $c.Size
+        if ($t.Contains($msgS) -or $t.Contains($msgP)) { $hits += [pscustomobject]@{ Chunk = $c; Text = $t } }
+    }
+    if ($hits.Count -ne 1) { return @{ State = 'UNKNOWN'; Detail = "order: script save hook found in $($hits.Count) chunks (expected 1)"; Edits = @() } }
+    $chunk = $hits[0].Chunk; $text = $hits[0].Text
+    $mp = [regex]::Matches($text, $reP)
+    $ms = [regex]::Matches($text, $reS)
+    if ($mp.Count + $ms.Count -ne 1) { return @{ State = 'UNKNOWN'; Detail = "order: save hook matched $($ms.Count) stock / $($mp.Count) patched"; Edits = @() } }
+    if ($mp.Count -eq 1) {
+        $m = $mp[0]
+        if ($m.Groups['m2'].Value -cne $m.Groups['m'].Value) { return @{ State = 'UNKNOWN'; Detail = 'order: save call name differs'; Edits = @() } }
+        $edits = @()
+        if ($direction -eq 'stock') {
+            $new = $msgS + $m.Groups['mid'].Value
+            if ($new.Length -ne $m.Length) { return @{ State = 'UNKNOWN'; Detail = 'order: stock rebuild length differs'; Edits = @() } }
+            $edits += @{ Kind = 'region'; Patch = 'scriptbuttons'; Off = [int64]($dataOffset + $chunk.Offset + $m.Index); Old = $m.Value; New = $new; Chunk = $chunk; ChunkText = $text }
+        }
+        return @{ State = 'PATCHED'; Detail = 'order: list save on'; Edits = $edits }
+    }
+    $m = $ms[0]
+    if ($direction -ne 'patched') { return @{ State = 'ORIGINAL'; Detail = 'order: stock save hook'; Edits = @() } }
+    $a = $m.Groups['a'].Value
+    $new = $msgP + $m.Groups['mid'].Value + 'if(' + $a + '.map)return ' + $m.Groups['m'].Value + '({projectId:' + $m.Groups['r'].Value + '.id,nextScripts:' + $a + '});'
+    if ($new.Length -gt $m.Length) { return @{ State = 'UNKNOWN'; Detail = "order: edit is $($new.Length - $m.Length) chars too long"; Edits = @() } }
+    $new += ' ' * ($m.Length - $new.Length)
+    return @{ State = 'ORIGINAL'; Detail = 'order: stock save hook'; Edits = @(@{ Kind = 'region'; Patch = 'scriptbuttons'; Off = [int64]($dataOffset + $chunk.Offset + $m.Index); Old = $m.Value; New = $new; Chunk = $chunk; ChunkText = $text }) }
+}
+# tab: a preview URL opened again in the same thread goes back to the tab it opened before
+# (tab id kept in localStorage under t3tab<threadId><url>; a closed tab is simply opened anew).
+function Resolve-SbTab([string]$direction) {
+    $bq = [string]$bt
+    $q = { param($s) [regex]::Escape($bq + $s + $bq) }
+    $txtS = @('Saved browser settings could not be loaded.', 'The integrated browser is unavailable in this runtime.', 'The environment returned an invalid asset URL.')
+    $txtP = @('Browser settings unreadable.', 'No integrated browser here.', 'Invalid asset URL.')
+    $A = '(?<A>[\s\S]{0,300}?let (?<a>@I@)=@I@\((?<e>@I@)\.threadRef\)[\s\S]{0,300}?=(?<u>@I@)\(\k<a>\)\.activeTabId,[\s\S]{0,200}?,)'
+    $B = '(?<B>[\s\S]{0,400}?\);return @I@\(\k<b>,(?<tt>@I@)=>\{)'
+    $reS = ((& $q $txtS[0]) + $A + '(?<b>@I@)=await \k<e>\.openPreview\(' + $B + '(?<C>[\s\S]{0,900}?)' + (& $q $txtS[1]) + '(?<D>[\s\S]{0,900}?)' + (& $q $txtS[2]) + '(?<E>[\s\S]{0,400}?)(?<map>\n//# sourceMappingURL=[^\n]*\n?)?\z').Replace('@I@', $I)
+    $reP = ((& $q $txtP[0]) + $A + '(?<K>@I@)=' + $bq + 't3tab\$\{\k<a>\.threadId\+\k<e>\.url\}' + $bq + ',(?<F>@I@)=\k<u>\(\k<a>\)\.sessions\[localStorage\[\k<K>\]\],(?<b>@I@)=\k<F>\?\{_tag:' + $bq + 'Success' + $bq + ',value:\k<F>\}:await \k<e>\.openPreview\(' + $B + 'localStorage\[\k<K>\]=\k<tt>\.tabId,(?<C>[\s\S]{0,900}?)' + (& $q $txtP[1]) + '(?<D>[\s\S]{0,900}?)' + (& $q $txtP[2]) + '(?<E>[\s\S]{0,400}?)(?<pad> *)\z').Replace('@I@', $I)
+    $hits = @()
+    foreach ($c in @($script:files | Where-Object { $_.Path -match '/client/assets/[^/]*\.js$' })) {
+        $t = Get-ChunkText $c.Offset $c.Size
+        if ($t.Contains('BrowserSettingsReadError') -and $t.Contains('.openPreview(')) { $hits += [pscustomobject]@{ Chunk = $c; Text = $t } }
+    }
+    if ($hits.Count -ne 1) { return @{ State = 'UNKNOWN'; Detail = "tab: preview opener found in $($hits.Count) chunks (expected 1)"; Edits = @() } }
+    $chunk = $hits[0].Chunk; $text = $hits[0].Text
+    $from = $text.IndexOf($bq + $txtS[0] + $bq, [StringComparison]::Ordinal)
+    if ($from -lt 0) { $from = $text.IndexOf($bq + $txtP[0] + $bq, [StringComparison]::Ordinal) }
+    if ($from -lt 0) { return @{ State = 'UNKNOWN'; Detail = 'tab: settings message not found'; Edits = @() } }
+    $tail = $text.Substring($from)
+    $mp = [regex]::Match($tail, $reP)
+    $ms = [regex]::Match($tail, $reS)
+    $abs = [int64]($dataOffset + $chunk.Offset + $from)
+    if ($mp.Success -and $mp.Index -eq 0) {
+        $g = $mp.Groups
+        $edits = @()
+        if ($direction -eq 'stock') {
+            $new = $bq + $txtS[0] + $bq + $g['A'].Value + $g['b'].Value + '=await ' + $g['e'].Value + '.openPreview(' + $g['B'].Value + $g['C'].Value + $bq + $txtS[1] + $bq + $g['D'].Value + $bq + $txtS[2] + $bq + $g['E'].Value
+            $gap = $mp.Length - $new.Length
+            if ($gap -gt 0) {
+                $map = "`n//# sourceMappingURL=" + (Split-Path $chunk.Path -Leaf) + '.map'
+                if ($map.Length -eq $gap) { $new += $map } elseif ($map.Length + 1 -eq $gap) { $new += $map + "`n" } else { return @{ State = 'UNKNOWN'; Detail = 'tab: source-map line cannot be rebuilt'; Edits = @() } }
+            } elseif ($gap -lt 0) { return @{ State = 'UNKNOWN'; Detail = 'tab: stock rebuild is longer'; Edits = @() } }
+            $edits += @{ Kind = 'region'; Patch = 'scriptbuttons'; Off = $abs; Old = $mp.Value; New = $new; Chunk = $chunk; ChunkText = $text }
+        }
+        return @{ State = 'PATCHED'; Detail = 'tab: one tab per page'; Edits = $edits }
+    }
+    if (-not ($ms.Success -and $ms.Index -eq 0)) { return @{ State = 'UNKNOWN'; Detail = 'tab: preview opener shape not recognised'; Edits = @() } }
+    if ($direction -ne 'patched') { return @{ State = 'ORIGINAL'; Detail = 'tab: new tab per click'; Edits = @() } }
+    $g = $ms.Groups
+    $fr = Get-SbFreeNames $text 2
+    if ($fr.Count -lt 2) { return @{ State = 'UNKNOWN'; Detail = 'tab: no free names'; Edits = @() } }
+    $K = $fr[0]; $F = $fr[1]; $a = $g['a'].Value; $ev = $g['e'].Value
+    $new = $bq + $txtP[0] + $bq + $g['A'].Value + $K + '=' + $bq + 't3tab${' + $a + '.threadId+' + $ev + '.url}' + $bq + ',' + $F + '=' + $g['u'].Value + '(' + $a + ').sessions[localStorage[' + $K + ']],' + $g['b'].Value + '=' + $F + '?{_tag:' + $bq + 'Success' + $bq + ',value:' + $F + '}:await ' + $ev + '.openPreview(' + $g['B'].Value + 'localStorage[' + $K + ']=' + $g['tt'].Value + '.tabId,' + $g['C'].Value + $bq + $txtP[1] + $bq + $g['D'].Value + $bq + $txtP[2] + $bq + $g['E'].Value
+    if ($new.Length -gt $ms.Length) { return @{ State = 'UNKNOWN'; Detail = "tab: edit is $($new.Length - $ms.Length) chars too long"; Edits = @() } }
+    $new += ' ' * ($ms.Length - $new.Length)
+    return @{ State = 'ORIGINAL'; Detail = 'tab: new tab per click'; Edits = @(@{ Kind = 'region'; Patch = 'scriptbuttons'; Off = $abs; Old = $ms.Value; New = $new; Chunk = $chunk; ChunkText = $text }) }
+}
+# One patch, three parts. Stock direction reverts every part that is patched; otherwise the patch
+# counts as PATCHED only when all three parts are, and -Apply finishes whichever parts are missing.
+function Resolve-ScriptButtons([string]$direction) {
+    $parts = @((Resolve-SbDock $direction), (Resolve-SbOrder $direction), (Resolve-SbTab $direction))
+    $detail = ($parts | ForEach-Object { $_.Detail }) -join '; '
+    if (@($parts | Where-Object { $_.State -eq 'UNKNOWN' }).Count) { return @{ State = 'UNKNOWN'; Detail = $detail; Edits = @() } }
+    $edits = @(); foreach ($p in $parts) { $edits += @($p.Edits) }
+    $on = @($parts | Where-Object { $_.State -eq 'PATCHED' }).Count
+    if ($direction -eq 'stock') { $state = if ($on) { 'PATCHED' } else { 'ORIGINAL' } }
+    else {
+        $state = if ($on -eq $parts.Count) { 'PATCHED' } else { 'ORIGINAL' }
+        if ($on -gt 0 -and $on -lt $parts.Count) { $detail = "partly patched: $detail" }
+    }
+    return @{ State = $state; Detail = $detail; Edits = $edits }
 }
 
 # --- patch 9: browser pages open in dark mode by default --------------------------

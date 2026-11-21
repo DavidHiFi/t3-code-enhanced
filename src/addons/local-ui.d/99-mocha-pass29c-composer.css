@@ -27,7 +27,7 @@ html[data-window-material] [data-slot="composer-shell"][data-slot="composer-shel
 	background-color: rgb(30 30 46 / 0.8) !important;
 }
 /* timeline minimap pill floats over the chat with its own plain blur */
-html[data-window-material] [data-testid="timeline-minimap"] div[class*="top-1/2"][class*="left-3"]::before {
+html[data-window-material] [data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4)::before {
 	-webkit-backdrop-filter: var(--t24-frost) !important;
 	backdrop-filter: var(--t24-frost) !important;
 }

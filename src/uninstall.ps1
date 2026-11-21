@@ -3,9 +3,10 @@
 #
 #   1. Stops the guard and removes the T3CodeEnhanced-Guard task.
 #   2. Puts app.asar and server.asar back to stock.
-#   3. Removes the add-on files the installer copied to ~/.t3. Your local-ui.css,
+#   3. Puts the original app icon back on the shortcuts and the program file.
+#   4. Removes the add-on files the installer copied to ~/.t3. Your local-ui.css,
 #      your local-patches.json and anything else in ~/.t3 stay.
-#   4. Deletes %LOCALAPPDATA%\T3CodeEnhanced (lib, logs, backups).
+#   5. Deletes %LOCALAPPDATA%\T3CodeEnhanced (lib, logs, backups).
 #
 # Restart T3 Code afterwards. A T3 Code update also restores the stock files.
 
@@ -44,9 +45,41 @@ if ($T3Dir) {
     }
 } else { Write-Host '   T3 Code not found; nothing to restore' }
 
-# 3. add-ons
-Step 'Removing the add-ons from ~/.t3'
+# 3. app icon: shortcuts and the program file go back to T3's own icon
 $t3Home = Join-Path $HomeDir '.t3'
+if ($T3Dir -and (Get-T3Exe $T3Dir)) {
+    Step 'Putting back the original app icon'
+    $exe = (Get-T3Exe $T3Dir).FullName
+    $wsh = New-Object -ComObject WScript.Shell
+    $names = @([IO.Path]::GetFileNameWithoutExtension($exe), 'T3 Code', 'T3 Code (Nightly)') | Select-Object -Unique
+    foreach ($name in $names) {
+        foreach ($lnk in (Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs\$name.lnk"),
+                         (Join-Path $env:APPDATA "Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\$name.lnk"),
+                         (Join-Path $HomeDir "Desktop\$name.lnk")) {
+            if (-not (Test-Path -LiteralPath $lnk)) { continue }
+            $s = $wsh.CreateShortcut($lnk)
+            if ($s.IconLocation -match 'T3-(Mocha|Original)\.ico') { $s.IconLocation = "$exe,0"; $s.Save() }
+        }
+    }
+    $state = Join-Path $t3Home 'icons\exe-state.json'
+    $rcedit = Join-Path $t3Home 'bin\rcedit-x64.exe'
+    $ico = Join-Path $t3Home 'icons\T3-Original.ico'
+    $riced = $false
+    try { $riced = (Get-Content -LiteralPath $state -Raw | ConvertFrom-Json).choice -eq 'riced' } catch {}
+    if ($riced -and (Test-Path -LiteralPath $rcedit) -and (Test-Path -LiteralPath $ico)) {
+        if (@(Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.Path -eq $exe }).Count) {
+            Write-Host '   T3 Code is open, so its program file keeps the riced icon until the next T3 Code update.' -ForegroundColor Yellow
+        } else {
+            $p = Start-Process -FilePath $rcedit -ArgumentList @("`"$exe`"", '--set-icon', "`"$ico`"") -WindowStyle Hidden -Wait -PassThru
+            if ($p.ExitCode -eq 0) { Remove-Item -LiteralPath $state -Force -ErrorAction SilentlyContinue; Write-Host '   program file icon restored' }
+            else { Write-Host "   icon tool stopped with exit code $($p.ExitCode); the next T3 Code update restores it" -ForegroundColor Yellow }
+        }
+    }
+    Start-Process -FilePath (Join-Path $env:SystemRoot 'System32\ie4uinit.exe') -ArgumentList '-show' -WindowStyle Hidden
+}
+
+# 4. add-ons
+Step 'Removing the add-ons from ~/.t3'
 $list = Join-Path $InstallDir 'installed-files.txt'
 if (Test-Path -LiteralPath $list) {
     foreach ($rel in Get-Content -LiteralPath $list) {
@@ -57,7 +90,7 @@ if (Test-Path -LiteralPath $list) {
     if ((Test-Path -LiteralPath $d) -and -not (Get-ChildItem -LiteralPath $d -Force)) { Remove-Item -LiteralPath $d }
 } else { Write-Host '   no install record found; ~/.t3 left as it is' }
 
-# 4. files
+# 5. files
 if (-not $KeepFiles) {
     Step "Deleting $InstallDir"
     Remove-Item -LiteralPath $InstallDir -Recurse -Force -ErrorAction SilentlyContinue

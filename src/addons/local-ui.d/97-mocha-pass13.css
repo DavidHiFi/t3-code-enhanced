@@ -13,14 +13,14 @@
 div[data-v2-item-type="error"][data-v2-item-type="error"] {
 	background: var(--t5-solid) !important;
 	border-radius: 14px !important;
-	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t5-edge) !important;
 	padding: 4px 10px 3px 4px !important;
 	position: relative;
 	z-index: 5;
 	transition: var(--t5-ease) !important;
 }
 div[data-v2-item-type="error"][data-v2-item-type="error"]:hover {
-	box-shadow: inset 0 0 0 1px var(--t5-edge), var(--t5-ring), var(--t5-glow) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t5-edge), var(--t5-ring), var(--t5-glow) !important;
 }
 /* the error body keeps its indent but loses the raw look */
 div[data-v2-item-type="error"] p.ms-7 {
@@ -30,7 +30,7 @@ div[data-v2-item-type="error"] p.ms-7 {
 /* timestamp chip at the end of the error heading: always-visible resting dock */
 div[data-v2-item-type="error"] > div > span[data-slot="tooltip-trigger"].whitespace-nowrap {
 	background: var(--t5-pill) !important;
-	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t5-edge) !important;
 	border-radius: 7px !important;
 	padding: 1px 7px !important;
 	transition: var(--t5-ease) !important;
@@ -46,7 +46,7 @@ div[data-timeline-row-id^="assistant-meta"] div.px-1 > div:has(> p.tabular-nums)
 	padding: 2px 3px 2px 9px !important;
 	border-radius: 10px !important;
 	background: var(--t5-pill) !important;
-	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t5-edge) !important;
 	transition: var(--t5-ease) !important;
 	position: relative;
 	z-index: 5;
@@ -73,7 +73,7 @@ div[data-timeline-row-id^="assistant-meta"] div.px-1 > div:has(> p.tabular-nums)
 div.group\/timeline-row[data-v2-item-type="dynamic_tool"] {
 	background: var(--t5-pill) !important;
 	border-radius: 10px !important;
-	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t5-edge) !important;
 	padding: 2px 6px !important;
 	transition: var(--t5-ease) !important;
 	position: relative;
@@ -85,7 +85,7 @@ div.group\/timeline-row[data-v2-item-type="dynamic_tool"]:hover {
 /* the hover-revealed timestamp reads as a chip while the row is hovered */
 div.group\/timeline-row[data-v2-item-type="dynamic_tool"]:hover > div > span[data-slot="tooltip-trigger"] {
 	background: var(--t5-pill-hi) !important;
-	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t5-edge) !important;
 	border-radius: 7px !important;
 	padding: 1px 7px !important;
 }
@@ -104,7 +104,7 @@ div[data-slot="alert"][data-variant="error"][data-variant="error"][data-variant=
 }
 div[data-slot="alert"][data-variant="error"] [data-slot="inline-button"][data-slot="inline-button"] {
 	background: var(--t5-pill) !important;
-	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t5-edge) !important;
 	border-radius: 8px !important;
 	padding: 2px 8px !important;
 	transition: var(--t5-ease) !important;
@@ -123,12 +123,11 @@ div[data-right-panel-tabbar="true"] {
 div[data-right-panel-tabbar] div.group\/tab {
 	border-radius: 8px !important;
 	padding: 2px 8px !important;
-	background: transparent !important;
 	transition: var(--t5-ease) !important;
 }
 div[data-right-panel-tabbar] div.group\/tab[data-active-tab="true"] {
 	background: var(--t5-pill-hi) !important;
-	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t5-edge) !important;
 }
 div[data-right-panel-tabbar] div.group\/tab:hover {
 	box-shadow: var(--t5-ring), var(--t5-glow) !important;
@@ -153,30 +152,30 @@ div[data-right-panel-tabbar] button[data-slot="button"]:hover {
 
 /* ================= diff panel: Changes/Automatic subheader ================= */
 /* the ref cluster (Changes / master / vs / Automatic) is one dock pill */
-div[data-right-panel-surface-content] [data-surface-subheader] > div[class*="diff-refs"] {
+div[data-right-panel-surface-content] [data-surface-subheader] > div:is(.\@container\/diff-refs,.\@max-\[20rem\]\/diff-refs\:hidden,.\@max-\[20rem\]\/diff-refs\:inline) {
 	background: var(--t5-pill) !important;
-	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t5-edge) !important;
 	border-radius: 10px !important;
 	padding: 2px 8px !important;
 	transition: var(--t5-ease) !important;
 }
-div[data-right-panel-surface-content] [data-surface-subheader] > div[class*="diff-refs"]:hover {
+div[data-right-panel-surface-content] [data-surface-subheader] > div:is(.\@container\/diff-refs,.\@max-\[20rem\]\/diff-refs\:hidden,.\@max-\[20rem\]\/diff-refs\:inline):hover {
 	box-shadow: var(--t5-ring), var(--t5-glow) !important;
 }
-div[data-right-panel-surface-content] [data-surface-subheader] > div[class*="diff-refs"] :is([data-slot="menu-trigger"], [data-slot="combobox-trigger"], span[data-slot="tooltip-trigger"]) {
+div[data-right-panel-surface-content] [data-surface-subheader] > div:is(.\@container\/diff-refs,.\@max-\[20rem\]\/diff-refs\:hidden,.\@max-\[20rem\]\/diff-refs\:inline) :is([data-slot="menu-trigger"], [data-slot="combobox-trigger"], span[data-slot="tooltip-trigger"]) {
 	border-radius: 7px !important;
 	padding: 1px 5px !important;
 	transition: var(--t5-ease) !important;
 }
-div[data-right-panel-surface-content] [data-surface-subheader] > div[class*="diff-refs"] :is([data-slot="menu-trigger"], [data-slot="combobox-trigger"]):hover,
-div[data-right-panel-surface-content] [data-surface-subheader] > div[class*="diff-refs"] span[data-slot="tooltip-trigger"]:hover {
+div[data-right-panel-surface-content] [data-surface-subheader] > div:is(.\@container\/diff-refs,.\@max-\[20rem\]\/diff-refs\:hidden,.\@max-\[20rem\]\/diff-refs\:inline) :is([data-slot="menu-trigger"], [data-slot="combobox-trigger"]):hover,
+div[data-right-panel-surface-content] [data-surface-subheader] > div:is(.\@container\/diff-refs,.\@max-\[20rem\]\/diff-refs\:hidden,.\@max-\[20rem\]\/diff-refs\:inline) span[data-slot="tooltip-trigger"]:hover {
 	background-color: var(--t5-pill-hi) !important;
 	box-shadow: var(--t5-ring) !important;
 }
 /* the right cluster (stats, refresh, layout toggles, filters) is one dock pill */
 div[data-right-panel-surface-content] [data-surface-subheader] > div.flex.shrink-0.items-center.gap-1 {
 	background: var(--t5-pill) !important;
-	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t5-edge) !important;
 	border-radius: 10px !important;
 	padding: 2px 6px !important;
 	transition: var(--t5-ease) !important;
@@ -194,7 +193,7 @@ div[data-right-panel-surface-content] [data-surface-subheader] > div.flex.shrink
 }
 div[data-right-panel-surface-content] [data-surface-subheader] > div.flex.shrink-0.items-center.gap-1 button[data-pressed="true"] {
 	background-color: var(--t5-pill-hi) !important;
-	box-shadow: inset 0 0 0 1px var(--t5-edge) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t5-edge) !important;
 }
 
 /* ================= diff panel: file tree aside ================= */
@@ -204,7 +203,6 @@ div[data-right-panel-surface-content] aside {
 /* the "Files 82" header band inside the aside */
 div[data-right-panel-surface-content] aside [data-surface-subheader] {
 	background: var(--t5-pill) !important;
-	box-shadow: inset 0 -1px 0 var(--t5-edge) !important;
 	transition: var(--t5-ease) !important;
 }
 div[data-right-panel-surface-content] aside [data-surface-subheader] button {

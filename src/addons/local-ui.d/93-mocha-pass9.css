@@ -4,15 +4,15 @@
    mask, so the bottom row read as fading text. Rollback: delete this file and reload. */
 
 /* breathing room so every card edge and button stays inside the outer card */
-[data-slot="settings-group"] div[class*="/providers:min-h-0"] [data-slot="scroll-area-viewport"] > div {
+[data-slot="settings-group"] div.\@min-\[48rem\]\/providers\:min-h-0 [data-slot="scroll-area-viewport"] > div {
 	padding-inline: 12px !important;
 }
 /* no fade on the pane's text */
-[data-slot="settings-group"] div[class*="/providers:min-h-0"] [data-slot="scroll-area-viewport"] {
+[data-slot="settings-group"] div.\@min-\[48rem\]\/providers\:min-h-0 [data-slot="scroll-area-viewport"] {
 	mask-image: none !important;
 	-webkit-mask-image: none !important;
 }
 /* long control buttons ("Install managed runtime") never get wider than their row */
-[data-slot="settings-group"] div[class*="/providers:min-h-0"] [data-slot="settings-row"] button {
+[data-slot="settings-group"] div.\@min-\[48rem\]\/providers\:min-h-0 [data-slot="settings-row"] button {
 	max-width: 100% !important;
 }

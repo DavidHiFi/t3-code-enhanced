@@ -1,0 +1,27 @@
+/* Pass 45 (2026-11-14): videos and pictures in replies. Owner pointed at a clip in a reply:
+   "fix this missing border". Pictures already wore the pass 25 frame (quiet edge at rest,
+   blue-to-mauve with a soft glow on hover); videos only had T3's 1px border at 40%, which
+   disappears against the black player.
+   Now a video wears the same frame, painted from a gradient behind it, with 10px corners.
+   Both go from 1.5px to 2px: the screen scale here is about 1.1, and Chromium rounds a border
+   down to whole screen pixels, so 1.5px drew as a single pixel (0.91px). 2px draws as two.
+   Rollback: delete this file and reload T3. */
+
+html :is(.chat-markdown, [data-timeline-row-kind="message"]) video {
+	border: 2px solid transparent !important;
+	border-radius: 10px !important;
+	background: linear-gradient(#000, #000) padding-box, linear-gradient(135deg, var(--t25-ga), var(--t25-gb)) border-box !important;
+	box-shadow: none !important;
+	transition: --t25-ga 0.22s ease, --t25-gb 0.22s ease, box-shadow 0.22s ease !important;
+}
+html :is(.chat-markdown, [data-timeline-row-kind="message"]) video:is(:hover, :focus-visible) {
+	--t25-ga: #89b4fa;
+	--t25-gb: #cba6f7;
+	box-shadow: 0 0 14px -4px rgb(137 180 250 / 0.5), 0 0 20px -8px rgb(203 166 247 / 0.45) !important;
+}
+
+html :is(.chat-markdown, [data-timeline-row-kind="message"]) img:not(:is(
+	div:is(.aspect-\[4\/3\],.aspect-auto,.aspect-square,.aspect-video) img, button[aria-label^="Preview "] img, [data-chat-composer-expanded-image] img
+)) {
+	border-width: 2px !important;
+}

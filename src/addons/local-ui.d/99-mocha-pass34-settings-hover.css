@@ -1,0 +1,85 @@
+/* Pass 34 (2026-11-12): Settings hover fixes. Reload the window to apply.
+   1. Project rows (Settings > Projects): a hovered row inside a settings group kept the group's
+      rounded outer corners only at rest; the hover frame is drawn with border-radius: inherit
+      from a square row, so the corners went square. First and last rows now carry the group's
+      inner radius (12px minus the 1px border), middle rows stay square.
+   2. Chat image grid: side edges of the run dock broke beside an image row, because that row's
+      kind is not a run kind. The dock marker (99-mocha-pass15a-run.js, backup beside it) now
+      keeps every row between the first and last run row inside the run. No CSS needed for it.
+   3. Settings hover sweep: controls the earlier passes skip got no gradient border on hover.
+      Same technique as pass 29a/31b: a 1px masked ::after, blue to mauve, radius inherited.
+        a. unbordered buttons (ghost, outline-less, icon) and bordered or unbordered links
+        b. checkboxes and radios (bordered, so only the hover colour changes)
+   Each rule skips boxes another pass already frames, so there is one frame per box. */
+@layer theme {
+	/* 1. project rows keep the group radius on hover */
+	html [data-app-modal][aria-label="Settings"] [data-slot="settings-group"] > button:is(.\[button\&\,a\&\]\:hover\:bg-accent\/50,.aria-pressed\:hover\:bg-accent\/80,.dark\:hover\:bg-accent,.group-hover\:bg-accent\/60,.hover\:bg-accent,.hover\:bg-accent\/10,.hover\:bg-accent\/20,.hover\:bg-accent\/40,.hover\:bg-accent\/45,.hover\:bg-accent\/50,.hover\:bg-accent\/60,.hover\:bg-accent\/70,.not-in-data-selected\:hover\:bg-accent),
+	html [data-app-modal][aria-label="Settings"] [data-slot="settings-group"] > * > button:is(.\[button\&\,a\&\]\:hover\:bg-accent\/50,.aria-pressed\:hover\:bg-accent\/80,.dark\:hover\:bg-accent,.group-hover\:bg-accent\/60,.hover\:bg-accent,.hover\:bg-accent\/10,.hover\:bg-accent\/20,.hover\:bg-accent\/40,.hover\:bg-accent\/45,.hover\:bg-accent\/50,.hover\:bg-accent\/60,.hover\:bg-accent\/70,.not-in-data-selected\:hover\:bg-accent) {
+		border-radius: 0 !important;
+	}
+	html [data-app-modal][aria-label="Settings"] [data-slot="settings-group"] > :first-child:is(button, :has(> button:only-child)),
+	html [data-app-modal][aria-label="Settings"] [data-slot="settings-group"] > :first-child > button:only-child {
+		border-top-left-radius: calc(var(--radius-xl, 12px) - 1px) !important;
+		border-top-right-radius: calc(var(--radius-xl, 12px) - 1px) !important;
+	}
+	html [data-app-modal][aria-label="Settings"] [data-slot="settings-group"] > :last-child:is(button, :has(> button:only-child)),
+	html [data-app-modal][aria-label="Settings"] [data-slot="settings-group"] > :last-child > button:only-child {
+		border-bottom-left-radius: calc(var(--radius-xl, 12px) - 1px) !important;
+		border-bottom-right-radius: calc(var(--radius-xl, 12px) - 1px) !important;
+	}
+	html [data-app-modal][aria-label="Settings"] [data-slot="settings-group"] > button:is(.\[button\&\,a\&\]\:hover\:bg-accent\/50,.aria-pressed\:hover\:bg-accent\/80,.dark\:hover\:bg-accent,.group-hover\:bg-accent\/60,.hover\:bg-accent,.hover\:bg-accent\/10,.hover\:bg-accent\/20,.hover\:bg-accent\/40,.hover\:bg-accent\/45,.hover\:bg-accent\/50,.hover\:bg-accent\/60,.hover\:bg-accent\/70,.not-in-data-selected\:hover\:bg-accent) {
+		position: relative !important;
+	}
+
+	/* 3a. unbordered buttons and links */
+	html [data-app-modal][aria-label="Settings"] :is(button, a):is([data-slot="button"], [data-slot="menu-trigger"], [data-slot="popover-trigger"]):not(.border, .bg-primary, .bg-destructive, .border-transparent, [class*="underline"], :is(.\[button\&\,a\&\]\:hover\:bg-accent\/50,.aria-pressed\:hover\:bg-accent\/80,.dark\:hover\:bg-accent,.group-hover\:bg-accent\/60,.hover\:bg-accent,.hover\:bg-accent\/10,.hover\:bg-accent\/20,.hover\:bg-accent\/40,.hover\:bg-accent\/45,.hover\:bg-accent\/50,.hover\:bg-accent\/60,.hover\:bg-accent\/70,.not-in-data-selected\:hover\:bg-accent), .hover\:bg-muted\/25):not(:disabled):not([data-disabled]):not(nav *) {
+		position: relative !important;
+	}
+	html [data-app-modal][aria-label="Settings"] :is(button, a):is([data-slot="button"], [data-slot="menu-trigger"], [data-slot="popover-trigger"]):not(.border, .bg-primary, .bg-destructive, .border-transparent, [class*="underline"], :is(.\[button\&\,a\&\]\:hover\:bg-accent\/50,.aria-pressed\:hover\:bg-accent\/80,.dark\:hover\:bg-accent,.group-hover\:bg-accent\/60,.hover\:bg-accent,.hover\:bg-accent\/10,.hover\:bg-accent\/20,.hover\:bg-accent\/40,.hover\:bg-accent\/45,.hover\:bg-accent\/50,.hover\:bg-accent\/60,.hover\:bg-accent\/70,.not-in-data-selected\:hover\:bg-accent), .hover\:bg-muted\/25):not(:disabled):not([data-disabled]):not(nav *)::after {
+		content: "" !important;
+		position: absolute !important;
+		inset: 0 !important;
+		padding: 1.5px !important;
+		border-radius: inherit !important;
+		background: linear-gradient(100deg, #89b4fa, #cba6f7) !important;
+		-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+		-webkit-mask-composite: xor !important;
+		mask-composite: exclude !important;
+		pointer-events: none !important;
+		opacity: 0 !important;
+		transition: opacity .18s ease !important;
+	}
+	html [data-app-modal][aria-label="Settings"] :is(button, a):is([data-slot="button"], [data-slot="menu-trigger"], [data-slot="popover-trigger"]):not(.border, .bg-primary, .bg-destructive, .border-transparent, [class*="underline"], :is(.\[button\&\,a\&\]\:hover\:bg-accent\/50,.aria-pressed\:hover\:bg-accent\/80,.dark\:hover\:bg-accent,.group-hover\:bg-accent\/60,.hover\:bg-accent,.hover\:bg-accent\/10,.hover\:bg-accent\/20,.hover\:bg-accent\/40,.hover\:bg-accent\/45,.hover\:bg-accent\/50,.hover\:bg-accent\/60,.hover\:bg-accent\/70,.not-in-data-selected\:hover\:bg-accent), .hover\:bg-muted\/25):not(:disabled):not([data-disabled]):not(nav *):is(:hover, :focus-visible, [data-popup-open])::after {
+		opacity: 1 !important;
+	}
+	/* bordered links: same fill-over-gradient pair as bordered buttons in pass 29a */
+	html [data-app-modal][aria-label="Settings"] a.border:not(.border-transparent, .bg-primary):is(:hover, :focus-visible) {
+		border-color: transparent !important;
+		background:
+			linear-gradient(rgb(36 36 54 / .9), rgb(36 36 54 / .9)) padding-box,
+			linear-gradient(#1e1e2e, #1e1e2e) padding-box,
+			linear-gradient(100deg, #89b4fa, #cba6f7) border-box !important;
+	}
+
+	/* 3b. checkboxes and radios */
+	html [data-app-modal][aria-label="Settings"] :is([data-slot="checkbox"], [data-slot="radio"], [data-slot="radio-group-item"], [role="checkbox"], [role="radio"]) {
+		position: relative !important;
+	}
+	html [data-app-modal][aria-label="Settings"] :is([data-slot="checkbox"], [data-slot="radio"], [data-slot="radio-group-item"], [role="checkbox"], [role="radio"]):not([data-disabled]):not(:disabled)::after {
+		content: "" !important;
+		position: absolute !important;
+		inset: 0 !important;
+		padding: 1.5px !important;
+		border-radius: inherit !important;
+		background: linear-gradient(100deg, #89b4fa, #cba6f7) !important;
+		-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+		-webkit-mask-composite: xor !important;
+		mask-composite: exclude !important;
+		pointer-events: none !important;
+		opacity: 0 !important;
+		transition: opacity .18s ease !important;
+	}
+	html [data-app-modal][aria-label="Settings"] :is([data-slot="checkbox"], [data-slot="radio"], [data-slot="radio-group-item"], [role="checkbox"], [role="radio"]):not([data-disabled]):not(:disabled):is(:hover, :focus-visible)::after {
+		opacity: 1 !important;
+	}
+}

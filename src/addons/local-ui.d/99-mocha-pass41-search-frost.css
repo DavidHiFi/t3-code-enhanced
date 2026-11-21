@@ -1,0 +1,59 @@
+/* Pass 41 (2026-11-14): owner, "I can see text through the pill, revise to match the blur of
+   everything else seamlessly" and "awkward inconsistent box search border" (Search projects).
+
+   1. Top bar. Chromium leaves the chat list out of the bar's own backdrop blur (the list is a
+      separate scroller), so chat text stayed sharp under the 80% tint. The right dock and the
+      composer use a frost with a solid Mocha base inside the filter; the bar now uses that same
+      recipe, so it is the right dock's exact colour and nothing under it can be read.
+   2. Search field in every picker and menu popup (Search projects, menu search). The field was a
+      bare underline, and the text-field focus frame drew a small square box around the input
+      only, with the magnifier left outside it. The whole row is now one rounded field like the
+      model picker's: one edge, icon inside, blue edge and glow on hover and focus.
+
+   Rollback: delete this file and reload T3. */
+
+/* 1 */
+html body #root header[data-chat-header][data-chat-header][data-chat-header][data-chat-header] {
+	background: rgb(30 30 46 / 0.82) !important;
+	-webkit-backdrop-filter: blur(22px) saturate(1) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='f' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'><feFlood flood-color='%231e1e2e' result='b'/><feComposite in='SourceGraphic' in2='b' operator='over'/></filter></svg>#f") !important;
+	backdrop-filter: blur(22px) saturate(1) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='f' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'><feFlood flood-color='%231e1e2e' result='b'/><feComposite in='SourceGraphic' in2='b' operator='over'/></filter></svg>#f") !important;
+}
+
+/* 2 */
+html div.relative.-translate-y-px.border-b:is(.has-data-\[align\=block-start\]\:\*\*\:\[input\]\:pb-1\.5,.pb-1\.5):has(> svg) {
+	border: 1px solid rgb(108 112 134 / 0.58) !important;
+	border-radius: 10px !important;
+	padding: 3px 8px !important;
+	background: rgb(17 17 27 / 0.5) !important;
+	transform: none !important;
+	translate: none !important;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+html div.relative.-translate-y-px.border-b:is(.has-data-\[align\=block-start\]\:\*\*\:\[input\]\:pb-1\.5,.pb-1\.5):has(> svg):is(:hover, :focus-within) {
+	border-color: rgb(137 180 250 / 0.8) !important;
+	box-shadow: 0 0 14px -3px rgb(137 180 250 / 0.45) !important;
+}
+html div.relative.-translate-y-px.border-b:is(.has-data-\[align\=block-start\]\:\*\*\:\[input\]\:pb-1\.5,.pb-1\.5) > svg {
+	left: 9px !important;
+	top: 50% !important;
+	bottom: auto !important;
+	margin-block: 0 !important;
+	translate: none !important;
+	transform: translateY(-50%) !important;
+}
+html div.relative.-translate-y-px.border-b:is(.has-data-\[align\=block-start\]\:\*\*\:\[input\]\:pb-1\.5,.pb-1\.5) span[data-slot="input-control"]:is(*, :hover, :focus-within) {
+	border-color: transparent !important;
+	box-shadow: none !important;
+	outline: none !important;
+	background: transparent !important;
+}
+html div.relative.-translate-y-px.border-b:is(.has-data-\[align\=block-start\]\:\*\*\:\[input\]\:pb-1\.5,.pb-1\.5) span[data-slot="input-control"]:is(*, :hover, :focus-within, :has(:focus-visible))::after,
+html div.relative.-translate-y-px.border-b:is(.has-data-\[align\=block-start\]\:\*\*\:\[input\]\:pb-1\.5,.pb-1\.5) span[data-slot="input-control"]::before {
+	content: none !important;
+	display: none !important;
+}
+html div.relative.-translate-y-px.border-b:is(.has-data-\[align\=block-start\]\:\*\*\:\[input\]\:pb-1\.5,.pb-1\.5) input:is(*, :hover, :focus, :focus-visible) {
+	border-color: transparent !important;
+	box-shadow: none !important;
+	outline: none !important;
+}

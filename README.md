@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/images/preview.png" alt="T3 Code Enhanced on Windows: the T3 Code Enhanced updates card in Settings next to the Catppuccin Mocha model picker, with the provider rail, model list and Reasoning list in their own panels" width="100%">
+<img src="docs/images/preview.png" alt="T3 Code Enhanced on Windows: the T3 Code Enhanced updates card in Settings next to the Catppuccin Mocha model picker, with the provider rail, model list and Reasoning list in their own panels, and the App icon picker with Riced and Original" width="100%">
 
 # T3 Code Enhanced
 
@@ -25,7 +25,7 @@ Install it once. It keeps itself up to date and puts its patches back after ever
 ## Installation
 
 1. Install [T3 Code](https://github.com/pingdotgg/t3code) for your Windows user. Nightly and Beta both work.
-2. Download `T3-Code-Enhanced-v2.0.0.zip` from the [latest release](https://github.com/DavidHiFi/t3-code-enhanced/releases/latest) and unzip it anywhere.
+2. Download `T3-Code-Enhanced-v2.1.0.zip` from the [latest release](https://github.com/DavidHiFi/t3-code-enhanced/releases/latest) and unzip it anywhere.
 3. Double-click `install.cmd`. If PowerShell 7 is missing, it offers to install it with winget first.
 4. Restart T3 Code.
 
@@ -43,6 +43,8 @@ That's the last time you need the zip. New releases show up as a button in T3 Co
 - **Windows 11 backdrop:** acrylic, mica or tabbed material behind the window. `windhawk` hands the backdrop to a Translucent Windows rule instead.
 - **Frosted right-click menus:** drawn in the page as glass panels instead of native Windows menus.
 - **Galaxy accents:** star-field artwork in the sidebar header and on the send button.
+- **App icon:** pick Riced (a Mocha T3 icon) or Original in Settings > Appearance. It changes the window, the taskbar, Start, desktop shortcuts and the sidebar corner. The program file itself switches the next time T3 Code closes.
+- **Clean sidebar corner:** the top-left corner shows only the app icon, with a soft glow on hover that is never cut off.
 - **Working colour:** pick the colour of the sidebar's Working spinner, label and timer. Defaults to Mocha blue `#89b4fa`.
 
 ### Updates
@@ -61,9 +63,9 @@ That's the last time you need the zip. New releases show up as a button in T3 Co
 
 - **No terminal for scripts:** running a project script never opens the bottom terminal, and closing the right panel never floats the preview.
 - **Longer RPC budget:** slow backend calls get 60 seconds instead of 15, so long operations don't abort.
-- **One button per script:** project scripts show as separate buttons, with an arrow that runs them all.
-- **Seconds on sidebar timers:** `Working 23m 27s` in the sidebar, like the open thread shows.
-- **Every account in the Limits popover:** usage for every account T3 can read for that provider, including each CLIProxyAPI account. Name rows with `"accountNames": { "you@example.com": "Max" }` in the config.
+- **One button per script:** project scripts show as separate buttons, with an arrow that runs them all. *Skipped on the newest nightly.*
+- **Seconds on sidebar timers:** `Working 23m 27s` in the sidebar, like the open thread shows. *Skipped on the newest nightly.*
+- **Every account in the Limits popover:** usage for every account T3 can read for that provider, including each CLIProxyAPI account. Name rows with `"accountNames": { "you@example.com": "Max" }` in the config. *Skipped on the newest nightly.*
 - **OpenCode budget (opt-in):** shorter budgets for OpenCode calls. Off by default, and skipped on the tested nightly because that code changed.
 
 ### Upkeep
@@ -78,10 +80,10 @@ That's the last time you need the zip. New releases show up as a button in T3 Co
 > **Speed.** Version 2.0 rewrote the theme rules that made T3 Code sluggish. Adding a chat message used to cost about 90 ms of style work with the theme on; it now costs under 2 ms.
 
 > [!IMPORTANT]
-> **Tested builds.** Checked against T3 Code `0.1.8-nightly.20261109.4399`. On a newer build with changed internals, the affected patch is skipped and reported, and the rest still apply.
+> **Tested builds.** Checked against T3 Code `0.1.12-nightly.20261121.5064`. T3 rewrote some of its code on that build, so three patches skip themselves there: one button per script, seconds on sidebar timers and every account in Limits. Closing the right panel still keeps the preview docked, but the device preview can float. Everything else applies. On any build with changed internals, the affected patch is skipped and reported, and the rest still apply.
 
 > [!WARNING]
-> **This modifies installed files.** The patchers rewrite `app.asar` and `server.asar` in T3 Code's install folder. The originals are backed up to `%LOCALAPPDATA%\T3CodeEnhanced\backups`, and `uninstall.cmd` puts them back byte for byte. Some antivirus software flags asar edits.
+> **This modifies installed files.** The patchers rewrite `app.asar` and `server.asar` in T3 Code's install folder, and the Riced app icon is written into `T3 Code.exe` after T3 closes. The originals are backed up to `%LOCALAPPDATA%\T3CodeEnhanced\backups`, and `uninstall.cmd` puts them back byte for byte, original icon included. Some antivirus software flags asar edits.
 
 <details>
 <summary><b>Settings file and installer options</b></summary>
@@ -156,6 +158,7 @@ Thank you for every star.
 | **[Catppuccin](https://github.com/catppuccin/catppuccin)** | The Mocha palette the whole theme is built from. |
 | **[m417z](https://github.com/m417z)** ([Translucent Windows](https://windhawk.net/mods/translucent-windows)) | Paints the backdrop on the optional `windhawk` material route. |
 | **[ramensoftware](https://github.com/ramensoftware)** ([Windhawk](https://windhawk.net/)) | The mod engine that route runs on. |
+| **[Electron](https://github.com/electron)** ([rcedit](https://github.com/electron/rcedit)) | Writes the chosen icon into the program file. Shipped unmodified as `bin/rcedit-x64.exe` under its MIT license. |
 
 Built on [T3 Code](https://github.com/pingdotgg/t3code), with [PowerShell 7](https://github.com/PowerShell/PowerShell) and [Node.js](https://nodejs.org) for the installer, patchers and checks.
 

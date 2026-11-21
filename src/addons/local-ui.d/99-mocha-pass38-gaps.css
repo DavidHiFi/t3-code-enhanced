@@ -1,0 +1,92 @@
+/* Pass 38 (2026-11-14): owner screenshots, "boxes too close, squared border", "needs gap",
+   "needs dock like others".
+
+   1. Chat. Now that every turn has its own dock (pass 15a marker, 2026-11-14), a user message
+      or the next dock sat flush against a dock's edge. Each dock gets breathing room above and
+      below. Padding sits on the frame, so the list measures it and nothing overlaps.
+   2. Sidebar search. The generic input-control gradient frame (31g) drew on the search field's
+      wrapper span, whose radius is 0, so focus showed a squared ring inside the rounded dock.
+      The search dock already glows on focus, so the field's own ring is dropped here.
+   3. Header. The breadcrumb pill floated alone and chat content scrolled past beside it. The
+      whole header row is now one glass dock like the composer, and the pill sits flat inside.
+
+   Rollback: delete this file and reload T3. */
+
+html .messages-timeline-row-frame[data-t15a-run-start] { padding-top: 10px !important; }
+html .messages-timeline-row-frame[data-t15a-run-end] { padding-bottom: 10px !important; }
+
+html [data-slot="sidebar-inner"] div.flex.items-center.gap-1 span[data-slot="input-control"]:has([aria-label="Search threads"]),
+html [data-slot="sidebar-inner"] div.flex.items-center.gap-1 span[data-slot="input-control"]:has([aria-label="Search threads"]):is(:hover, :focus-within) {
+	border-radius: 9px !important;
+	box-shadow: none !important;
+	outline: none !important;
+}
+html [data-slot="sidebar-inner"] div.flex.items-center.gap-1 span[data-slot="input-control"]:has([aria-label="Search threads"])::after {
+	content: none !important;
+}
+
+/* Frost paints behind the controls; an opaque header hides the window material. */
+html body #root header[data-chat-header][data-chat-header][data-chat-header] {
+	border-radius: 12px !important;
+	margin: 6px 8px 0 !important;
+}
+html body #root header[data-chat-header][data-chat-header][data-chat-header]::before {
+	position: absolute !important;
+	inset: 0 !important;
+	border-radius: inherit !important;
+	pointer-events: none !important;
+	background: var(--t3d-tint, rgb(24 24 37 / .62)) !important;
+	-webkit-backdrop-filter: blur(32px) saturate(1.15) !important;
+	backdrop-filter: blur(32px) saturate(1.15) !important;
+	z-index: -1 !important;
+}
+html header[data-chat-header] nav[aria-label$="breadcrumb"] > ol,
+html header[data-chat-header] nav[aria-label$="breadcrumb"] > ol:hover {
+	background: transparent !important;
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+	border-color: transparent !important;
+	box-shadow: none !important;
+}
+
+/* Inline card output (html_render): its frame paints the page colour as a square block inside
+   the rounded turn dock. Round and clip that frame so it follows the dock. */
+html [data-timeline-row-kind="html-render"] iframe,
+html [data-timeline-row-kind="html-render"] div:has(> iframe) {
+	border-radius: 10px !important;
+	overflow: hidden !important;
+	background: transparent !important;
+	color-scheme: dark;
+}
+
+/* The lane owns the inset so replies, activity and embedded output share one left edge. */
+html .messages-timeline-row-frame[data-t15a-run][data-t15a-run] > div.chat-content-lane {
+	padding-inline: clamp(16px, 2vw, 24px) !important;
+}
+html .messages-timeline-row-frame[data-t15a-run][data-t15a-run-start] > div.chat-content-lane {
+	padding-top: 16px !important;
+}
+html .messages-timeline-row-frame[data-t15a-run][data-t15a-run-end] > div.chat-content-lane {
+	padding-bottom: 16px !important;
+}
+
+/* The search row owns its frame; the input must not paint another box inside it. */
+html [data-slot="sidebar-inner"] span[data-slot="input-control"]:has(> input[aria-label="Search threads"]),
+html [data-slot="sidebar-inner"] input[aria-label="Search threads"] {
+	border: 0 !important;
+	background: transparent !important;
+	box-shadow: none !important;
+	outline: none !important;
+}
+
+/* 2026-11-14, 1:45 pm (owner: "why did you remove borders here on the panel, and hovered too").
+   Pass 37 stripped the sidebar column's frame at rest and on hover. The owner wants it back:
+   the same edge as every other dock at rest, and the blue two-tone glow on hover. */
+html [data-slot="sidebar-container"][data-slot="sidebar-container"][data-slot="sidebar-container"] > [data-slot="sidebar-inner"][data-slot="sidebar-inner"][data-slot="sidebar-inner"] {
+	border: 1px solid var(--t3d-edge, rgb(108 112 134 / 0.58)) !important;
+	box-shadow: 0 16px 36px -14px rgb(17 17 27 / 0.85), inset 0 1px 0 var(--t3d-sheen, transparent) !important;
+}
+html [data-slot="sidebar-container"][data-slot="sidebar-container"][data-slot="sidebar-container"] > [data-slot="sidebar-inner"][data-slot="sidebar-inner"][data-slot="sidebar-inner"]:hover {
+	border-color: var(--p31g-two-tone, rgb(137 180 250 / 0.6)) !important;
+	box-shadow: var(--p31g-glow, 0 0 14px -3px rgb(137 180 250 / 0.45)), inset 0 1px 0 var(--t3d-sheen, transparent) !important;
+}

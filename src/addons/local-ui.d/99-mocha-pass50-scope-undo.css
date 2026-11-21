@@ -1,0 +1,71 @@
+/* Pass 50 (2026-11-17): two spots the earlier passes missed.
+   1. Settings "where this value comes from" dropdown (the stack icon next to a setting title:
+      Environment / Default / Same on all machines). It had T3's thin 1px border and a flat grey
+      wash on the active row. Now it carries the same frame as every other menu (pass 31b): 1.5px
+      grey edge drawn inside the box, blue to mauve on hover, deep shadow. The active row gets the
+      chosen-row look: dark fill and a grey edge.
+   2. Sidebar undo notice ("Unpinned 9, Ctrl+Z to undo"): the chip's edge sat right on the text.
+      It now has room inside: 7px each side and 2px above and below, centred on the line.
+   Rollback: delete this file and reload T3. */
+
+@layer theme {
+	/* ---------- 1. value-source dropdown ---------- */
+	html [data-slot="popover-popup"]:has(ol[role="list"] > li:is(.\@min-\[32rem\]\/settings-row\:grid-cols-\[minmax\(0\,1fr\)_auto\],.grid-cols-\[minmax\(0\,1fr\)_auto\])) {
+		position: relative !important;
+		border: 0 !important;
+		box-shadow: 0 16px 40px -16px rgb(17 17 27 / .92) !important;
+		--p31b-a: rgb(108 112 134 / .55);
+		--p31b-b: rgb(108 112 134 / .55);
+		transition: --p31b-a .2s ease, --p31b-b .2s ease !important;
+	}
+	html [data-slot="popover-popup"]:has(ol[role="list"] > li:is(.\@min-\[32rem\]\/settings-row\:grid-cols-\[minmax\(0\,1fr\)_auto\],.grid-cols-\[minmax\(0\,1fr\)_auto\])):is(:hover, [data-p31b-hover]) {
+		--p31b-a: #89b4fa;
+		--p31b-b: #cba6f7;
+	}
+	html [data-slot="popover-popup"]:has(ol[role="list"] > li:is(.\@min-\[32rem\]\/settings-row\:grid-cols-\[minmax\(0\,1fr\)_auto\],.grid-cols-\[minmax\(0\,1fr\)_auto\]))::after,
+	html [data-slot="popover-popup"] ol[role="list"] > li:is(.\@min-\[32rem\]\/settings-row\:grid-cols-\[minmax\(0\,1fr\)_auto\],.grid-cols-\[minmax\(0\,1fr\)_auto\]):is(.\[\&\:\:-webkit-scrollbar-thumb\:hover\]\:bg-foreground\/28,.\[\&\:\:-webkit-scrollbar-thumb\]\:bg-foreground\/18,.\[\&\:is\(button\)\]\:hover\:bg-foreground\/5,.\[\&\[data-disabled\]\>\*\]\:after\:bg-foreground\/30,.\[\&\[data-highlighted\]\[data-selected\]\]\:bg-foreground\/\[0\.09\],.\[\&_\[data-slot\=kbd\]\]\:bg-foreground\/\[0\.08\],.after\:bg-foreground\/55,.bg-foreground\/10,.bg-foreground\/12,.bg-foreground\/15,.bg-foreground\/25,.bg-foreground\/3,.bg-foreground\/5,.bg-foreground\/60,.bg-foreground\/65,.bg-foreground\/70,.bg-foreground\/72,.bg-foreground\/75,.bg-foreground\/8,.bg-foreground\/80,.bg-foreground\/95,.bg-foreground\/\[0\.025\],.bg-foreground\/\[0\.06\],.bg-foreground\/\[0\.07\],.bg-foreground\/\[0\.08\],.dark\:has-autofill\:bg-foreground\/8,.data-checked\:bg-foreground\/\[0\.08\],.data-highlighted\:bg-foreground\/\[0\.09\],.data-popup-open\:bg-foreground\/\[0\.09\],.data-selected\:bg-foreground\/\[0\.06\],.data-selected\:bg-foreground\/\[0\.08\],.disabled\:bg-foreground\/12,.focus-visible\:bg-foreground\/10,.focus-visible\:bg-foreground\/\[0\.04\],.focus-visible\:bg-foreground\/\[0\.09\],.has-autofill\:bg-foreground\/4,.has-focus-visible\:bg-foreground\/\[0\.09\],.hover\:bg-foreground\/10,.hover\:bg-foreground\/\[0\.09\],.not-data-disabled\:hover\:bg-foreground\/\[0\.09\])::after {
+		content: "" !important;
+		--p31b-a: inherit !important;
+		--p31b-b: inherit !important;
+		position: absolute !important;
+		inset: 0 !important;
+		z-index: 60 !important;
+		padding: 1.5px !important;
+		border-radius: inherit !important;
+		background: linear-gradient(100deg, var(--p31b-a), var(--p31b-b)) !important;
+		-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+		-webkit-mask-composite: xor !important;
+		mask-composite: exclude !important;
+		pointer-events: none !important;
+	}
+	/* the active row: dark fill, grey edge, same radius as menu rows */
+	html [data-slot="popover-popup"] ol[role="list"] > li:is(.\@min-\[32rem\]\/settings-row\:grid-cols-\[minmax\(0\,1fr\)_auto\],.grid-cols-\[minmax\(0\,1fr\)_auto\]) {
+		position: relative !important;
+		border-radius: 8px !important;
+		padding-block: 5px !important;
+	}
+	html [data-slot="popover-popup"] ol[role="list"] > li:is(.\@min-\[32rem\]\/settings-row\:grid-cols-\[minmax\(0\,1fr\)_auto\],.grid-cols-\[minmax\(0\,1fr\)_auto\]):is(.\[\&\:\:-webkit-scrollbar-thumb\:hover\]\:bg-foreground\/28,.\[\&\:\:-webkit-scrollbar-thumb\]\:bg-foreground\/18,.\[\&\:is\(button\)\]\:hover\:bg-foreground\/5,.\[\&\[data-disabled\]\>\*\]\:after\:bg-foreground\/30,.\[\&\[data-highlighted\]\[data-selected\]\]\:bg-foreground\/\[0\.09\],.\[\&_\[data-slot\=kbd\]\]\:bg-foreground\/\[0\.08\],.after\:bg-foreground\/55,.bg-foreground\/10,.bg-foreground\/12,.bg-foreground\/15,.bg-foreground\/25,.bg-foreground\/3,.bg-foreground\/5,.bg-foreground\/60,.bg-foreground\/65,.bg-foreground\/70,.bg-foreground\/72,.bg-foreground\/75,.bg-foreground\/8,.bg-foreground\/80,.bg-foreground\/95,.bg-foreground\/\[0\.025\],.bg-foreground\/\[0\.06\],.bg-foreground\/\[0\.07\],.bg-foreground\/\[0\.08\],.dark\:has-autofill\:bg-foreground\/8,.data-checked\:bg-foreground\/\[0\.08\],.data-highlighted\:bg-foreground\/\[0\.09\],.data-popup-open\:bg-foreground\/\[0\.09\],.data-selected\:bg-foreground\/\[0\.06\],.data-selected\:bg-foreground\/\[0\.08\],.disabled\:bg-foreground\/12,.focus-visible\:bg-foreground\/10,.focus-visible\:bg-foreground\/\[0\.04\],.focus-visible\:bg-foreground\/\[0\.09\],.has-autofill\:bg-foreground\/4,.has-focus-visible\:bg-foreground\/\[0\.09\],.hover\:bg-foreground\/10,.hover\:bg-foreground\/\[0\.09\],.not-data-disabled\:hover\:bg-foreground\/\[0\.09\]) {
+		background-color: rgb(24 24 37 / .5) !important;
+		--p31b-a: rgb(108 112 134 / .4);
+		--p31b-b: rgb(108 112 134 / .4);
+	}
+	html [data-slot="popover-popup"] ol[role="list"] > li:is(.\@min-\[32rem\]\/settings-row\:grid-cols-\[minmax\(0\,1fr\)_auto\],.grid-cols-\[minmax\(0\,1fr\)_auto\]):is(.\[\&\:\:-webkit-scrollbar-thumb\:hover\]\:bg-foreground\/28,.\[\&\:\:-webkit-scrollbar-thumb\]\:bg-foreground\/18,.\[\&\:is\(button\)\]\:hover\:bg-foreground\/5,.\[\&\[data-disabled\]\>\*\]\:after\:bg-foreground\/30,.\[\&\[data-highlighted\]\[data-selected\]\]\:bg-foreground\/\[0\.09\],.\[\&_\[data-slot\=kbd\]\]\:bg-foreground\/\[0\.08\],.after\:bg-foreground\/55,.bg-foreground\/10,.bg-foreground\/12,.bg-foreground\/15,.bg-foreground\/25,.bg-foreground\/3,.bg-foreground\/5,.bg-foreground\/60,.bg-foreground\/65,.bg-foreground\/70,.bg-foreground\/72,.bg-foreground\/75,.bg-foreground\/8,.bg-foreground\/80,.bg-foreground\/95,.bg-foreground\/\[0\.025\],.bg-foreground\/\[0\.06\],.bg-foreground\/\[0\.07\],.bg-foreground\/\[0\.08\],.dark\:has-autofill\:bg-foreground\/8,.data-checked\:bg-foreground\/\[0\.08\],.data-highlighted\:bg-foreground\/\[0\.09\],.data-popup-open\:bg-foreground\/\[0\.09\],.data-selected\:bg-foreground\/\[0\.06\],.data-selected\:bg-foreground\/\[0\.08\],.disabled\:bg-foreground\/12,.focus-visible\:bg-foreground\/10,.focus-visible\:bg-foreground\/\[0\.04\],.focus-visible\:bg-foreground\/\[0\.09\],.has-autofill\:bg-foreground\/4,.has-focus-visible\:bg-foreground\/\[0\.09\],.hover\:bg-foreground\/10,.hover\:bg-foreground\/\[0\.09\],.not-data-disabled\:hover\:bg-foreground\/\[0\.09\])::after { z-index: 1 !important; }
+
+	/* ---------- 2. sidebar undo chip ---------- */
+	html [data-sidebar="menu-item"] div.flex-row-reverse:is(.text-\(length\:--font-size-code\,var\(--text-2xs\)\),.text-2xs) > button[data-slot="inline-button"] {
+		box-sizing: border-box !important;
+		height: 20px !important;
+		margin-block: 2px !important;
+		padding-inline: 7px !important;
+		border-radius: 7px !important;
+		align-items: center !important;
+	}
+	html [data-sidebar="menu-item"] div.flex-row-reverse:is(.text-\(length\:--font-size-code\,var\(--text-2xs\)\),.text-2xs) > button[data-slot="inline-button"] > span:is(.-\31 3h-6c-12,.\30 -1-1h-6a1,.\30 -2-2h-6,.\31 \.5h-6\.5A\.75\.75,.\31 0h-6V4,.\31 2h-6,.\31 2h-6\.5L14,.\31 3v6h-6,.\31 4h-6,.\31 5v6h-6,.\31 6h-6,.\31 6v6h-6,.\31 8h-6,.\31 8h-6\.041a4,.\31 9h-6,.\31 h-6a3,.\31 h-6c-\.6,.\32 h-6,.\33 9H39v6h-6v-7\.5a4\.5,.\34 \.5-4\.5h21\.257l10\.5-10\.5H22\.5V60h-6V22\.5a6,.\34 h-6c-1-4-1-7,.\37 v6h-6,.\38 V2h-6,.\38 h-6a2,.\[\&_input\]\:h-6\.5,.h-6,.h-6\.5,.h-64,.max-h-60,.max-h-64,.max-h-\[min\(28rem\,calc\(100vh-6rem\)\)\],.max-h-\[min\(42rem\,calc\(100dvh-6rem\)\)\],.max-h-\[min\(calc\(100dvh-6\.5rem\)\,calc\(var\(--available-height\,100dvh\)-1rem\)\)\],.max-sm\:h-64,.min-h-6,.min-h-64,.sm\:h-6,.sm\:h-6\.5,.sm\:in-data-\[size\=sm\]\:h-6\.5,.sm\:min-h-6) {
+		height: 20px !important;
+		line-height: 20px !important;
+		align-items: center !important;
+		/* the undo arrow inside is 24px tall, so the wrapped line is taller than the chip and the
+		   words sat 2px low; centre the line itself in the chip */
+		align-content: center !important;
+	}
+}

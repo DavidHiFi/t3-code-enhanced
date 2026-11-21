@@ -15,7 +15,7 @@ html.dark { --context-chip-skill: #b7a5e3 !important; }
 /* ---- context chips outside the composer (message bodies, previews): docked pill ---- */
 html.dark [data-slot="context-chip"] {
 	background-color: var(--t6-pill) !important;
-	box-shadow: inset 0 0 0 1px var(--t6-edge), var(--t6-sheen) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t6-edge), var(--t6-sheen) !important;
 	border-radius: 9px !important;
 	transition: var(--t6-ease) !important;
 }
@@ -27,7 +27,7 @@ html.dark [data-slot="context-chip"]:hover {
 /* ---- composer mention/skill tokens: one dock per token, inner chrome cleared ---- */
 html.dark [data-node-view-wrapper] {
 	background-color: var(--t6-pill) !important;
-	box-shadow: inset 0 0 0 1px var(--t6-edge), var(--t6-sheen) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t6-edge), var(--t6-sheen) !important;
 	border-radius: 999px !important;
 	padding: 0 5px !important;
 	transition: var(--t6-ease) !important;
@@ -36,7 +36,7 @@ html.dark [data-node-view-wrapper]:hover {
 	background-color: var(--t6-pill-hi) !important;
 	box-shadow: var(--t6-ring), var(--t6-glow) !important;
 }
-html.dark [data-node-view-wrapper] :is([data-slot="context-chip"], [data-composer-mention-chip="true"], [class*="bg-muted"], [class*="bg-secondary"]) {
+html.dark [data-node-view-wrapper] :is([data-slot="context-chip"], [data-composer-mention-chip="true"], [class*="bg-muted"], :is(.\[\:active\,\[data-pressed\]\]\:bg-secondary\/80,.\[\:hover\,\[data-pressed\]\]\:bg-secondary\/90,.\[button\&\,a\&\]\:hover\:bg-secondary\/90,.bg-secondary)) {
 	background-color: transparent !important;
 	box-shadow: none !important;
 }
@@ -52,7 +52,7 @@ html.dark [data-node-view-wrapper] :is([data-slot="context-chip"], [data-compose
 	padding: 3px 10px !important;
 	border-radius: 999px !important;
 	background-color: var(--t6-pill) !important;
-	box-shadow: inset 0 0 0 1px var(--t6-edge), var(--t6-sheen) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t6-edge), var(--t6-sheen) !important;
 	transition: var(--t6-ease) !important;
 }
 [data-thread-queue] li[aria-label^="Queued message"][aria-current="true"] > div:last-child:hover,
@@ -64,8 +64,4 @@ html.dark [data-node-view-wrapper] :is([data-slot="context-chip"], [data-compose
 /* ---- composer hover glow: same strength as every other dock ---- */
 html.dark [data-chat-composer-main-surface][data-chat-composer-main-surface][data-chat-composer-main-surface]:is(:hover, :focus-within) {
 	--chat-composer-outline: rgb(137 180 250 / 0.95) !important;
-}
-[class*="before:bg-(--chat-composer-glass-surface)"]:is(:hover, :focus-within)::before {
-	box-shadow: 0 0 16px -2px rgb(137 180 250 / 0.55), 0 0 30px -8px rgb(137 180 250 / 0.35),
-		0 12px 30px -14px rgb(17 17 27 / 0.85) !important;
 }

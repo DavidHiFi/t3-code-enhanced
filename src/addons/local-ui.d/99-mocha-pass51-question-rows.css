@@ -1,0 +1,74 @@
+/* Pass 51 (2026-11-17): the question panel an agent shows in a thread (header, 1/4 pager,
+   tick or radio rows with a 1-9 number box on the right).
+   1. The rows had padding on the left only, so the number box sat on the row's right edge and
+      hugged the hover frame. They now get the same inset on the right as the tick box has on
+      the left.
+   2. Rows used T3's light grey hover wash and a thin purple focus ring. They now follow the
+      menu rows (pass 31b): dark fill and blue to mauve 1.5px frame on hover or keyboard focus,
+      and the chosen-row look (dark fill, grey edge) when picked.
+   3. The number boxes and the small square tiles used a light grey fill. They now use the dark
+      crust fill with a grey edge, so they read on both a resting and a hovered row.
+   Rollback: delete this file and reload T3. */
+
+@layer theme {
+	/* ---------- option rows ---------- */
+	html button[aria-pressed].items-start.gap-2\.5.py-1\.5.rounded-md {
+		position: relative !important;
+		border-radius: 8px !important;
+		padding-inline-end: 4px !important;
+		background-color: transparent !important;
+		box-shadow: none !important;
+		--p31b-a: transparent;
+		--p31b-b: transparent;
+		transition: background-color .18s ease, color .18s ease, --p31b-a .18s ease, --p31b-b .18s ease !important;
+	}
+	html button[aria-pressed="true"].items-start.gap-2\.5.py-1\.5.rounded-md {
+		background-color: rgb(24 24 37 / .5) !important;
+		--p31b-a: rgb(108 112 134 / .4);
+		--p31b-b: rgb(108 112 134 / .4);
+	}
+	html button[aria-pressed].items-start.gap-2\.5.py-1\.5.rounded-md:not(:disabled):is(:hover, :focus-visible, [data-p31b-hover]) {
+		background-color: rgb(24 24 37 / .72) !important;
+		color: #cdd6f4 !important;
+		--p31b-a: #89b4fa;
+		--p31b-b: #cba6f7;
+	}
+	html button[aria-pressed].items-start.gap-2\.5.py-1\.5.rounded-md::after {
+		content: "" !important;
+		--p31b-a: inherit !important;
+		--p31b-b: inherit !important;
+		position: absolute !important;
+		inset: 0 !important;
+		z-index: 1 !important;
+		padding: 1.5px !important;
+		border-radius: inherit !important;
+		background: linear-gradient(100deg, var(--p31b-a), var(--p31b-b)) !important;
+		-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+		-webkit-mask-composite: xor !important;
+		mask-composite: exclude !important;
+		pointer-events: none !important;
+		transition: --p31b-a .18s ease, --p31b-b .18s ease !important;
+	}
+
+	/* ---------- number boxes (1-9) ---------- */
+	html button[aria-pressed].items-start.gap-2\.5.py-1\.5.rounded-md [data-slot="kbd"] {
+		background: rgb(17 17 27 / .6) !important;
+		box-shadow: inset 0 0 0 1px rgb(108 112 134 / .4) !important;
+		border-radius: 6px !important;
+		color: #a6adc8 !important;
+	}
+	html button[aria-pressed].items-start.gap-2\.5.py-1\.5.rounded-md:is(:hover, :focus-visible, [data-p31b-hover], [aria-pressed="true"]) [data-slot="kbd"] {
+		color: #cdd6f4 !important;
+	}
+
+	/* ---------- small square tiles beside the answers (size-7, light bg-muted/60) ---------- */
+	html :is(button, span, div).size-7.rounded-md.border.bg-muted\/60 {
+		border-color: rgb(108 112 134 / .4) !important;
+		background-color: rgb(17 17 27 / .6) !important;
+		border-radius: 6px !important;
+	}
+	html button.size-7.rounded-md.border.bg-muted\/60:is(:hover, :focus-visible) {
+		background-color: rgb(24 24 37 / .72) !important;
+		border-color: #89b4fa !important;
+	}
+}

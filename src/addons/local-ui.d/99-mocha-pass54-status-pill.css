@@ -1,0 +1,93 @@
+/* Pass 54 (2026-11-20): collapsed-sidebar toggle dock + the loading/syncing status pill.
+   1. With the Threads sidebar hidden, T3 drops the sidebar toggle back to its stock fixed
+      spot at the window's top-left: floating above the header row, no chip look (owner:
+      "the collapse button remains in an awkward position"). 99-mocha-pass54-tog-dock.js
+      measures the chat header and writes --t3l-tog-dy; this drops the button onto the
+      header row's centre line and gives it the same chip look as pass 22's dock look but
+      visible in the hidden state: crust fill, grey edge, lighter on hover. Only while the
+      sidebar is hidden - expanded keeps the brand-row dock from 86-brand-dock.js.
+      The button rules are declared twice on purpose, unlayered and in @layer theme, with
+      doubled attribute selectors: pass 22 styles this same button, and this build's
+      cascade made a single layered copy lose to it. One of the two copies always wins.
+   2. The "Loading messages..."/"Syncing messages..." row is the snoozed strip's borderless
+      sibling (a role=status row inside the timeline). Same treatment pass 31f gave that
+      strip: 8px pill, grey gradient ring at rest, blue to mauve on hover, same padding,
+      so both rows read as one family. [data-p31f-hover] lights it for the probes too.
+      The ring reuses pass 31f's registered --p31f-a/--p31f-b properties; if that pass is
+      ever removed the ring still draws (custom properties carry on unregistered).
+   Rollback: delete this file and 99-mocha-pass54-tog-dock.js, reload T3. */
+
+/* ---------- 1. the toggle while the sidebar is hidden ---------- */
+html[data-t3l-tog-dock][data-t3l-tog-dock] div.pointer-events-none.fixed:is(.left-\[var\(--workspace-controls-left\)\],.ml-\[calc\(var\(--workspace-controls-left\)\+1px-env\(safe-area-inset-left\)\)\]):is(.left-\[var\(--workspace-controls-left\)\],.ml-\[calc\(var\(--workspace-controls-left\)\+1px-env\(safe-area-inset-left\)\)\]) button {
+	background-color: rgb(17 17 27 / 0.6) !important;
+	box-shadow: inset 0 0 0 1.5px rgb(108 112 134 / 0.55) !important;
+	color: #cdd6f4 !important;
+	border-radius: 9px !important;
+}
+html[data-t3l-tog-dock][data-t3l-tog-dock] div.pointer-events-none.fixed:is(.left-\[var\(--workspace-controls-left\)\],.ml-\[calc\(var\(--workspace-controls-left\)\+1px-env\(safe-area-inset-left\)\)\]):is(.left-\[var\(--workspace-controls-left\)\],.ml-\[calc\(var\(--workspace-controls-left\)\+1px-env\(safe-area-inset-left\)\)\]) button:not(:disabled):is(:hover, [data-p31a-hover]) {
+	background-color: rgb(24 24 37 / 0.72) !important;
+	box-shadow: inset 0 0 0 1.5px #89b4fa !important;
+	color: #cdd6f4 !important;
+}
+
+@layer theme {
+	html[data-t3l-tog-dock][data-t3l-tog-dock] div.pointer-events-none.fixed:is(.left-\[var\(--workspace-controls-left\)\],.ml-\[calc\(var\(--workspace-controls-left\)\+1px-env\(safe-area-inset-left\)\)\]):is(.left-\[var\(--workspace-controls-left\)\],.ml-\[calc\(var\(--workspace-controls-left\)\+1px-env\(safe-area-inset-left\)\)\]) button {
+		background-color: rgb(17 17 27 / 0.6) !important;
+		box-shadow: inset 0 0 0 1.5px rgb(108 112 134 / 0.55) !important;
+		color: #cdd6f4 !important;
+		border-radius: 9px !important;
+	}
+	html[data-t3l-tog-dock][data-t3l-tog-dock] div.pointer-events-none.fixed:is(.left-\[var\(--workspace-controls-left\)\],.ml-\[calc\(var\(--workspace-controls-left\)\+1px-env\(safe-area-inset-left\)\)\]):is(.left-\[var\(--workspace-controls-left\)\],.ml-\[calc\(var\(--workspace-controls-left\)\+1px-env\(safe-area-inset-left\)\)\]) button:not(:disabled):is(:hover, [data-p31a-hover]) {
+		background-color: rgb(24 24 37 / 0.72) !important;
+		box-shadow: inset 0 0 0 1.5px #89b4fa !important;
+		color: #cdd6f4 !important;
+	}
+
+	/* wrapper: the vertical drop onto the header centre line */
+	html[data-t3l-tog-dock][data-t3l-tog-dock] div.pointer-events-none.fixed:is(.left-\[var\(--workspace-controls-left\)\],.ml-\[calc\(var\(--workspace-controls-left\)\+1px-env\(safe-area-inset-left\)\)\]):is(.left-\[var\(--workspace-controls-left\)\],.ml-\[calc\(var\(--workspace-controls-left\)\+1px-env\(safe-area-inset-left\)\)\]) {
+		transform: translateY(var(--t3l-tog-dy, 0px)) !important;
+		z-index: 60 !important;
+	}
+
+	/* ---------- 2. loading / syncing row: same pill as the snoozed strip ----------
+	   The timeline's role=status rows include ordinary message rows, so the match is
+	   scoped to the status row's own shape: the spinner svg and the truncate label are
+	   DIRECT children (measured in the ghost, 2026-11-20). */
+	html .messages-timeline-scroll div[role="status"]:has(> span.truncate):has(> svg) {
+		position: relative !important;
+		box-sizing: border-box !important;
+		border: 0 !important;
+		border-radius: 8px !important;
+		padding: 2px 10px !important;
+		margin-top: 10px !important;
+		--p31f-a: var(--t15-edge, rgb(108 112 134 / 0.4));
+		--p31f-b: var(--t15-edge, rgb(108 112 134 / 0.4));
+		transition: background-color 0.18s ease, --p31f-a 0.18s ease, --p31f-b 0.18s ease !important;
+	}
+	html .messages-timeline-scroll div[role="status"]:has(> span.truncate):has(> svg):is(:hover, [data-p31f-hover]) {
+		background-color: rgb(36 36 54 / 0.9) !important;
+		--p31f-a: #89b4fa;
+		--p31f-b: #cba6f7;
+	}
+	html .messages-timeline-scroll div[role="status"]:has(> span.truncate):has(> svg)::after {
+		content: "" !important;
+		--p31f-a: inherit !important;
+		--p31f-b: inherit !important;
+		position: absolute !important;
+		inset: 0 !important;
+		z-index: 1 !important;
+		padding: 1.5px !important;
+		border-radius: inherit !important;
+		background: linear-gradient(100deg, var(--p31f-a), var(--p31f-b)) !important;
+		-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+		-webkit-mask-composite: xor !important;
+		mask-composite: exclude !important;
+		pointer-events: none !important;
+		transition: --p31f-a 0.18s ease, --p31f-b 0.18s ease !important;
+	}
+	/* test hook: show the hover look at once, no fade */
+	html .messages-timeline-scroll div[role="status"]:has(> span.truncate):has(> svg)[data-p31f-hover][data-p31f-hover],
+	html .messages-timeline-scroll div[role="status"]:has(> span.truncate):has(> svg)[data-p31f-hover][data-p31f-hover]::after {
+		transition: none !important;
+	}
+}

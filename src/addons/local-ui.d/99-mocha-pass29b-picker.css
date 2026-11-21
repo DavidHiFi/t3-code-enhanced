@@ -8,6 +8,8 @@
       edge at rest, gradient frame on hover; footer pills line up with the docks.
    4. The rail's blue side bar is hidden: the active provider wears the selected frame instead.
    One 1px frame per element, drawn on ::after inside the box (nothing outside to clip).
+   Speed (2026-11-21): the footer and search box are reached by position, not by a sibling step over
+   class-name matches; that form made every class change anywhere in the app cost about 60 ms.
    Rollback: delete this file and reload T3. */
 
 @property --p29b-a { syntax: "<color>"; inherits: false; initial-value: transparent; }
@@ -28,7 +30,7 @@ html [data-slot="popover-popup"][data-chat-composer-floating-layer]:has([data-mo
 	}
 
 	/* ---- the three docks ---- */
-	html :is([data-model-picker-sidebar], [data-model-picker-content] > div[class*="bg-muted/40"], [data-model-picker-effort]) {
+	html :is([data-model-picker-sidebar], [data-model-picker-content] > div:is(.bg-muted\/40,.hover\:bg-muted\/40), [data-model-picker-effort]) {
 		position: relative !important;
 		isolation: isolate !important;
 		box-sizing: border-box !important;
@@ -41,7 +43,7 @@ html [data-slot="popover-popup"][data-chat-composer-floating-layer]:has([data-mo
 		transition: none !important;
 	}
 	html [data-model-picker-sidebar] { margin: 6px 0 6px 6px !important; }
-	html [data-model-picker-content] > div[class*="bg-muted/40"] { margin: 6px 0 6px 6px !important; }
+	html [data-model-picker-content] > div:is(.bg-muted\/40,.hover\:bg-muted\/40) { margin: 6px 0 6px 6px !important; }
 	html [data-model-picker-effort] { margin: 6px !important; }
 
 	/* the active provider now wears the selected frame; its old side bar overlapped that frame */
@@ -56,7 +58,7 @@ html [data-slot="popover-popup"][data-chat-composer-floating-layer]:has([data-mo
 	}
 
 	/* ---- footer: pills line up with the docks, 6px under them ---- */
-	html [data-slot="popover-viewport"] div[class*="h-86.5"] + div {
+	html [data-slot="popover-viewport"]:has([data-model-picker-content]) > div > div > div:last-child:not(:first-child) {
 		margin: 0 6px 6px !important;
 		padding: 0 !important;
 		border: 0 !important;
@@ -65,7 +67,7 @@ html [data-slot="popover-popup"][data-chat-composer-floating-layer]:has([data-mo
 		box-shadow: none !important;
 	}
 	/* Standard / Fast and Ultracode groups: darker, edge at rest */
-	html [data-slot="popover-viewport"] div[class*="h-86.5"] + div > div[class*="bg-input/40"] {
+	html [data-slot="popover-viewport"]:has([data-model-picker-content]) > div > div > div:last-child:not(:first-child) > div.bg-input\/40 {
 		position: relative !important;
 		background: var(--t15-dock-in, rgb(17 17 27 / .72)) !important;
 		border: 0 !important;
@@ -74,17 +76,17 @@ html [data-slot="popover-popup"][data-chat-composer-floating-layer]:has([data-mo
 		padding: 2px !important;
 		transition: none !important;
 	}
-	html [data-slot="popover-viewport"] div[class*="h-86.5"] + div > div[class*="bg-input/40"] > button {
+	html [data-slot="popover-viewport"]:has([data-model-picker-content]) > div > div > div:last-child:not(:first-child) > div.bg-input\/40 > button {
 		border-radius: 8px !important;
 		background: transparent !important;
 		box-shadow: none !important;
 		transition: background-color .22s ease, color .22s ease !important;
 	}
-	html [data-slot="popover-viewport"] div[class*="h-86.5"] + div > div[class*="bg-input/40"] > button:is([data-checked], [aria-checked="true"], [aria-pressed="true"]) {
+	html [data-slot="popover-viewport"]:has([data-model-picker-content]) > div > div > div:last-child:not(:first-child) > div.bg-input\/40 > button:is([data-checked], [aria-checked="true"], [aria-pressed="true"]) {
 		background: rgb(49 50 68 / .85) !important;
 		color: #cdd6f4 !important;
 	}
-	html [data-slot="popover-viewport"] div[class*="h-86.5"] + div > div[class*="bg-input/40"] > button:hover {
+	html [data-slot="popover-viewport"]:has([data-model-picker-content]) > div > div > div:last-child:not(:first-child) > div.bg-input\/40 > button:hover {
 		color: #cdd6f4 !important;
 	}
 	/* Full access */
@@ -98,7 +100,7 @@ html [data-slot="popover-popup"][data-chat-composer-floating-layer]:has([data-mo
 	}
 
 	/* ---- search box ---- */
-	html [data-model-picker-content] > div[class*="bg-muted/40"] > div[class*="pt-2.5"] > div[class*="border-b"] {
+	html [data-model-picker-content] > div:not([data-model-picker-sidebar]) > div:first-child > div:is(.\*\:data-slot\:has-\[\~\[data-slot\]\]\:border-b-0,.\*\:not-first\:border-border\/50,.\*\:not-last\:border-b-0,.\@min-\[48rem\]\/providers\:border-b-0,.\[\&_tr\]\:border-b,.\[\.border-b\]\:pb-\[calc\(--spacing\(3\)-1px\)\],.\[\:hover\,\[data-pressed\]\]\:border-border,.border-b,.border-b-2,.border-background,.border-be,.border-blue-500\/70,.border-border,.border-border\/30,.border-border\/40,.border-border\/45,.border-border\/50,.border-border\/60,.border-border\/65,.border-border\/70,.border-border\/80,.border-box,.border-bs,.hover\:border-border,.hover\:border-border\/70,.in-data-\[preview-panel-mode\=inline\]\:border-b-transparent,.last\:border-b-0,.max-sm\:border-b-0,.not-last\:border-b) {
 		position: relative !important;
 		transform: none !important;
 		border: 0 !important;
@@ -108,7 +110,7 @@ html [data-slot="popover-popup"][data-chat-composer-floating-layer]:has([data-mo
 		box-shadow: none !important;
 		transition: none !important;
 	}
-	html [data-model-picker-content] > div[class*="bg-muted/40"] > div[class*="pt-2.5"] > div[class*="border-b"] input {
+	html [data-model-picker-content] > div:not([data-model-picker-sidebar]) > div:first-child > div:is(.\*\:data-slot\:has-\[\~\[data-slot\]\]\:border-b-0,.\*\:not-first\:border-border\/50,.\*\:not-last\:border-b-0,.\@min-\[48rem\]\/providers\:border-b-0,.\[\&_tr\]\:border-b,.\[\.border-b\]\:pb-\[calc\(--spacing\(3\)-1px\)\],.\[\:hover\,\[data-pressed\]\]\:border-border,.border-b,.border-b-2,.border-background,.border-be,.border-blue-500\/70,.border-border,.border-border\/30,.border-border\/40,.border-border\/45,.border-border\/50,.border-border\/60,.border-border\/65,.border-border\/70,.border-border\/80,.border-box,.border-bs,.hover\:border-border,.hover\:border-border\/70,.in-data-\[preview-panel-mode\=inline\]\:border-b-transparent,.last\:border-b-0,.max-sm\:border-b-0,.not-last\:border-b) input {
 		background: transparent !important;
 		box-shadow: none !important;
 	}
@@ -141,11 +143,11 @@ html [data-slot="popover-popup"][data-chat-composer-floating-layer]:has([data-mo
 /* ---- the one frame: 1px ring on ::after, grey at rest, blue to mauve on hover ---- */
 html :is(
 	[data-model-picker-sidebar],
-	[data-model-picker-content] > div[class*="bg-muted/40"],
+	[data-model-picker-content] > div:is(.bg-muted\/40,.hover\:bg-muted\/40),
 	[data-model-picker-effort],
-	[data-slot="popover-viewport"] div[class*="h-86.5"] + div > div[class*="bg-input/40"],
+	[data-slot="popover-viewport"]:has([data-model-picker-content]) > div > div > div:last-child:not(:first-child) > div.bg-input\/40,
 	[data-slot="popover-viewport"] [data-composer-permissions-trigger],
-	[data-model-picker-content] > div[class*="bg-muted/40"] > div[class*="pt-2.5"] > div[class*="border-b"],
+	[data-model-picker-content] > div:not([data-model-picker-sidebar]) > div:first-child > div:is(.\*\:data-slot\:has-\[\~\[data-slot\]\]\:border-b-0,.\*\:not-first\:border-border\/50,.\*\:not-last\:border-b-0,.\@min-\[48rem\]\/providers\:border-b-0,.\[\&_tr\]\:border-b,.\[\.border-b\]\:pb-\[calc\(--spacing\(3\)-1px\)\],.\[\:hover\,\[data-pressed\]\]\:border-border,.border-b,.border-b-2,.border-background,.border-be,.border-blue-500\/70,.border-border,.border-border\/30,.border-border\/40,.border-border\/45,.border-border\/50,.border-border\/60,.border-border\/65,.border-border\/70,.border-border\/80,.border-box,.border-bs,.hover\:border-border,.hover\:border-border\/70,.in-data-\[preview-panel-mode\=inline\]\:border-b-transparent,.last\:border-b-0,.max-sm\:border-b-0,.not-last\:border-b),
 	[data-model-picker-content] [data-slot="combobox-item"],
 	[data-model-picker-effort] [data-effort-row],
 	[data-model-picker-provider] > button,
@@ -155,7 +157,7 @@ html :is(
 	position: absolute !important;
 	inset: 0 !important;
 	z-index: 1 !important;
-	padding: 1px !important;
+		padding: 1.5px !important;
 	border-radius: inherit !important;
 	background: linear-gradient(100deg, var(--p29b-a), var(--p29b-b)) !important;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
@@ -168,26 +170,26 @@ html :is(
 /* grey edge at rest on docks, pills and the search box (rows stay clear until hovered) */
 html :is(
 	[data-model-picker-sidebar],
-	[data-model-picker-content] > div[class*="bg-muted/40"],
+	[data-model-picker-content] > div:is(.bg-muted\/40,.hover\:bg-muted\/40),
 	[data-model-picker-effort],
-	[data-slot="popover-viewport"] div[class*="h-86.5"] + div > div[class*="bg-input/40"],
+	[data-slot="popover-viewport"]:has([data-model-picker-content]) > div > div > div:last-child:not(:first-child) > div.bg-input\/40,
 	[data-slot="popover-viewport"] [data-composer-permissions-trigger],
-	[data-model-picker-content] > div[class*="bg-muted/40"] > div[class*="pt-2.5"] > div[class*="border-b"]
+	[data-model-picker-content] > div:not([data-model-picker-sidebar]) > div:first-child > div:is(.\*\:data-slot\:has-\[\~\[data-slot\]\]\:border-b-0,.\*\:not-first\:border-border\/50,.\*\:not-last\:border-b-0,.\@min-\[48rem\]\/providers\:border-b-0,.\[\&_tr\]\:border-b,.\[\.border-b\]\:pb-\[calc\(--spacing\(3\)-1px\)\],.\[\:hover\,\[data-pressed\]\]\:border-border,.border-b,.border-b-2,.border-background,.border-be,.border-blue-500\/70,.border-border,.border-border\/30,.border-border\/40,.border-border\/45,.border-border\/50,.border-border\/60,.border-border\/65,.border-border\/70,.border-border\/80,.border-box,.border-bs,.hover\:border-border,.hover\:border-border\/70,.in-data-\[preview-panel-mode\=inline\]\:border-b-transparent,.last\:border-b-0,.max-sm\:border-b-0,.not-last\:border-b)
 )::after {
 	--p29b-a: rgb(108 112 134 / .4);
 	--p29b-b: rgb(108 112 134 / .4);
 }
 /* dock frames sit above anything scrolled to the dock's edge */
-html :is([data-model-picker-sidebar], [data-model-picker-content] > div[class*="bg-muted/40"], [data-model-picker-effort])::after {
+html :is([data-model-picker-sidebar], [data-model-picker-content] > div:is(.bg-muted\/40,.hover\:bg-muted\/40), [data-model-picker-effort])::after {
 	z-index: 40 !important;
 }
 html :is(
 	[data-model-picker-sidebar]:is(:hover, [data-audit-hover]),
-	[data-model-picker-content] > div[class*="bg-muted/40"]:is(:hover, [data-audit-hover]),
+	[data-model-picker-content] > div:is(.bg-muted\/40,.hover\:bg-muted\/40):is(:hover, [data-audit-hover]),
 	[data-model-picker-effort]:is(:hover, [data-audit-hover]),
-	[data-slot="popover-viewport"] div[class*="h-86.5"] + div > div[class*="bg-input/40"]:is(:hover, :focus-within, [data-audit-hover]),
+	[data-slot="popover-viewport"]:has([data-model-picker-content]) > div > div > div:last-child:not(:first-child) > div.bg-input\/40:is(:hover, :focus-within, [data-audit-hover]),
 	[data-slot="popover-viewport"] [data-composer-permissions-trigger]:is(:hover, :focus-visible, [aria-expanded="true"], [data-audit-hover]),
-	[data-model-picker-content] > div[class*="bg-muted/40"] > div[class*="pt-2.5"] > div[class*="border-b"]:is(:hover, :focus-within, [data-audit-hover]),
+	[data-model-picker-content] > div:not([data-model-picker-sidebar]) > div:first-child > div:is(.\*\:data-slot\:has-\[\~\[data-slot\]\]\:border-b-0,.\*\:not-first\:border-border\/50,.\*\:not-last\:border-b-0,.\@min-\[48rem\]\/providers\:border-b-0,.\[\&_tr\]\:border-b,.\[\.border-b\]\:pb-\[calc\(--spacing\(3\)-1px\)\],.\[\:hover\,\[data-pressed\]\]\:border-border,.border-b,.border-b-2,.border-background,.border-be,.border-blue-500\/70,.border-border,.border-border\/30,.border-border\/40,.border-border\/45,.border-border\/50,.border-border\/60,.border-border\/65,.border-border\/70,.border-border\/80,.border-box,.border-bs,.hover\:border-border,.hover\:border-border\/70,.in-data-\[preview-panel-mode\=inline\]\:border-b-transparent,.last\:border-b-0,.max-sm\:border-b-0,.not-last\:border-b):is(:hover, :focus-within, [data-audit-hover]),
 	[data-model-picker-content] [data-slot="combobox-item"]:is(:hover, [data-highlighted], [data-selected], [aria-selected="true"], [data-audit-hover]),
 	[data-model-picker-effort] [data-effort-row]:is(:hover, :focus-visible, [aria-checked="true"], [data-audit-hover]),
 	[data-model-picker-provider] > button:not([disabled]):is(:hover, :focus-visible, [aria-pressed="true"], [data-audit-hover]),

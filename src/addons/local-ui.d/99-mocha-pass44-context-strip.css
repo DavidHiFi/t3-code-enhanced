@@ -1,0 +1,32 @@
+/* Pass 44 (2026-11-14): the strip under the chat box (machine, checkout, branch, access).
+   Owner: "why the fuck we uses outdated border, it should be mocha blue + mauve and why is it
+   so thin". Pass 31g moved every other dock to the blue-to-mauve frame and missed this one,
+   so its hover was still the old 1px plain blue edge from 87-hover-glow.
+   Now its hover (and while one of its menus is open) is the same 2px blue-to-mauve frame as
+   the chat box above it, at the outer edge: the 1px border folds into padding while lit, so
+   nothing moves. The strip is already relative and has no ::after of its own.
+   Rollback: delete this file and reload T3. */
+
+html body [data-slot="composer-context-strip"][data-slot="composer-context-strip"]:has([data-composer-context-control]):is(:hover, :has([aria-expanded="true"])) {
+	border-width: 0 !important;
+	padding: 3px 7px !important;
+	box-shadow: var(--p31g-glow, 0 0 14px -6px rgb(137 180 250 / 0.45)), var(--t3d-shadow, 0 0 #0000) !important;
+}
+html body [data-slot="composer-context-strip"][data-slot="composer-context-strip"]:has([data-composer-context-control])::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: 0 !important;
+	z-index: 3 !important;
+	border-radius: inherit !important;
+	padding: 2px !important;
+	background: linear-gradient(135deg, #89b4fa, #cba6f7) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	opacity: 0 !important;
+	transition: opacity 0.15s ease-out !important;
+	pointer-events: none !important;
+}
+html body [data-slot="composer-context-strip"][data-slot="composer-context-strip"]:has([data-composer-context-control]):is(:hover, :has([aria-expanded="true"]))::after {
+	opacity: 1 !important;
+}

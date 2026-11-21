@@ -32,17 +32,12 @@
 }
 
 /* ---- 3. the four categories live together at the bottom ---- */
-ul[role="tree"][aria-label="Threads"] {
-	min-height: var(--t3l-list-min, auto) !important;
-}
-ul[role="tree"][aria-label="Threads"] > li[data-t3l-lead] {
-	margin-top: auto !important;
-}
+
 /* every section header/shelf is its own rounded dock with a gap below */
 ul[role="tree"][aria-label="Threads"] > li.t3l-shelf {
 	border-radius: 14px !important;
 	margin-bottom: 8px !important;
-	box-shadow: inset 0 0 0 1px var(--sd-e, rgb(108 112 134 / 0.4)) !important;
+	box-shadow: inset 0 0 0 1.5px var(--sd-e, rgb(108 112 134 / 0.4)) !important;
 }
 ul[role="tree"][aria-label="Threads"] > li:is(
 	[data-testid="sidebar-working-header"],
@@ -80,10 +75,6 @@ ul[role="tree"][aria-label="Threads"] > li.t3l-shelf {
 	position: relative !important;
 	z-index: 5 !important;
 }
-html [data-timeline-row-kind="turn-fold"] button:hover,
-html [data-timeline-row-kind="attempt-fold"] button:hover {
-	box-shadow: var(--t6-ring), 0 0 16px -2px rgb(137 180 250 / 0.55) !important;
-}
 /* image previews inside a row stay inside the card: no square slivers over the glow */
 [data-slot="sidebar-inner"] [data-testid="sidebar-row-card"] {
 	overflow: hidden !important;
@@ -102,10 +93,10 @@ html [data-timeline-row-kind="attempt-fold"] button:hover {
 }
 
 /* ---- 6. providers settings pane: clamps that hold at any window width ---- */
-[data-slot="settings-group"] div[class*="/providers:min-h-0"] {
+[data-slot="settings-group"] div.\@min-\[48rem\]\/providers\:min-h-0 {
 	min-width: 0 !important;
 }
-[data-slot="settings-group"] div[class*="/providers:min-h-0"] [data-slot="settings-row"] {
+[data-slot="settings-group"] div.\@min-\[48rem\]\/providers\:min-h-0 [data-slot="settings-row"] {
 	min-width: 0 !important;
 	max-width: 100% !important;
 }

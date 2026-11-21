@@ -1,0 +1,88 @@
+/* Pass 53 (2026-11-20): queued message card and the edit-mode send button.
+   1. The queued message card kept T3's thin dashed grey edge (earlier passes only recoloured
+      it). It is now a solid 2px grey edge on the frosted fill, the blue to mauve frame on hover,
+      and the frame stays on while the message is being edited in the composer.
+   2. The Send now, edit and remove chips under it get one height and one shape: dark crust fill,
+      grey edge, frame on hover from pass 31a.
+   3. While a queued message is being edited, the composer's send button turns into a tick
+      ("Update queued message") and drew T3's stock near-white fill. Every non-galaxy state of
+      the send button (update, queue, steer, compact) now uses the Mocha blue the normal send
+      button uses, with a dark icon.
+   Rollback: delete this file and reload T3. */
+
+/* ---------- 1. the card ---------- */
+html section[data-thread-queue] li[aria-label^="Queued message"] .border-dashed.rounded-2xl {
+	position: relative !important;
+	border-style: solid !important;
+	border-width: 2px !important;
+	border-color: rgb(108 112 134 / .55) !important;
+	border-radius: 16px !important;
+	color: #cdd6f4 !important;
+	box-shadow: 0 8px 24px -12px rgb(17 17 27 / .7) !important;
+	transition: border-color .18s ease !important;
+}
+html section[data-thread-queue] li[aria-label^="Queued message"] .border-dashed.rounded-2xl::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: -2px !important;
+	padding: 2px !important;
+	border-radius: inherit !important;
+	background: linear-gradient(100deg, #89b4fa, #cba6f7) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	pointer-events: none !important;
+	opacity: 0 !important;
+	transition: opacity .18s ease !important;
+}
+html section[data-thread-queue] li[aria-label^="Queued message"]:is(:hover, [aria-current="true"], [data-p53-hover]) .border-dashed.rounded-2xl {
+	border-color: transparent !important;
+}
+html section[data-thread-queue] li[aria-label^="Queued message"]:is(:hover, [aria-current="true"], [data-p53-hover]) .border-dashed.rounded-2xl::after {
+	opacity: 1 !important;
+}
+/* image tiles inside the card */
+html section[data-thread-queue] .border-dashed.rounded-2xl button.size-8 {
+	border-color: rgb(108 112 134 / .55) !important;
+	background-color: rgb(17 17 27 / .6) !important;
+}
+
+/* ---------- 2. the chips under it ---------- */
+html section[data-thread-queue] li[aria-label^="Queued message"] button[data-slot="button"] {
+	height: 24px !important;
+	min-height: 24px !important;
+	border-radius: 8px !important;
+	background-color: rgb(17 17 27 / .6) !important;
+	box-shadow: inset 0 0 0 1.5px rgb(108 112 134 / .55) !important;
+	color: #bac2de !important;
+}
+html section[data-thread-queue] li[aria-label^="Queued message"] button[data-slot="button"]:not([class*="icon-"]):not([aria-label]) {
+	padding-inline: 8px !important;
+}
+html section[data-thread-queue] li[aria-label^="Queued message"] button[data-slot="button"]:is([aria-label="Edit queued message"], [aria-label="Remove queued message"]) {
+	width: 24px !important;
+	min-width: 24px !important;
+}
+html section[data-thread-queue] li[aria-label^="Queued message"] button[data-slot="button"]:not(:disabled):is(:hover, [data-p31a-hover]) {
+	background-color: rgb(24 24 37 / .72) !important;
+	box-shadow: none !important;
+	color: #cdd6f4 !important;
+}
+html section[data-thread-queue] li[aria-label^="Queued message"] button[aria-label="Remove queued message"]:not(:disabled):hover {
+	color: #f38ba8 !important;
+}
+
+/* ---------- 3. the send button in its other states ---------- */
+html [data-chat-composer-surface] button[type="submit"]:is(.bg-message-action,.hover\:bg-message-action-hover):not(:disabled) {
+	background-color: #89b4fa !important;
+	color: #11111b !important;
+}
+html [data-chat-composer-surface] button[type="submit"]:is(.bg-message-action,.hover\:bg-message-action-hover):not(:disabled):is(:hover, [data-p31a-hover]) {
+	background-color: #b4befe !important;
+	color: #11111b !important;
+}
+html [data-chat-composer-surface] button[type="submit"]:is(.bg-message-action,.hover\:bg-message-action-hover):disabled {
+	background-color: rgb(17 17 27 / .6) !important;
+	color: #6c7086 !important;
+	box-shadow: inset 0 0 0 1.5px rgb(108 112 134 / .55) !important;
+}

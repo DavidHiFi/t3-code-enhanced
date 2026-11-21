@@ -1,5 +1,5 @@
 /* T3 Mocha rice, pass 26 (2026-11-09): usage-limit pill, chat box colour with a banner, no inner glows.
-   Rollback: delete this file and reload T3. */
+   Rollback: delete this file and reload T3. Notes: H:\System Configuration\notes\2026-11-09-t3-pass26-pill-glow.md */
 
 /* 1. No inner glows. The shared halo (pass 22) and the hover glows in pass 25 lit the inside edges
       of rows, cards and the chat box, which read as light blotches in the corners. Hover still shows
@@ -13,7 +13,7 @@ html [data-composer-command-drawer][data-composer-command-drawer][data-composer-
 	box-shadow: none !important;
 }
 html :is(
-	div[class*="aspect-"][class*="overflow-hidden"][data-t3l-pv]:not(button),
+	div:is(.aspect-\[4\/3\],.aspect-auto,.aspect-square,.aspect-video):is(.group-data-\[collapsible\=icon\]\:overflow-hidden,.overflow-hidden)[data-t3l-pv]:not(button),
 	div[data-t3l-pvz][data-t3l-pvz]:not(button),
 	div[data-chat-composer-expanded-image],
 	button.cursor-zoom-in.overflow-hidden[aria-label^="Preview "]
@@ -70,7 +70,7 @@ html [data-composer-banner-surface][data-composer-banner-surface]:not([data-comp
 	background-image: none !important;
 	-webkit-backdrop-filter: var(--t24-frost) !important;
 	backdrop-filter: var(--t24-frost) !important;
-	box-shadow: inset 0 0 0 1px rgb(108 112 134 / 0.35) !important;
+	box-shadow: inset 0 0 0 1.5px rgb(108 112 134 / 0.35) !important;
 }
 html [data-composer-banner-surface][data-composer-banner-surface]:not([data-composer-shoulder-tab])::before {
 	display: none !important;
@@ -83,7 +83,7 @@ html [data-composer-banner-surface][data-composer-banner-surface]:not([data-comp
 	height: auto !important;
 	z-index: 3 !important;
 	border-radius: inherit !important;
-	padding: 1px !important;
+		padding: 1.5px !important;
 	background: linear-gradient(100deg, var(--t25-ga), var(--t25-gb)) !important;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
 	-webkit-mask-composite: xor !important;
@@ -108,7 +108,7 @@ html [data-composer-banner-surface][data-composer-banner-surface]:not([data-comp
 /* 4. Hover cards and tooltips (the card beside a hovered thread). At 85% tint the frosted blur still
       let the chat box edge behind it through as faint lighter patches down the right side. These
       small cards sit over busy content, so they get a denser fill: same colour, same frost. */
-html[data-window-material][data-window-material][data-window-material] :is([data-slot="tooltip-popup"], [data-slot="preview-card-popup"], [role="tooltip"]):not([class*="rounded-none"]) {
+html[data-window-material][data-window-material][data-window-material] :is([data-slot="tooltip-popup"], [data-slot="preview-card-popup"], [role="tooltip"]):not(:is(.\[\&\+\[data-slot\=composer-banner-attachment\]_\[data-composer-banner-surface\=attached\]\]\:before\:rounded-none,.\[\&\>\[data-slot\=settings-row\]\]\:rounded-none,.\[\&_\[data-slot\=settings-row\]\]\:rounded-none,.data-panel-open\:rounded-none,.in-\[\.range-middle\]\:rounded-none,.max-sm\:rounded-none,.rounded-none)) {
 	background-color: rgb(30 30 46 / 0.95) !important;
 }
 
@@ -118,7 +118,7 @@ html[data-window-material][data-window-material][data-window-material] :is([data
       blue to mauve on hover or while typing, 1.5px, .22s fade. */
 html [data-slot="composer-shell"] > [data-slot="composer-host"][data-slot="composer-host"]::after {
 	border: 0 !important;
-	padding: 1px !important;
+		padding: 1.5px !important;
 	box-shadow: none !important;
 	background: linear-gradient(100deg, var(--t25-ga), var(--t25-gb)) !important;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
@@ -143,7 +143,7 @@ html[data-window-material] [data-slot="composer-shell"]:has([data-composer-banne
 	inset: 0 !important;
 	z-index: 1 !important;
 	border-radius: inherit !important;
-	padding: 1px !important;
+		padding: 1.5px !important;
 	background: linear-gradient(100deg, var(--t25-ga), var(--t25-gb)) !important;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
 	-webkit-mask-composite: xor !important;
@@ -187,17 +187,17 @@ html [data-slot="settings-row"] div:has(> input.settings-slider) {
       squeezed its full-width click layer into a small box round the first digit. Now: the same dark
       fill and thin edge as the footer buttons beside it, the click layer spans the pill again, and
       hover darkens the pill a little. The warning and failed rings stay. */
-html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] div.h-8[class*="bg-sidebar-control-surface"][class*="bg-sidebar-control-surface"] {
+html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] div.h-8.bg-sidebar-control-surface.bg-sidebar-control-surface {
 	background-color: var(--t15-dock-in, rgb(17 17 27 / 0.44)) !important;
 	transition: background-color 0.18s ease !important;
 }
-html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] div.h-8[class*="bg-sidebar-control-surface"][class*="bg-sidebar-control-surface"]:not([class*="ring-"]) {
-	box-shadow: inset 0 0 0 1px var(--t15-edge, rgb(108 112 134 / 0.4)) !important;
+html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] div.h-8.bg-sidebar-control-surface.bg-sidebar-control-surface:not([class*="ring-"]) {
+	box-shadow: inset 0 0 0 1.5px var(--t15-edge, rgb(108 112 134 / 0.4)) !important;
 }
-html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] div.h-8[class*="bg-sidebar-control-surface"][class*="bg-sidebar-control-surface"]:has(> button.absolute:hover) {
+html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] div.h-8.bg-sidebar-control-surface.bg-sidebar-control-surface:has(> button.absolute:hover) {
 	background-color: rgb(17 17 27 / 0.7) !important;
 }
-html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] div.h-8[class*="bg-sidebar-control-surface"][class*="bg-sidebar-control-surface"] > button.absolute.inset-0 {
+html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] div.h-8.bg-sidebar-control-surface.bg-sidebar-control-surface > button.absolute.inset-0 {
 	width: auto !important;
 	min-width: 0 !important;
 	max-width: none !important;

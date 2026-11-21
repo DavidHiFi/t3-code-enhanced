@@ -16,15 +16,12 @@
 html {
 	--t3d-fill: #181825;
 	--t3d-tint: rgb(24 24 37 / 0.62);
-	--t3d-edge: rgb(108 112 134 / 0.45);
+	--t3d-edge: rgb(108 112 134 / 0.58);
 	--t3d-edge-strong: rgb(127 132 156 / 0.6);
 	--t3d-sheen: rgb(180 190 254 / 0.09);
 	--t3d-shadow: 0 6px 18px -8px rgb(17 17 27 / 0.75), inset 0 1px 0 var(--t3d-sheen);
 	--t3d-radius: 12px;
 	--t3d-blur: none;
-}
-html[data-window-material] {
-	--t3d-blur: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='f' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'><feFlood flood-color='%23181825' result='b'/><feComposite in='SourceGraphic' in2='b' operator='over'/><feGaussianBlur stdDeviation='18' edgeMode='duplicate'/><feComponentTransfer><feFuncA type='linear' slope='0' intercept='1'/></feComponentTransfer></filter></svg>#f") saturate(1.35);
 }
 
 /* ---- the shared dock surface ----
@@ -168,7 +165,7 @@ div.flex.items-center.gap-1:has(> div [aria-label="Search threads"]) > div:has([
 }
 
 /* ---- queued message: Mocha bubble, docked actions ---- */
-[data-thread-queue] [class*="border-dashed"] {
+[data-thread-queue] .border-dashed {
 	background: #313244 !important;
 	border-color: rgb(180 190 254 / 0.45) !important;
 }
@@ -195,7 +192,7 @@ html:not([data-window-material]) [data-thread-details-card][data-thread-details-
 
 /* ---- calmer pills: environment/stage badge ("Nightly 0.1.7...") and secondary badges ---- */
 [data-environment-identification="pill"],
-[data-slot="badge"][class*="bg-secondary"] {
+[data-slot="badge"]:is(.\[\:active\,\[data-pressed\]\]\:bg-secondary\/80,.\[\:hover\,\[data-pressed\]\]\:bg-secondary\/90,.\[button\&\,a\&\]\:hover\:bg-secondary\/90,.bg-secondary) {
 	background: #313244 !important;
 	border: 1px solid #45475a !important;
 	color: #bac2de !important;
@@ -205,7 +202,7 @@ html.dark {
 	--app-theme-message-surface: #313244;
 }
 html.dark .bg-message {
-	box-shadow: inset 0 0 0 1px rgb(108 112 134 / 0.4);
+	box-shadow: inset 0 0 0 1.5px rgb(108 112 134 / 0.4);
 }
 
 /* ======== pass 2 (owner, 2026-11-02 10:30 am) ======== */
@@ -254,9 +251,9 @@ html:not([data-window-material]) [data-slot="sidebar"] [data-slot="sidebar-inner
 /* ---- thread rows: selected and hovered ----
    The open thread uses bg-sidebar-row-active, other picked rows bg-sidebar-row-selected; the
    whole-word match skips the "active:" press variant. Surface0 fill, soft lavender edge. */
-[data-slot="sidebar-inner"] :is([class~="bg-sidebar-row-active"], [class~="bg-sidebar-row-selected"]) {
+[data-slot="sidebar-inner"] :is(.bg-sidebar-row-active, .bg-sidebar-row-selected) {
 	background-color: rgb(49 50 68 / 0.88) !important;
-	box-shadow: inset 0 0 0 1px rgb(180 190 254 / 0.3), 0 2px 8px -4px rgb(17 17 27 / 0.6) !important;
+	box-shadow: inset 0 0 0 1.5px rgb(180 190 254 / 0.3), 0 2px 8px -4px rgb(17 17 27 / 0.6) !important;
 	border-radius: 12px !important;
 }
 html [data-app-sidebar][data-app-sidebar] {
@@ -282,7 +279,6 @@ html [data-app-sidebar][data-app-sidebar] {
 	content: none !important;
 }
 [data-composer-shoulder-tab] [data-prompt-stash-badge] {
-	background: rgb(24 24 37 / 0.92) !important;
 	border: 1px solid var(--t3d-edge) !important;
 	border-radius: 10px !important;
 	box-shadow: inset 0 1px 0 var(--t3d-sheen), 0 4px 12px -6px rgb(17 17 27 / 0.7) !important;

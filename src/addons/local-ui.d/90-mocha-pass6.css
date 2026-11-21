@@ -4,13 +4,7 @@
    Rollback: delete this file and 90-section-shelves.js, reload. Notes: notes\2026-11-02-t3-mocha-docks.md */
 
 :root {
-	--t6-pill: rgb(17 17 27 / 0.58);
-	--t6-pill-hi: rgb(49 50 68 / 0.6);
-	--t6-edge: rgb(108 112 134 / 0.4);
-	--t6-ring: inset 0 0 0 1px rgb(137 180 250 / 0.75);
-	--t6-glow: 0 0 14px -3px rgb(137 180 250 / 0.5);
 	--t6-sheen: inset 0 1px 0 rgb(205 214 244 / 0.07);
-	--t6-ease: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
 }
 
 /* ================= frosted acrylic ================= */
@@ -37,8 +31,6 @@ html[data-window-material] ul[role="tree"][aria-label="Threads"][aria-label="Thr
 ul[role="tree"][aria-label="Threads"] > li.t3l-shelf {
 	padding: 4px 4px 6px !important;
 	background-color: var(--t4-tint) !important;
-	border-radius: 14px 14px 0 0 !important;
-	box-shadow: inset 1px 0 0 var(--sd-e), inset -1px 0 0 var(--sd-e), inset 0 1px 0 var(--sd-e) !important;
 }
 ul[role="tree"][aria-label="Threads"] > li.t3l-shelf[data-t3l-shelf="drafts"] { --sd-e: rgb(249 226 175 / 0.22); --sh-c: #f9e2af; --sh-e: rgb(249 226 175 / 0.3); }
 ul[role="tree"][aria-label="Threads"] > li.t3l-shelf[data-t3l-shelf="pinned"] { --sd-e: rgb(203 166 247 / 0.3); --sh-c: #cba6f7; --sh-e: rgb(203 166 247 / 0.36); }
@@ -51,19 +43,8 @@ ul[role="tree"][aria-label="Threads"] > li.t3l-shelf + li {
 	border-top-right-radius: 0 !important;
 }
 /* collapsed: rows hidden, the shelf closes the dock */
-ul[data-t3l-col-drafts] > li:has([data-sidebar-row^="draft:"]):not(.t3l-shelf),
-ul[data-t3l-col-pinned] > [data-testid="sidebar-pinned-header"] ~ li[data-thread-item]:not([data-testid="sidebar-pinned-divider"] ~ li),
-ul[data-t3l-col-active] > [data-testid="sidebar-active-placeholder"] ~ li[data-thread-item]:not([data-testid="sidebar-working-header"] ~ li, [data-testid="sidebar-settled-header"] ~ li) {
-	display: none !important;
-}
-ul[data-t3l-col-drafts] > li.t3l-shelf[data-t3l-shelf="drafts"],
-ul[data-t3l-col-pinned] > li.t3l-shelf[data-t3l-shelf="pinned"],
-ul[data-t3l-col-active] > li.t3l-shelf[data-t3l-shelf="active"] {
-	padding-bottom: 4px !important;
-	margin-bottom: 8px !important;
-	border-radius: 14px !important;
-	box-shadow: inset 0 0 0 1px var(--sd-e) !important;
-}
+
+
 /* the button matches T3's Working/Settled pill */
 .t3l-shelf-btn {
 	display: flex;
@@ -73,45 +54,30 @@ ul[data-t3l-col-active] > li.t3l-shelf[data-t3l-shelf="active"] {
 	height: 28px;
 	padding: 0 8px;
 	border: 0;
-	border-radius: 10px;
 	cursor: pointer;
 	font: inherit;
 	font-size: 12px;
 	font-weight: 500;
 	text-align: left;
 	color: var(--sh-c);
-	background-color: var(--t6-pill);
-	box-shadow: inset 0 0 0 1px var(--sh-e);
-	transition: var(--t6-ease);
-}
-.t3l-shelf-btn:hover {
-	background-color: var(--t6-pill-hi);
-	box-shadow: var(--t6-ring), var(--t6-glow);
 }
 .t3l-shelf-btn:focus-visible { outline: none; box-shadow: var(--t6-ring); }
 .t3l-shelf-fill { flex: 1; }
 .t3l-shelf-count { font-weight: 400; font-variant-numeric: tabular-nums; color: var(--color-sidebar-muted-foreground, #a6adc8); }
-.t3l-shelf-chev { width: 12px; height: 12px; flex-shrink: 0; color: #a6adc8; transition: transform 0.2s ease; }
+.t3l-shelf-chev { width: 12px; height: 12px; flex-shrink: 0; transition: transform 0.2s ease; }
 .t3l-shelf-btn[aria-expanded="false"] .t3l-shelf-chev { transform: rotate(-90deg); }
 
 /* ================= sidebar collapse button: resting dock ================= */
-div.pointer-events-none.fixed[class*="left-[var(--workspace-controls-left)]"] button {
-	background-color: var(--t6-pill) !important;
-	border-color: transparent !important;
+div.pointer-events-none.fixed.left-\[var\(--workspace-controls-left\)\] button {
 	border-radius: 9px !important;
-	box-shadow: inset 0 0 0 1px var(--t6-edge) !important;
 	transition: var(--t6-ease) !important;
-}
-div.pointer-events-none.fixed[class*="left-[var(--workspace-controls-left)]"] button:hover {
-	background-color: var(--t6-pill-hi) !important;
-	box-shadow: var(--t6-ring), var(--t6-glow) !important;
 }
 
 /* ================= your chat bubbles: mantle, not surface1 ================= */
 html.dark .bg-message.bg-message.bg-message {
 	background-color: rgb(30 30 46 / 0.92) !important;
 	color: #cdd6f4 !important;
-	box-shadow: inset 0 0 0 1px rgb(180 190 254 / 0.28), var(--t6-sheen) !important;
+	box-shadow: inset 0 0 0 1.5px rgb(180 190 254 / 0.28), var(--t6-sheen) !important;
 	transition: var(--t6-ease) !important;
 }
 html.dark .bg-message.bg-message.bg-message:hover {
@@ -122,12 +88,12 @@ html.dark .bg-message.bg-message.bg-message:hover {
 div.overflow-hidden[data-t3l-pv]:not(button),
 .chat-markdown img {
 	border-radius: 12px !important;
-	box-shadow: 0 0 0 1px var(--t6-edge) !important;
+	box-shadow: 0 0 0 1.5px var(--t6-edge) !important;
 	transition: var(--t6-ease) !important;
 }
 div.overflow-hidden[data-t3l-pv]:not(button):hover,
 .chat-markdown img:hover {
-	box-shadow: 0 0 0 1px #89b4fa, 0 0 16px -2px rgb(137 180 250 / 0.55) !important;
+	box-shadow: 0 0 0 1.5px #89b4fa, 0 0 16px -2px rgb(137 180 250 / 0.55) !important;
 }
 
 /* ================= agent output: every reply and work group sits in a dock ================= */
@@ -135,20 +101,20 @@ div.overflow-hidden[data-t3l-pv]:not(button):hover,
 	padding: 12px 16px !important;
 	border-radius: 14px !important;
 	background-color: rgb(24 24 37 / 0.45) !important;
-	box-shadow: inset 0 0 0 1px rgb(108 112 134 / 0.3), var(--t6-sheen) !important;
+	box-shadow: inset 0 0 0 1.5px rgb(108 112 134 / 0.3), var(--t6-sheen) !important;
 	transition: var(--t6-ease) !important;
 }
 [data-timeline-row-kind="message"][data-message-role="assistant"] > div:hover {
-	box-shadow: inset 0 0 0 1px rgb(137 180 250 / 0.7), var(--t6-glow) !important;
+	box-shadow: inset 0 0 0 1.5px rgb(137 180 250 / 0.7), var(--t6-glow) !important;
 }
 [data-timeline-row-kind="work-toggle"] button[aria-expanded],
-[data-timeline-row-kind="working"] div[class*="border-b"] > div,
+[data-timeline-row-kind="working"] div:is(.\*\:data-slot\:has-\[\~\[data-slot\]\]\:border-b-0,.\*\:not-first\:border-border\/50,.\*\:not-last\:border-b-0,.\@min-\[48rem\]\/providers\:border-b-0,.\[\&_tr\]\:border-b,.\[\.border-b\]\:pb-\[calc\(--spacing\(3\)-1px\)\],.\[\:hover\,\[data-pressed\]\]\:border-border,.border-b,.border-b-2,.border-background,.border-be,.border-blue-500\/70,.border-border,.border-border\/30,.border-border\/40,.border-border\/45,.border-border\/50,.border-border\/60,.border-border\/65,.border-border\/70,.border-border\/80,.border-box,.border-bs,.hover\:border-border,.hover\:border-border\/70,.in-data-\[preview-panel-mode\=inline\]\:border-b-transparent,.last\:border-b-0,.max-sm\:border-b-0,.not-last\:border-b) > div,
 [data-timeline-row-kind="work-live"] button[aria-expanded] {
 	padding: 4px 10px !important;
 	border-radius: 10px !important;
 	border: 0 !important;
 	background-color: var(--t6-pill) !important;
-	box-shadow: inset 0 0 0 1px var(--t6-edge) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t6-edge) !important;
 	transition: var(--t6-ease) !important;
 	/* pass 20: the button spans the whole 736px lane - hug the label instead,
 	   no full-width ghost bar around Working-for/Thinking rows */
@@ -156,7 +122,7 @@ div.overflow-hidden[data-t3l-pv]:not(button):hover,
 	max-width: 100% !important;
 }
 [data-timeline-row-kind="work-toggle"] button[aria-expanded]:hover,
-[data-timeline-row-kind="working"] div[class*="border-b"] > div:hover,
+[data-timeline-row-kind="working"] div:is(.\*\:data-slot\:has-\[\~\[data-slot\]\]\:border-b-0,.\*\:not-first\:border-border\/50,.\*\:not-last\:border-b-0,.\@min-\[48rem\]\/providers\:border-b-0,.\[\&_tr\]\:border-b,.\[\.border-b\]\:pb-\[calc\(--spacing\(3\)-1px\)\],.\[\:hover\,\[data-pressed\]\]\:border-border,.border-b,.border-b-2,.border-background,.border-be,.border-blue-500\/70,.border-border,.border-border\/30,.border-border\/40,.border-border\/45,.border-border\/50,.border-border\/60,.border-border\/65,.border-border\/70,.border-border\/80,.border-box,.border-bs,.hover\:border-border,.hover\:border-border\/70,.in-data-\[preview-panel-mode\=inline\]\:border-b-transparent,.last\:border-b-0,.max-sm\:border-b-0,.not-last\:border-b) > div:hover,
 [data-timeline-row-kind="work-live"] button[aria-expanded]:hover {
 	background-color: var(--t6-pill-hi) !important;
 	box-shadow: var(--t6-ring), var(--t6-glow) !important;
@@ -168,7 +134,7 @@ div.overflow-hidden[data-t3l-pv]:not(button):hover,
 [data-changed-files-state] button,
 .chat-markdown .chat-markdown-codeblock button {
 	background-color: var(--t6-pill) !important;
-	box-shadow: inset 0 0 0 1px var(--t6-edge) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t6-edge) !important;
 	border-radius: 8px !important;
 	transition: var(--t6-ease) !important;
 }
@@ -181,31 +147,31 @@ div.overflow-hidden[data-t3l-pv]:not(button):hover,
 }
 
 /* ================= sidebar thread cards: crust, not surface0, in every section ================= */
-html [data-slot="sidebar-inner"] [data-testid="sidebar-row-card"][data-testid="sidebar-row-card"]:not([class~="bg-sidebar-row-active"]):not([class~="bg-sidebar-row-selected"]) {
+html [data-slot="sidebar-inner"] [data-testid="sidebar-row-card"][data-testid="sidebar-row-card"]:not(.bg-sidebar-row-active):not(.bg-sidebar-row-selected) {
 	background-color: rgb(17 17 27 / 0.42) !important;
-	box-shadow: inset 0 0 0 1px rgb(108 112 134 / 0.2) !important;
+	box-shadow: inset 0 0 0 1.5px rgb(108 112 134 / 0.2) !important;
 }
-html [data-slot="sidebar-inner"] [data-testid="sidebar-row-card"][data-testid="sidebar-row-card"]:is([class~="bg-sidebar-row-active"], [class~="bg-sidebar-row-selected"]) {
+html [data-slot="sidebar-inner"] [data-testid="sidebar-row-card"][data-testid="sidebar-row-card"]:is(.bg-sidebar-row-active, .bg-sidebar-row-selected) {
 	background-color: rgb(30 30 46 / 0.78) !important;
-	box-shadow: inset 0 0 0 1px rgb(180 190 254 / 0.32), 0 2px 8px -4px rgb(17 17 27 / 0.6) !important;
+	box-shadow: inset 0 0 0 1.5px rgb(180 190 254 / 0.32), 0 2px 8px -4px rgb(17 17 27 / 0.6) !important;
 }
 /* the resting rule above carries two :not()s, so the hover needs the extra weight to win */
 html [data-slot="sidebar-inner"] [data-testid="sidebar-row-card"][data-testid="sidebar-row-card"][data-testid="sidebar-row-card"][data-testid="sidebar-row-card"]:hover {
 	background-color: rgb(24 24 37 / 0.7) !important;
-	box-shadow: inset 0 0 0 1px rgb(137 180 250 / 0.7), var(--t6-glow) !important;
+	box-shadow: inset 0 0 0 1.5px rgb(137 180 250 / 0.7), var(--t6-glow) !important;
 }
 
 /* ================= working indicator and context-compacted marker ================= */
 /* "Working for 37m": T3 draws it with a rule under it; the pill replaces the rule */
-[data-timeline-row-kind="working"] div[class*="border-b"] { border-bottom-color: transparent !important; }
-[data-timeline-row-kind="working"] div[class*="border-b"] > div,
+[data-timeline-row-kind="working"] div:is(.\*\:data-slot\:has-\[\~\[data-slot\]\]\:border-b-0,.\*\:not-first\:border-border\/50,.\*\:not-last\:border-b-0,.\@min-\[48rem\]\/providers\:border-b-0,.\[\&_tr\]\:border-b,.\[\.border-b\]\:pb-\[calc\(--spacing\(3\)-1px\)\],.\[\:hover\,\[data-pressed\]\]\:border-border,.border-b,.border-b-2,.border-background,.border-be,.border-blue-500\/70,.border-border,.border-border\/30,.border-border\/40,.border-border\/45,.border-border\/50,.border-border\/60,.border-border\/65,.border-border\/70,.border-border\/80,.border-box,.border-bs,.hover\:border-border,.hover\:border-border\/70,.in-data-\[preview-panel-mode\=inline\]\:border-b-transparent,.last\:border-b-0,.max-sm\:border-b-0,.not-last\:border-b) { border-bottom-color: transparent !important; }
+[data-timeline-row-kind="working"] div:is(.\*\:data-slot\:has-\[\~\[data-slot\]\]\:border-b-0,.\*\:not-first\:border-border\/50,.\*\:not-last\:border-b-0,.\@min-\[48rem\]\/providers\:border-b-0,.\[\&_tr\]\:border-b,.\[\.border-b\]\:pb-\[calc\(--spacing\(3\)-1px\)\],.\[\:hover\,\[data-pressed\]\]\:border-border,.border-b,.border-b-2,.border-background,.border-be,.border-blue-500\/70,.border-border,.border-border\/30,.border-border\/40,.border-border\/45,.border-border\/50,.border-border\/60,.border-border\/65,.border-border\/70,.border-border\/80,.border-box,.border-bs,.hover\:border-border,.hover\:border-border\/70,.in-data-\[preview-panel-mode\=inline\]\:border-b-transparent,.last\:border-b-0,.max-sm\:border-b-0,.not-last\:border-b) > div,
 [data-timeline-row-kind="work-live"] button[aria-expanded] { width: fit-content !important; height: auto !important; }
 /* "Context compacted": the label in the middle of the separator gets the dock, the lines stay */
 [data-timeline-row-kind="context-compaction"] [role="separator"] > span.relative {
 	padding: 3px 12px !important;
 	border-radius: 999px !important;
 	background-color: var(--t6-pill) !important;
-	box-shadow: inset 0 0 0 1px rgb(203 166 247 / 0.32) !important;
+	box-shadow: inset 0 0 0 1.5px rgb(203 166 247 / 0.32) !important;
 	transition: var(--t6-ease) !important;
 }
 [data-timeline-row-kind="context-compaction"] [role="separator"]:hover > span.relative {

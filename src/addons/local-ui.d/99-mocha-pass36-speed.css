@@ -1,0 +1,63 @@
+/* Pass 36 speed (2026-11-12): hover and blur cost. Look unchanged (pixel-checked on a frozen page).
+   Measured on the laptop's Intel GPU, tower page frozen; see notes/2026-11-12-t3-rice-speed-fix.md.
+   Rollback: delete this file and reload T3.
+
+   1. The two window-sized blurs. The chat panel and the sidebar dock each carried a 20px
+      backdrop blur, but nothing in the page sits behind them except the flat page tint: the
+      frost is the Windows window material. Blurring a flat tint draws the same pixels, yet
+      the whole panel was re-read and re-blurred on every frame (5 of every 6 ms of drawing).
+      The blur radius goes; the saturate step stays, so the panels stay backdrop layers and
+      composite exactly as before (same fill, same backdrop for the small docks inside). */
+html[data-window-material][data-window-material][data-window-material][data-window-material]:not([data-t3local-extendedglass-off]) main[data-slot="sidebar-inset"][data-slot="sidebar-inset"][data-slot="sidebar-inset"][data-slot="sidebar-inset"][data-slot="sidebar-inset"] {
+	-webkit-backdrop-filter: saturate(1.25) !important;
+	backdrop-filter: saturate(1.25) !important;
+}
+html[data-window-material][data-window-material][data-window-material][data-window-material]:not([data-t3local-extendedglass-off]) [data-slot="sidebar-container"] > [data-slot="sidebar-inner"][data-slot="sidebar-inner"][data-slot="sidebar-inner"][data-slot="sidebar-inner"] {
+	-webkit-backdrop-filter: saturate(1.35) !important;
+	backdrop-filter: saturate(1.35) !important;
+}
+
+/* 2. Text-highlight colours (find in thread, citation comment). This one is stock T3, not the
+      rice. T3 writes these colours with var(). Chromium then has to work the highlight colours
+      out again for every element it restyles whose own variables differ from its parent's, and
+      nearly every Tailwind utility class sets one. So each restyled element was really 4 to 5
+      style jobs, and each Working spinner cost 6 per frame instead of 2.
+      Plain values end that for three of the four. They are the values the Mocha Glass theme
+      resolves to today; if the theme's search colours or --primary change, update them here.
+      The fourth (t3-assistant-citation) fades through a variable the app sets, so it stays.
+      KEEP THESE SELECTORS BARE. A scoped one (html ::highlight(...), .x ::highlight(...)) makes
+      Chromium recompute every highlight on every element: measured 55 -> 69, worse than stock. */
+::highlight(t3-thread-find) {
+	color: oklch(0.970151 0 0) !important;
+	background-color: oklch(0.55 0.1 85) !important;
+}
+::highlight(t3-thread-find-active) {
+	color: oklch(0.216164 0.028283 77.423) !important;
+	background-color: oklch(0.774202 0.151946 74.331) !important;
+}
+::highlight(t3-assistant-citation-comment) {
+	background-color: color-mix(in oklab, oklch(0.76642 0.111344 259.885) 45%, transparent) !important;
+}
+
+/* 3. Sidebar rows. `color` is inherited, so having it in the row's 0.2s fade restyled the whole
+      row and everything in it on every frame, for the row entered and the row left. No visible
+      text takes the row's colour (the title has its own rule and already switches at once), so
+      the fade keeps background, edge and glow and drops `color`. */
+html [data-slot="sidebar-inner"] [data-sidebar-row][data-sidebar-row] {
+	transition: border-color var(--t3h-ease), box-shadow var(--t3h-ease), background-color var(--t3h-ease) !important;
+}
+
+/* 4. Composer frame. 87-hover-glow.css registered --chat-composer-outline as an inherited
+      colour so it could fade. An inherited value that fades restyles everything under it on
+      every frame (the whole composer, 200+ elements), and the footer, buttons and text box
+      inside each started their own copy of the fade. The variable is a plain value again, so
+      it switches in one step. The frame you see is pass 25's gradient on the composer host,
+      which keeps its own 0.2s fade; T3's ::after border gets a fade too, as a fallback. */
+@property --chat-composer-outline {
+	syntax: "*";
+	inherits: true;
+	initial-value: transparent;
+}
+.after\:border-\(--chat-composer-outline\)::after {
+	transition: border-color var(--t3h-ease) !important;
+}

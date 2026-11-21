@@ -14,3 +14,19 @@ html[data-window-material] [data-slot="switch"] [data-slot="switch-thumb"][data-
 html[data-window-material] [data-slot="switch"][data-unchecked] {
 	background-color: color-mix(in srgb, var(--foreground, #cdd6f4) 16%, transparent);
 }
+
+/* 2026-11-10: toggles wrapped in a tooltip (the Switch on/off pill on each saved environment
+   in Settings > Environments) get data-slot="tooltip-trigger" on the track, so the rules above
+   never matched and the knob stayed see-through (a bare blue pill). These key on role="switch",
+   which every toggle has, at the same weight as the rules above. */
+html[data-window-material] [role="switch"] > [data-slot="switch-thumb"][data-checked] {
+	background-color: var(--primary-foreground, #11111b) !important;
+	box-shadow: 0 1px 2px rgb(0 0 0 / 0.35);
+}
+html[data-window-material] [role="switch"] > [data-slot="switch-thumb"][data-unchecked] {
+	background-color: var(--muted-foreground, #a6adc8) !important;
+	box-shadow: 0 1px 2px rgb(0 0 0 / 0.35);
+}
+html[data-window-material] [role="switch"][data-unchecked]:has(> [data-slot="switch-thumb"]) {
+	background-color: color-mix(in srgb, var(--foreground, #cdd6f4) 16%, transparent);
+}

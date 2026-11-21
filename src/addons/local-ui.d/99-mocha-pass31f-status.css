@@ -1,0 +1,140 @@
+/* Pass 31f (2026-11-10): chat footer status rows and notification toasts.
+   1. "Waiting on N subagents" row (and the sync status row): 10px padding on top of the first
+      footer status row, so its spinner and info button no longer touch the card above. Padding, not
+      margin, so the gap cannot collapse and the list measures it as part of the footer.
+   2. "Settled just now · Un-settle" strip (also Snoozed / Woke from snooze): centred under the chat
+      column at the chat card width, slim (20px), grey rest edge, blue to mauve frame on hover.
+      pass22 section 622 had made it span the whole window.
+   3. Top-right toasts (success, error, info, warning, loading; with or without description and
+      action buttons; the small anchored "Copied" popup): one 1px frame on ::before over the whole
+      toast, grey at rest, blue to mauve plus an outer glow on hover, no inner sheen. Error toasts get
+      a red Mocha fill that covers the whole rounded box and stays on hover. ::after is given back
+      to T3's hover bridge between stacked toasts (pass31b had turned it into a 13px band).
+   [data-p31f-hover] is a test hook: the verification probes set it to show the hover look.
+   Rollback: delete this file and reload T3. */
+
+@property --p31f-a { syntax: "<color>"; inherits: false; initial-value: transparent; }
+@property --p31f-b { syntax: "<color>"; inherits: false; initial-value: transparent; }
+
+@layer theme {
+	/* ---------- 1. first status row under the last chat item ---------- */
+	html :is([data-thread-now-line], [data-composer-sync-status]):not(:is([data-thread-now-line], [data-composer-sync-status]) + *) {
+		padding-top: 10px !important;
+	}
+
+	/* ---------- 2. settled / snoozed strip ---------- */
+	html [data-chat-thread-status-line][data-chat-thread-status-line] {
+		position: relative !important;
+		box-sizing: border-box !important;
+		width: 100% !important;
+		max-width: var(--chat-content-max-width) !important;
+		margin: 10px auto !important;
+		padding: 2px 10px !important;
+		min-height: 0 !important;
+		line-height: 16px !important;
+		border: 0 !important;
+		border-radius: 8px !important;
+		box-shadow: none !important;
+		--p31f-a: var(--t15-edge, rgb(108 112 134 / .4));
+		--p31f-b: var(--t15-edge, rgb(108 112 134 / .4));
+		transition: background-color .18s ease, --p31f-a .18s ease, --p31f-b .18s ease !important;
+	}
+	html [data-chat-thread-status-line][data-chat-thread-status-line]:is(:hover, [data-p31f-hover]) {
+		background-color: rgb(36 36 54 / .9) !important;
+		box-shadow: none !important;
+		--p31f-a: #89b4fa;
+		--p31f-b: #cba6f7;
+	}
+	html [data-chat-thread-status-line][data-chat-thread-status-line] button {
+		padding-block: 0 !important;
+		line-height: 16px !important;
+		min-height: 0 !important;
+	}
+	html [data-chat-thread-status-line][data-chat-thread-status-line]::after {
+		content: "" !important;
+		/* the colours live on the owner; a registered non-inherited property needs an explicit inherit */
+		--p31f-a: inherit !important;
+		--p31f-b: inherit !important;
+		position: absolute !important;
+		inset: 0 !important;
+		z-index: 1 !important;
+		padding: 1.5px !important;
+		border-radius: inherit !important;
+		background: linear-gradient(100deg, var(--p31f-a), var(--p31f-b)) !important;
+		-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+		-webkit-mask-composite: xor !important;
+		mask-composite: exclude !important;
+		pointer-events: none !important;
+		transition: --p31f-a .18s ease, --p31f-b .18s ease !important;
+	}
+
+	/* ---------- 3. toasts ---------- */
+	/* a transparent 1px border keeps the toast the stock size; the frame covers it */
+	html :is([data-slot="toast-viewport"] > .dropdown-glass, .dropdown-glass[data-slot="toast-popup"]).dropdown-glass.dropdown-glass {
+		border: 1px solid transparent !important;
+		background-clip: border-box !important;
+		box-shadow: 0 16px 40px -16px rgb(17 17 27 / .92) !important;
+		--p31f-a: rgb(108 112 134 / .55);
+		--p31f-b: rgb(108 112 134 / .55);
+		transition-property: transform, opacity, height, scale, box-shadow, --p31f-a, --p31f-b !important;
+	}
+	html :is([data-slot="toast-viewport"] > .dropdown-glass, .dropdown-glass[data-slot="toast-popup"]).dropdown-glass.dropdown-glass:is(:hover, [data-p31f-hover]) {
+		border-color: transparent !important;
+		box-shadow: 0 16px 40px -16px rgb(17 17 27 / .92), 0 0 14px -3px rgb(137 180 250 / .42), 0 0 22px -6px rgb(203 166 247 / .34) !important;
+		--p31f-a: #89b4fa;
+		--p31f-b: #cba6f7;
+	}
+	/* error: red Mocha fill over the whole rounded box, at rest and on hover */
+	html :is([data-slot="toast-viewport"] > .dropdown-glass, .dropdown-glass[data-slot="toast-popup"]).dropdown-glass.dropdown-glass[data-type="error"],
+	html :is([data-slot="toast-viewport"] > .dropdown-glass, .dropdown-glass[data-slot="toast-popup"]).dropdown-glass.dropdown-glass[data-type="error"]:is(:hover, [data-p31f-hover]) {
+		background-color: rgb(78 44 60 / .95) !important;
+		background-image: none !important;
+	}
+	html :is([data-slot="toast-viewport"] > .dropdown-glass, .dropdown-glass[data-slot="toast-popup"]).dropdown-glass.dropdown-glass::before {
+		content: "" !important;
+		--p31f-a: inherit !important;
+		--p31f-b: inherit !important;
+		position: absolute !important;
+		inset: -1px !important;
+		z-index: 1 !important;
+		padding: 1.5px !important;
+		border-radius: inherit !important;
+		background: linear-gradient(100deg, var(--p31f-a), var(--p31f-b)) !important;
+		-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+		-webkit-mask-composite: xor !important;
+		mask-composite: exclude !important;
+		pointer-events: none !important;
+		transition: --p31f-a .2s ease, --p31f-b .2s ease !important;
+	}
+	/* ::after is T3's invisible hover bridge to the next stacked toast; undo pass31b's frame there */
+	html [data-slot="toast-viewport"] > .dropdown-glass.dropdown-glass.dropdown-glass::after {
+		content: "" !important;
+		position: absolute !important;
+		inset: auto !important;
+		left: 0 !important;
+		top: 100% !important;
+		width: 100% !important;
+		height: calc(var(--toast-gap) + 1px) !important;
+		z-index: auto !important;
+		padding: 0 !important;
+		border-radius: 0 !important;
+		background: none !important;
+		-webkit-mask: none !important;
+		mask: none !important;
+		transition: none !important;
+	}
+	html [data-slot="toast-viewport"] > .dropdown-glass.dropdown-glass.dropdown-glass[data-position*="bottom"]::after {
+		top: auto !important;
+		bottom: 100% !important;
+	}
+	html .dropdown-glass.dropdown-glass[data-slot="toast-popup"]::after {
+		content: none !important;
+	}
+
+	/* test hook only: the probes read the hover look at once, without waiting for the fade */
+	html :is([data-chat-thread-status-line], [data-slot="toast-viewport"] > .dropdown-glass, .dropdown-glass[data-slot="toast-popup"])[data-p31f-hover][data-p31f-hover],
+	html :is([data-chat-thread-status-line], [data-slot="toast-viewport"] > .dropdown-glass, .dropdown-glass[data-slot="toast-popup"])[data-p31f-hover][data-p31f-hover]::before,
+	html :is([data-chat-thread-status-line], [data-slot="toast-viewport"] > .dropdown-glass, .dropdown-glass[data-slot="toast-popup"])[data-p31f-hover][data-p31f-hover]::after {
+		transition: none !important;
+	}
+}

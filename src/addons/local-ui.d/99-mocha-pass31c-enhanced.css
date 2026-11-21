@@ -1,0 +1,202 @@
+/* Pass 31c (2026-11-10): Working color picker in Settings > Appearance > Local add-ons.
+   Chromium's own colour popup (from <input type=color>) can't be themed and drew a light square
+   panel. local-settings-ui.js now draws a small picker of its own; this file is its look:
+   - the swatch button in the row: grey 1px edge at rest; hover, keyboard focus and open get the
+     settings hover fill plus a 1px blue to mauve frame (same as pass 29a's controls)
+   - the panel: opaque mantle fill, grey 1px edge, 12px radius, never see-through
+   - saturation area and hue slider: grey 1px frame at rest, blue to mauve frame on hover and focus
+   - hex field: grey edge at rest, settings hover fill and gradient frame on hover and focus
+   - Catppuccin swatches: grey 1px edge at rest, 2px text-colour frame on the chosen one,
+     2px blue to mauve frame on hover and focus
+   The pass 29a selector input[aria-label="Pick working color"] no longer matches anything.
+   The Enhanced update button's tooltip and spin are drawn by local-enhanced-update.js, not here.
+   Rollback: delete this file and reload T3. */
+
+@layer theme {
+	/* ---- swatch button in the row ---- */
+	html [data-t3local-cpick] {
+		position: relative !important;
+		display: inline-flex !important;
+		align-items: center !important;
+		justify-content: center !important;
+		flex-shrink: 0 !important;
+		width: 2.25rem !important;
+		height: 2rem !important;
+		padding: 4px !important;
+		border: 1px solid rgb(108 112 134 / .4) !important;
+		border-radius: .5rem !important;
+		background: var(--background, #1e1e2e) !important;
+		box-shadow: none !important;
+		outline: none !important;
+		cursor: pointer !important;
+	}
+	html [data-t3local-cpick] > [data-chip] {
+		display: block !important;
+		width: 100% !important;
+		height: 100% !important;
+		border-radius: 4px !important;
+		pointer-events: none !important;
+	}
+	html [data-t3local-cpick]:is(:hover, :focus-visible, [data-open], [data-p31c-hover]) {
+		border-color: transparent !important;
+		background:
+			linear-gradient(rgb(36 36 54 / .9), rgb(36 36 54 / .9)) padding-box,
+			linear-gradient(#1e1e2e, #1e1e2e) padding-box,
+			linear-gradient(100deg, #89b4fa, #cba6f7) border-box !important;
+	}
+
+	/* ---- panel ---- */
+	html [data-t3local-cpanel] {
+		position: fixed !important;
+		z-index: 200 !important;
+		box-sizing: border-box !important;
+		width: 232px !important;
+		padding: 12px !important;
+		border: 1px solid rgb(108 112 134 / .4) !important;
+		border-radius: 12px !important;
+		background: #181825 !important;
+		color: #cdd6f4 !important;
+		box-shadow: 0 16px 32px -12px rgb(17 17 27 / .8) !important;
+		opacity: 1 !important;
+		backdrop-filter: none !important;
+		outline: none !important;
+		pointer-events: auto !important;
+		user-select: none !important;
+	}
+
+	/* ---- saturation/brightness area and hue slider ---- */
+	html [data-t3local-cpanel] :is([data-sv], [data-hue]) {
+		position: relative !important;
+		display: block !important;
+		outline: none !important;
+		touch-action: none !important;
+		cursor: crosshair !important;
+	}
+	html [data-t3local-cpanel] [data-sv] {
+		height: 132px !important;
+		border-radius: 8px !important;
+		background:
+			linear-gradient(to top, #000, rgb(0 0 0 / 0)),
+			linear-gradient(to right, #fff, rgb(255 255 255 / 0)),
+			var(--hue, #f00) !important;
+	}
+	html [data-t3local-cpanel] [data-hue] {
+		height: 12px !important;
+		margin-top: 12px !important;
+		border-radius: 6px !important;
+		background: linear-gradient(90deg, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00) !important;
+		cursor: pointer !important;
+	}
+	html [data-t3local-cpanel] :is([data-sv], [data-hue])::after {
+		content: "" !important;
+		position: absolute !important;
+		inset: 0 !important;
+		z-index: 1 !important;
+		padding: 1.5px !important;
+		border-radius: inherit !important;
+		background: rgb(108 112 134 / .4) !important;
+		-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+		-webkit-mask-composite: xor !important;
+		mask-composite: exclude !important;
+		pointer-events: none !important;
+	}
+	html [data-t3local-cpanel] :is([data-sv], [data-hue]):is(:hover, :focus-visible, [data-p31c-hover])::after {
+		background: linear-gradient(100deg, #89b4fa, #cba6f7) !important;
+	}
+	html [data-t3local-cpanel] :is([data-sv], [data-hue]) > [data-thumb] {
+		position: absolute !important;
+		z-index: 2 !important;
+		box-sizing: border-box !important;
+		border: 2px solid #fff !important;
+		border-radius: 50% !important;
+		box-shadow: 0 1px 3px rgb(17 17 27 / .6) !important;
+		transform: translate(-50%, -50%) !important;
+		pointer-events: none !important;
+	}
+	html [data-t3local-cpanel] [data-sv] > [data-thumb] { width: 14px !important; height: 14px !important; }
+	html [data-t3local-cpanel] [data-hue] > [data-thumb] { width: 16px !important; height: 16px !important; top: 50% !important; }
+
+	/* ---- preview chip and hex field ---- */
+	html [data-t3local-cpanel] [data-row] {
+		display: flex !important;
+		align-items: center !important;
+		gap: 8px !important;
+		margin-top: 12px !important;
+	}
+	html [data-t3local-cpanel] [data-preview] {
+		flex: none !important;
+		width: 28px !important;
+		height: 28px !important;
+		border-radius: 6px !important;
+		box-shadow: inset 0 0 0 1.5px rgb(108 112 134 / .4) !important;
+	}
+	html [data-t3local-cpanel] input[data-hex] {
+		flex: 1 !important;
+		min-width: 0 !important;
+		height: 28px !important;
+		box-sizing: border-box !important;
+		margin: 0 !important;
+		padding: 0 8px !important;
+		border: 1px solid rgb(108 112 134 / .4) !important;
+		border-radius: 6px !important;
+		background: #11111b !important;
+		color: #cdd6f4 !important;
+		font: 12.5px/1 ui-monospace, "Cascadia Mono", Consolas, monospace !important;
+		box-shadow: none !important;
+		outline: none !important;
+		user-select: text !important;
+	}
+	html [data-t3local-cpanel] input[data-hex]:is(:hover, :focus, [data-p31c-hover]):not([data-invalid]) {
+		border-color: transparent !important;
+		background:
+			linear-gradient(rgb(36 36 54 / .9), rgb(36 36 54 / .9)) padding-box,
+			linear-gradient(#1e1e2e, #1e1e2e) padding-box,
+			linear-gradient(100deg, #89b4fa, #cba6f7) border-box !important;
+	}
+	html [data-t3local-cpanel] input[data-hex][data-invalid] {
+		border-color: #f38ba8 !important;
+	}
+
+	/* ---- Catppuccin swatches ---- */
+	html [data-t3local-cpanel] [data-swatches] {
+		display: grid !important;
+		grid-template-columns: repeat(7, 1fr) !important;
+		gap: 6px !important;
+		margin-top: 12px !important;
+	}
+	html [data-t3local-cpanel] button[data-swatch] {
+		position: relative !important;
+		display: block !important;
+		aspect-ratio: 1 !important;
+		width: 100% !important;
+		min-width: 0 !important;
+		height: auto !important;
+		margin: 0 !important;
+		padding: 0 !important;
+		border: 0 !important;
+		border-radius: 6px !important;
+		box-shadow: none !important;
+		outline: none !important;
+		cursor: pointer !important;
+	}
+	html [data-t3local-cpanel] button[data-swatch]::after {
+		content: "" !important;
+		position: absolute !important;
+		inset: 0 !important;
+		padding: 1.5px !important;
+		border-radius: inherit !important;
+		background: rgb(108 112 134 / .4) !important;
+		-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+		-webkit-mask-composite: xor !important;
+		mask-composite: exclude !important;
+		pointer-events: none !important;
+	}
+	html [data-t3local-cpanel] button[data-swatch][aria-pressed="true"]::after {
+		padding: 2px !important;
+		background: #cdd6f4 !important;
+	}
+	html [data-t3local-cpanel] button[data-swatch]:is(:hover, :focus-visible, [data-p31c-hover])::after {
+		padding: 2px !important;
+		background: linear-gradient(100deg, #89b4fa, #cba6f7) !important;
+	}
+}

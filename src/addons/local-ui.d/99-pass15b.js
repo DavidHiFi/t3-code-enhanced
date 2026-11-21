@@ -1,29 +1,42 @@
-// Pass 15 worker B: brand button accent (2026-11-04).
-// Adds a small "Enhanced" pill right after the "Code" word inside
-// a[aria-label="T3 Code home"] (the "T3" is the logo svg, the word is a span).
-// Idempotent via data-t3l-enh on the link; re-runs on mutations because React
-// remounts the header. Style lives in 99-mocha-pass15-b.css (.t3l-enh).
+// Brand corner: the app icon alone (2026-11-22, was the "T3 Code" words plus an "Enhanced" pill).
+// Puts <img class="t3l-brand-icon"> inside a[aria-label="T3 Code home"]; the words stay in the
+// markup for screen readers but are hidden by 99-mocha-pass56-brand-icon.css. The picture is
+// self.T3ICON, set by local-app-icon.cjs from the App icon choice (riced or original), which
+// calls window.__t3BrandIcon.refresh() when the choice changes. Re-runs when React remounts
+// the header.
 (() => {
-	if (window.__t3lEnh) return;
-	window.__t3lEnh = true;
+	if (window.__t3BrandIcon) { window.__t3BrandIcon.refresh(); return; }
+	const LINK = 'a[aria-label="T3 Code home"]';
 	const MARK = 'data-t3l-enh';
 	function once(link) {
-		if (link.querySelector('.t3l-enh')) { link.setAttribute(MARK, 'on'); return; }
-		const code = [...link.querySelectorAll('span')].find(s => s.children.length === 0 && /^Code$/.test(s.textContent.trim()));
-		const span = document.createElement('span');
-		span.className = 't3l-enh';
-		span.textContent = 'Enhanced';
-		if (code) code.after(span); else link.appendChild(span);
+		const src = self.T3ICON;
+		if (!src) return;
+		let img = link.querySelector('img.t3l-brand-icon');
+		if (!img) {
+			img = document.createElement('img');
+			img.className = 't3l-brand-icon';
+			img.alt = '';
+			img.draggable = false;
+			link.prepend(img);
+		}
+		if (img.getAttribute('src') !== src) img.src = src;
+		link.querySelector('.t3l-enh')?.remove();
 		link.setAttribute(MARK, 'on');
 	}
-	function scan() {
-		document.querySelectorAll('a[aria-label="T3 Code home"]').forEach(a => { if (a.getAttribute(MARK) !== 'on') once(a); });
+	function scan(force) {
+		document.querySelectorAll(LINK).forEach((a) => { if (force || a.getAttribute(MARK) !== 'on') once(a); });
 	}
+	const touches = (recs) => {
+		for (const r of recs) for (const n of r.addedNodes)
+			if (n.nodeType === 1 && (n.matches(LINK) || n.querySelector(LINK))) return true;
+		return false;
+	};
 	let queued = false;
-	new MutationObserver(() => {
-		if (queued) return;
+	new MutationObserver((recs) => {
+		if (queued || !touches(recs)) return;
 		queued = true;
 		requestAnimationFrame(() => { queued = false; scan(); });
 	}).observe(document.body, { childList: true, subtree: true });
-	scan();
+	window.__t3BrandIcon = { refresh: () => scan(true) };
+	scan(true);
 })();

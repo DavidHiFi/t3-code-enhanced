@@ -44,6 +44,16 @@
 		if (!queued) { queued = true; requestAnimationFrame(measure); }
 		if (settle) setTimeout(measure, 380);
 	};
+	// v3 (2026-11-14, speed): thread-list updates inside the sidebar no longer trigger a measure (each one
+	// forced a layout while agents streamed). The row and the button can only move when one of them is
+	// replaced or resized, or the sidebar or window changes, so a ResizeObserver covers the rest.
+	const sized = new ResizeObserver(() => schedule(false));
+	let watchedRow = null, watchedBtn = null;
+	const watch = () => {
+		const btn = tog && (tog.querySelector('button') || tog);
+		if (row !== watchedRow) { if (watchedRow) sized.unobserve(watchedRow); if (row) sized.observe(row); watchedRow = row; }
+		if (btn !== watchedBtn) { if (watchedBtn) sized.unobserve(watchedBtn); if (btn) sized.observe(btn); watchedBtn = btn; }
+	};
 	new MutationObserver((records) => {
 		let hit = false, settle = false;
 		for (const rec of records) {
@@ -52,11 +62,12 @@
 				// follow the open/closed state in the same frame, the way the old :has() rule did
 				setOn(expanded() && measured);
 				hit = settle = true;
-			} else if (!live(sidebar) || !live(row) || !live(tog) || sidebar.contains(rec.target)) hit = true;
+			} else if (!hit && (!live(sidebar) || !live(row) || !live(tog) || (watchedBtn && !watchedBtn.isConnected))) hit = true;
 		}
-		if (hit) schedule(settle);
+		if (hit) { find(); watch(); schedule(settle); }
 	}).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['data-state'] });
 	window.addEventListener('resize', () => schedule(true));
 	find();
+	watch();
 	schedule(true);
 })();

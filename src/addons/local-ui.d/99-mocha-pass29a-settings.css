@@ -38,7 +38,7 @@ html [data-slot="sidebar-footer"] [data-t3enh-update] { margin-left: 0 !importan
 	/* 4-5. bordered controls: grey edge at rest */
 	html [data-app-modal][aria-label="Settings"] :is(
 		button[data-slot="select-trigger"],
-		button:is([data-slot="button"], [data-slot="menu-trigger"], [data-slot="popover-trigger"], [data-slot="tooltip-trigger"])[class~="border"]:not([class~="bg-primary"], [class~="bg-destructive"]):not([class~="border-transparent"]),
+		button:is([data-slot="button"], [data-slot="menu-trigger"], [data-slot="popover-trigger"], [data-slot="tooltip-trigger"]).border:not(.bg-primary, .bg-destructive):not(.border-transparent),
 		select,
 		[data-slot="input-control"],
 		[data-slot="textarea-control"],
@@ -53,7 +53,7 @@ html [data-slot="sidebar-footer"] [data-t3enh-update] { margin-left: 0 !importan
 	/* T3's 1px highlight shadow on ::before lands on the top edge only; drop it so all sides match */
 	html [data-app-modal][aria-label="Settings"] :is(
 		button[data-slot="select-trigger"],
-		button:is([data-slot="button"], [data-slot="menu-trigger"], [data-slot="popover-trigger"], [data-slot="tooltip-trigger"])[class~="border"]:not([class~="bg-primary"], [class~="bg-destructive"]),
+		button:is([data-slot="button"], [data-slot="menu-trigger"], [data-slot="popover-trigger"], [data-slot="tooltip-trigger"]).border:not(.bg-primary, .bg-destructive),
 		[data-slot="input-control"],
 		[data-slot="textarea-control"],
 		[data-slot="number-field-group"]
@@ -64,8 +64,8 @@ html [data-slot="sidebar-footer"] [data-t3enh-update] { margin-left: 0 !importan
 	/* 4-5. hover, keyboard focus, open popup: hover fill over an opaque base, gradient in the 1px border */
 	html [data-app-modal][aria-label="Settings"] :is(
 		button[data-slot="select-trigger"],
-		button:is([data-slot="button"], [data-slot="menu-trigger"], [data-slot="popover-trigger"], [data-slot="tooltip-trigger"])[class~="border"]:not([class~="bg-primary"], [class~="bg-destructive"]),
-		button[class~="border-transparent"]:not([aria-label="Close"]),
+		button:is([data-slot="button"], [data-slot="menu-trigger"], [data-slot="popover-trigger"], [data-slot="tooltip-trigger"]).border:not(.bg-primary, .bg-destructive),
+		button.border-transparent:not([aria-label="Close"]),
 		select,
 		input[aria-label="Pick working color"],
 		input[aria-label="Working color hex code"],
@@ -99,7 +99,7 @@ html [data-slot="sidebar-footer"] [data-t3enh-update] { margin-left: 0 !importan
 		min-width: 0 !important;
 		min-height: 0 !important;
 		transform: none !important;
-		padding: 1px !important;
+		padding: 1.5px !important;
 		border-radius: inherit !important;
 		background: rgb(108 112 134 / .4) !important;
 		-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;

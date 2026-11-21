@@ -1,0 +1,18 @@
+/* T3 Code Enhanced pass 31m (2026-11-10): sidebar hover glow no longer cut off.
+   The floating sidebar sits 8px from the window edge, but its hover glows (pass 31g) reached
+   12px out, so the window edge sliced them off in a straight line at the top (and bottom).
+   Same colours and strength, drawn with tighter blur so every glow fades out within 7px.
+   Rollback: delete this file and reload T3. */
+html [data-slot="sidebar"] [data-slot="sidebar-inner"][data-slot="sidebar-inner"]:hover {
+	box-shadow:
+		0 0 10px -3px rgb(137 180 250 / 0.5),
+		0 0 14px -7px rgb(203 166 247 / 0.45),
+		inset 0 1px 0 var(--t3d-sheen, transparent) !important;
+}
+html [data-slot="sidebar-inner"][data-slot="sidebar-inner"][data-slot="sidebar-inner"]:has(> [data-slot="sidebar-rail"]:hover),
+html [data-slot="sidebar-inner"][data-slot="sidebar-inner"][data-slot="sidebar-inner"]:has(> [data-slot="sidebar-rail"]:active) {
+	box-shadow:
+		2px 0 10px -3px rgb(137 180 250 / 0.5),
+		3px 0 14px -7px rgb(203 166 247 / 0.55),
+		inset 0 1px 0 var(--t3d-sheen, transparent) !important;
+}

@@ -7,6 +7,8 @@
 	"versionBadge": true,
 	"settingsUi": true,
 	"browserAppearance": "dark",
+	"appIcon": "riced",
+	"sharedSignIns": [],
 	"enhancedUpdates": {
 		"check": true,
 		"install": true,

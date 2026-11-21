@@ -40,7 +40,6 @@ html [data-slot="sidebar-inner"] :is(
 /* the brand row and footer lost their material when 85 killed backdrop-filter:
    restore the real blur (search row already has it via tokens) */
 html [data-slot="sidebar-inner"] a[aria-label="T3 Code home"] {
-	background-color: var(--t15-dock) !important;
 	-webkit-backdrop-filter: var(--t15-blur) !important;
 	backdrop-filter: var(--t15-blur) !important;
 }
@@ -50,7 +49,7 @@ html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] {
 }
 html [data-slot="sidebar-inner"] div.flex.items-center.gap-1:has(> div [aria-label="Search threads"]) > div {
 	background-color: var(--t15-dock-in) !important;
-	box-shadow: inset 0 0 0 1px var(--t15-edge) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t15-edge) !important;
 }
 html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] button {
 	background-color: var(--t15-dock-in) !important;
@@ -96,8 +95,8 @@ div[data-workspace-titlebar-controls="true"] button:focus-visible,
 	html [data-timeline-row-kind="context-compaction"] [role="separator"] > span.relative::before {
 		animation: none !important;
 	}
-	[data-testid="timeline-minimap"] div[class*="top-1/2"][class*="left-3"]::before,
-	[data-testid="timeline-minimap"] div[class*="top-1/2"][class*="left-3"] {
+	[data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4)::before,
+	[data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4) {
 		transition: none !important;
 	}
 	.t3l-shelf-btn,

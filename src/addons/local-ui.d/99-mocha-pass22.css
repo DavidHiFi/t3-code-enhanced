@@ -33,16 +33,16 @@ div.overflow-hidden[data-t3l-pv]:not(button):hover,
 html .chat-markdown img:hover {
 	box-shadow: var(--t15-ring), var(--t22-halo) !important;
 }
-html [data-slot="sidebar-inner"] [class~="bg-sidebar-row-active"],
-html [data-slot="sidebar-inner"] [class~="bg-sidebar-row-selected"] {
+html [data-slot="sidebar-inner"] .bg-sidebar-row-active,
+html [data-slot="sidebar-inner"] .bg-sidebar-row-selected {
 	box-shadow: var(--t22-halo) !important;
 }
 /* details-card subgrid rows: spread-ring hover -> inset ring + halo (item 4 audit) */
-[data-thread-details-card] [data-slot="tooltip-trigger"][class*="grid-cols-subgrid"]:hover {
+[data-thread-details-card] [data-slot="tooltip-trigger"].grid-cols-subgrid:hover {
 	box-shadow: var(--t15-ring), var(--t22-halo) !important;
 }
 /* composer hover: inset only (was two outer glows that clipped at the lane) */
-[class*="before:bg-(--chat-composer-glass-surface)"]:is(:hover, :focus-within)::before {
+:is(.before\:bg-\(--chat-composer-glass-surface\)\/\(--glass-opacity\),.group-data-context-row\/composer-surface\:before\:bg-\(--chat-composer-glass-surface\)\/\(--glass-opacity\),.not-supports-\[\(\(backdrop-filter\:blur\(1px\)\)_or_\(-webkit-backdrop-filter\:blur\(1px\)\)\)\]\:before\:bg-\(--chat-composer-glass-surface\)):is(:hover, :focus-within)::before {
 	box-shadow: var(--t22-halo), inset 0 1px 0 rgb(205 214 244 / 0.08) !important;
 }
 /* brand link hover (pass 16 hardcoded an outer glow inside overflow:hidden) */
@@ -53,7 +53,7 @@ html [data-slot="sidebar-inner"] [class~="bg-sidebar-row-selected"] {
 /* ===== 2. collapse button (item 1 / owner A): no box outside its radius.
    The wrapper carried a stray backdrop blur band (square corners against the
    brand dock); the button gets one clean rounded dock, rest + hover. ===== */
-div.pointer-events-none.fixed[class*="workspace-controls-left"] {
+div.pointer-events-none.fixed:is(.left-\[var\(--workspace-controls-left\)\],.ml-\[calc\(var\(--workspace-controls-left\)\+1px-env\(safe-area-inset-left\)\)\]) {
 	background: none !important;
 	background-color: transparent !important;
 	border: 0 !important;
@@ -61,13 +61,13 @@ div.pointer-events-none.fixed[class*="workspace-controls-left"] {
 	-webkit-backdrop-filter: none !important;
 	backdrop-filter: none !important;
 }
-div.pointer-events-none.fixed[class*="workspace-controls-left"] button {
+div.pointer-events-none.fixed:is(.left-\[var\(--workspace-controls-left\)\],.ml-\[calc\(var\(--workspace-controls-left\)\+1px-env\(safe-area-inset-left\)\)\]) button {
 	border-radius: 8px !important;
 	background-color: var(--t15-dock) !important;
-	box-shadow: inset 0 0 0 1px var(--t15-edge) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t15-edge) !important;
 	transition: var(--t15-ease) !important;
 }
-div.pointer-events-none.fixed[class*="workspace-controls-left"] button:hover {
+div.pointer-events-none.fixed:is(.left-\[var\(--workspace-controls-left\)\],.ml-\[calc\(var\(--workspace-controls-left\)\+1px-env\(safe-area-inset-left\)\)\]) button:hover {
 	background-color: var(--t15-hover) !important;
 	box-shadow: var(--t15-ring), var(--t22-halo) !important;
 }
@@ -76,9 +76,9 @@ div.pointer-events-none.fixed[class*="workspace-controls-left"] button:hover {
    fixed collapse wrapper must never carry a backdrop-filter (the material
    injector's old topbar clause painted 1280x52 / 28x52 square blur regions).
    The compact title pill keeps its own glass. ===== */
-html[data-window-material] div.relative.flex[class*="workspace-topbar-height"],
-div.relative.flex[class*="workspace-topbar-height"],
-div[class*="workspace-topbar-height"][class*="h-["] {
+html[data-window-material] div.relative.flex:is(.\[--toast-header-offset\:var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\]\!,.max-h-\[var\(--workspace-topbar-height\)\]\!,.min-h-\[var\(--workspace-topbar-height\)\],.min-h-\[var\(--workspace-topbar-height\)\]\!,.pb-\(--workspace-topbar-height\),.wco\:h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:max-h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:mt-\(--workspace-topbar-height\),.workspace-topbar-height),
+div.relative.flex:is(.\[--toast-header-offset\:var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\]\!,.max-h-\[var\(--workspace-topbar-height\)\]\!,.min-h-\[var\(--workspace-topbar-height\)\],.min-h-\[var\(--workspace-topbar-height\)\]\!,.pb-\(--workspace-topbar-height\),.wco\:h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:max-h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:mt-\(--workspace-topbar-height\),.workspace-topbar-height),
+div:is(.\[--toast-header-offset\:var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\]\!,.max-h-\[var\(--workspace-topbar-height\)\]\!,.min-h-\[var\(--workspace-topbar-height\)\],.min-h-\[var\(--workspace-topbar-height\)\]\!,.pb-\(--workspace-topbar-height\),.wco\:h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:max-h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:mt-\(--workspace-topbar-height\),.workspace-topbar-height)[class*="h-["] {
 	-webkit-backdrop-filter: none !important;
 	backdrop-filter: none !important;
 }
@@ -88,7 +88,7 @@ div[class*="workspace-topbar-height"][class*="h-["] {
    inset on all four sides; the top inset edge can no longer be covered by the
    first row, the bottom edge gets breathing room, and inner sub-docks end
    flush with the content box (no double-edge sliver). */
-.messages-timeline-row-frame[data-t15a-run][data-t15a-run] div[class*="chat-content-lane"] {
+.messages-timeline-row-frame[data-t15a-run][data-t15a-run] div.chat-content-lane {
 	padding: 4px 12px 10px 12px !important;
 }
 /* one left edge: the assistant bubble loses its private 10px side margins
@@ -116,29 +116,24 @@ html .messages-timeline-row-frame[data-t15a-run] div.group\/timeline-row:hover {
 	background-color: rgb(49 50 68 / 0.5) !important;
 	border-radius: 8px !important;
 }
-html .messages-timeline-row-frame[data-t15a-run] [data-timeline-row-kind="work-live"] button[class*="live-work"],
+html .messages-timeline-row-frame[data-t15a-run] [data-timeline-row-kind="work-live"] button.group\/live-work,
 html .messages-timeline-row-frame[data-t15a-run] [data-timeline-row-kind="thinking"] button {
 	background-color: transparent !important;
 	box-shadow: none !important;
 }
-html .messages-timeline-row-frame[data-t15a-run] [data-timeline-row-kind="work-live"] button[class*="live-work"]:hover,
+html .messages-timeline-row-frame[data-t15a-run] [data-timeline-row-kind="work-live"] button.group\/live-work:hover,
 html .messages-timeline-row-frame[data-t15a-run] [data-timeline-row-kind="thinking"] button:hover {
 	background-color: rgb(49 50 68 / 0.5) !important;
 }
 /* sub-dock containers inside a run: transparent, the lane is the only dock */
 html .messages-timeline-row-frame[data-t15a-run] [data-timeline-root] section[aria-label="Activity"],
-html .messages-timeline-row-frame[data-t15a-run] div[class*="chat-content-lane"] div[class*="bg-muted"] {
+html .messages-timeline-row-frame[data-t15a-run] div.chat-content-lane div[class*="bg-muted"] {
 	background: transparent !important;
 	box-shadow: none !important;
 	border: 0 !important;
 }
 /* thread status line ("Waiting · <task> · Stop") keeps one clean pill */
 html [data-chat-thread-status-line] {
-	width: fit-content !important;
-	max-width: 100% !important;
-	border-radius: 10px !important;
-	background-color: var(--t15-dock) !important;
-	box-shadow: inset 0 0 0 1px var(--t15-edge) !important;
 	transition: var(--t15-ease) !important;
 }
 html [data-chat-thread-status-line]:hover {
@@ -154,7 +149,7 @@ html .messages-timeline-scroll div.flex.min-w-0.items-center.gap-2 > .h-px {
 html [data-timeline-root] div.flex.min-w-0.items-center.gap-2 > span.rounded-full {
 	width: fit-content !important;
 	background-color: var(--t15-dock) !important;
-	box-shadow: inset 0 0 0 1px var(--t15-edge) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t15-edge) !important;
 }
 
 /* ---- 4b. error cards inside a run (owner item 25): the RUN dock is the one
@@ -180,7 +175,7 @@ html [data-timeline-root] [data-v2-item-type="error"] [data-v2-item-type="error"
 }
 
 /* run lane hover: full edge-hi border + the inset halo (never clips) */
-.messages-timeline-row-frame[data-t15a-run]:hover div[class*="chat-content-lane"] {
+.messages-timeline-row-frame[data-t15a-run]:hover div.chat-content-lane {
 	box-shadow:
 		inset 1px 0 0 var(--t15-edge-hi),
 		inset -1px 0 0 var(--t15-edge-hi),
@@ -189,7 +184,7 @@ html [data-timeline-root] [data-v2-item-type="error"] [data-v2-item-type="error"
 /* owner item 34 root cause: a single-frame run is BOTH -start and -end, and
    pass 16's -end rule overwrote the -start top edge. One rule, all four
    edges, for single-frame runs. */
-.messages-timeline-row-frame[data-t15a-run][data-t15a-run-start][data-t15a-run-end] div[class*="chat-content-lane"] {
+.messages-timeline-row-frame[data-t15a-run][data-t15a-run-start][data-t15a-run-end] div.chat-content-lane {
 	box-shadow:
 		inset 1px 0 0 var(--t15-edge),
 		inset -1px 0 0 var(--t15-edge),
@@ -202,32 +197,25 @@ html [data-timeline-root] [data-v2-item-type="error"] [data-v2-item-type="error"
    no doubled borders. Applies to user-message thumbs, markdown images and
    the click-to-zoom wrapper. ===== */
 html [data-timeline-row-kind="message"] img,
-html [data-timeline-row-kind="message"] div[class*="cursor-zoom-in"],
+html [data-timeline-row-kind="message"] div:is(.cursor-zoom-in,.enabled\:cursor-zoom-in),
 html .chat-markdown img,
 html div.overflow-hidden[data-t3l-pv]:not(button) {
 	border-radius: 10px !important;
 }
-html [data-timeline-row-kind="message"] div[class*="cursor-zoom-in"] {
+html [data-timeline-row-kind="message"] div:is(.cursor-zoom-in,.enabled\:cursor-zoom-in) {
 	overflow: hidden !important;
 }
-html [data-timeline-row-kind="message"] div[class*="cursor-zoom-in"]:hover {
+html [data-timeline-row-kind="message"] div:is(.cursor-zoom-in,.enabled\:cursor-zoom-in):hover {
 	box-shadow: var(--t15-ring), var(--t22-halo) !important;
 }
 html [data-timeline-row-kind="message"] img {
-	box-shadow: inset 0 0 0 1px var(--t15-edge) !important;
 	transition: var(--t15-ease) !important;
-}
-html [data-timeline-row-kind="message"] img:hover {
-	box-shadow: var(--t15-ring), var(--t22-halo) !important;
 }
 
 /* ===== 6. real glass, not fake blur (item 6): the composer glass surface
    (a ::before, which the injector cannot touch) gets a real backdrop-filter
    and a denser Mocha fill so thread text behind it is not readable. ===== */
-:root, html, html.dark {
-	--chat-composer-glass-surface: rgb(24 24 37 / 0.82) !important;
-}
-[class*="before:bg-(--chat-composer-glass-surface)"]::before {
+:is(.before\:bg-\(--chat-composer-glass-surface\)\/\(--glass-opacity\),.group-data-context-row\/composer-surface\:before\:bg-\(--chat-composer-glass-surface\)\/\(--glass-opacity\),.not-supports-\[\(\(backdrop-filter\:blur\(1px\)\)_or_\(-webkit-backdrop-filter\:blur\(1px\)\)\)\]\:before\:bg-\(--chat-composer-glass-surface\))::before {
 	-webkit-backdrop-filter: var(--t15-blur-deep) !important;
 	backdrop-filter: var(--t15-blur-deep) !important;
 }
@@ -268,8 +256,8 @@ html [data-slot="sidebar-rail"][data-slot="sidebar-rail"][data-slot="sidebar-rai
 /* 15b's hover rule drew the blue edge TWICE (border-right + inset -1px 0 0
    shadow): the inset copy is a straight line inside the rounded border. One
    line only - the border itself follows the radius. */
-[data-slot="sidebar"]:has([data-slot="sidebar-rail"]:hover) [data-slot="sidebar-inner"],
-[data-slot="sidebar"]:has([data-slot="sidebar-rail"]:active) [data-slot="sidebar-inner"] {
+[data-slot="sidebar-inner"][data-slot="sidebar-inner"]:has(> [data-slot="sidebar-rail"]:hover),
+[data-slot="sidebar-inner"][data-slot="sidebar-inner"]:has(> [data-slot="sidebar-rail"]:active) {
 	box-shadow:
 		2px 0 16px -4px rgb(137 180 250 / 0.55),
 		0 16px 36px -14px rgb(17 17 27 / 0.85) !important;
@@ -284,7 +272,7 @@ html [data-slot="sidebar-rail"][data-slot="sidebar-rail"][data-slot="sidebar-rai
 	box-shadow: 0 16px 40px -16px rgb(17 17 27 / 0.92), inset 0 1px 0 rgb(205 214 244 / 0.08) !important;
 }
 [data-model-picker-sidebar],
-[data-model-picker-content] > div[class*="bg-muted/40"],
+[data-model-picker-content] > div:is(.bg-muted\/40,.hover\:bg-muted\/40),
 [data-model-picker-effort] {
 	background: transparent !important;
 	background-color: transparent !important;
@@ -301,7 +289,7 @@ html [data-slot="sidebar-rail"][data-slot="sidebar-rail"][data-slot="sidebar-rai
 }
 /* item 14 follow-up: the model list must sit directly on the popover glass -
    kill the inner box at ANY depth (pass 4 docked it as a direct child) */
-[data-model-picker-content] div[class*="bg-muted/40"],
+[data-model-picker-content] div:is(.bg-muted\/40,.hover\:bg-muted\/40),
 [data-model-picker-content] {
 	background: transparent !important;
 	background-color: transparent !important;
@@ -314,13 +302,13 @@ html [data-slot="sidebar-rail"][data-slot="sidebar-rail"][data-slot="sidebar-rai
 }
 /* panes must not glow as a whole on hover (pass 4's pane hover rule) */
 [data-model-picker-sidebar]:hover,
-[data-model-picker-content] > div[class*="bg-muted/40"]:hover,
+[data-model-picker-content] > div:is(.bg-muted\/40,.hover\:bg-muted\/40):hover,
 [data-model-picker-effort]:hover {
 	box-shadow: none !important;
 }
 /* selected-indicator: inset ring + halo, never an outer glow */
 [data-model-picker-selected-indicator] {
-	box-shadow: 0 0 0 1px var(--t15-blue), var(--t22-halo) !important;
+	box-shadow: 0 0 0 1.5px var(--t15-blue), var(--t22-halo) !important;
 }
 /* model-list search row and option rows keep pass-4 geometry, aligned */
 
@@ -349,13 +337,13 @@ div[data-right-panel-surface-content] [data-surface-subheader] button:hover {
 div[data-right-panel-tabbar] div.group\/tab[data-active-tab="true"],
 div[data-right-panel-surface-content] [data-surface-subheader] button[data-pressed="true"] {
 	background-color: var(--t15-hover-hi) !important;
-	box-shadow: inset 0 0 0 1px var(--t15-edge) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t15-edge) !important;
 }
 /* owner item 28a: hover pill must sit fully inside its dock - inner padding
    on the segmented group keeps the pill's outline and glow inside, WITHOUT
    disabling truncation (that overlap is owner item 37) */
-div[data-right-panel-surface-content] [data-surface-subheader] div[class*="overflow-hidden"],
-div[data-right-panel-surface-content] [data-surface-subheader] div[class*="overflow-clip"] {
+div[data-right-panel-surface-content] [data-surface-subheader] div:is(.group-data-\[collapsible\=icon\]\:overflow-hidden,.overflow-hidden),
+div[data-right-panel-surface-content] [data-surface-subheader] div:is(.\[overflow-clip-margin\:2px\],.overflow-clip) {
 	padding-block: 2px !important;
 	padding-right: 4px !important;
 }
@@ -364,12 +352,12 @@ div[data-right-panel-surface-content] [data-surface-subheader] div[class*="overf
 div[data-right-panel-surface-content] [data-surface-subheader] :is(div, span) {
 	min-width: 0 !important;
 }
-div[data-right-panel-surface-content] [data-surface-subheader] [class*="truncate"] {
+div[data-right-panel-surface-content] [data-surface-subheader] :is(.\:r\?o\=\=\=null\?e\.search\.data\?\.truncated\=\=\=\!0\?,.\?Ut\(cn\,I\,f\)\:null\,xr\=z\?br\?\.patch\:G\?Zn\.data\?\.diff\:yr\,Sr\=br\?\.truncated\=\=\=\!0\|\|B\&\&J\?\.truncated\=\=\=\!0\|\|\!z\&\&G\!\=\=void,.\@xs\/pr-row-meta\:truncate,.K\(e\)\&\&e\.truncated\=\=\=\!0\&\&typeof,.\[\&\>span\:last-child\]\:truncate,.\[data-truncate-container\],.\[data-truncate-content\],.\[data-truncate-fade\],.\[data-truncate-grid\],.\[data-truncate-group-container\],.\[data-truncate-marker-cell\],.\[data-truncate-marker\],.\[data-truncate-marker\]\:after,.\[data-truncate-marker\]\:before,.\[truncated\],.data-truncate-container,.data-truncate-content,.data-truncate-fade,.data-truncate-fill,.data-truncate-grid,.data-truncate-group-container,.data-truncate-marker,.data-truncate-marker-cell,.data-truncate-segment-priority,.data-truncate-variant,.n\?\.truncated\?void,.search-truncated,.tiff-metadata-truncated,.tiff-strip-truncated,.truncate,.truncated,.var\(--truncate-internal-fade-marker-width\),.var\(--truncate-internal-marker-block-inset\),.var\(--truncate-internal-marker-fade-in-duration\),.var\(--truncate-internal-marker-fade-out-duration\),.var\(--truncate-internal-marker-fade-width\),.var\(--truncate-internal-marker-gap\),.w\=l\|\|c\&\&f\&\&\!p\&\&\(u\!\=\=m\|\|g\.isPending\)\,T\=g\.data\?\.truncated\?\?\!1\,E\=e\.useRegex\&\&g\.data\?\.regexFallbackError\!\=\=void) {
 	overflow: hidden !important;
 	text-overflow: ellipsis !important;
 	white-space: nowrap !important;
 }
-div[data-right-panel-surface-content] [data-surface-subheader] [class*="shrink-0"],
+div[data-right-panel-surface-content] [data-surface-subheader] :is(.\@\[700px\]\:shrink-0,.\[\&\>\*\]\:shrink-0,.\[\&\>svg\]\:shrink-0,.\[\&_\[data-slot\=select-icon\]\]\:shrink-0,.\[\&_svg\]\:shrink-0,.after\:shrink-0,.lg\:group-data-\[inline\=true\]\/draft-hero\:shrink-0,.shrink-0,.sm\:shrink-0),
 div[data-right-panel-surface-content] [data-surface-subheader] button {
 	flex-shrink: 0 !important;
 }
@@ -405,16 +393,16 @@ div[data-right-panel-tabbar] button:hover {
    the banner's own outer box (the workspace topbar div that owns the starry
    background), radius = its radius. No ring on the inner content row. Hover
    turns the same ring into the Mocha blue -> lavender gradient + soft glow. ===== */
-html [data-slot="sidebar-inner"] div.relative.flex[class*="workspace-topbar-height"] {
-	box-shadow: inset 0 0 0 1px var(--t15-edge) !important;
+html [data-slot="sidebar-inner"] div.relative.flex:is(.\[--toast-header-offset\:var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\]\!,.max-h-\[var\(--workspace-topbar-height\)\]\!,.min-h-\[var\(--workspace-topbar-height\)\],.min-h-\[var\(--workspace-topbar-height\)\]\!,.pb-\(--workspace-topbar-height\),.wco\:h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:max-h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:mt-\(--workspace-topbar-height\),.workspace-topbar-height) {
+	box-shadow: inset 0 0 0 1.5px var(--t15-edge) !important;
 	border-radius: 12px !important;
 }
-html [data-slot="sidebar-inner"] div.relative.flex[class*="workspace-topbar-height"]::after {
+html [data-slot="sidebar-inner"] div.relative.flex:is(.\[--toast-header-offset\:var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\]\!,.max-h-\[var\(--workspace-topbar-height\)\]\!,.min-h-\[var\(--workspace-topbar-height\)\],.min-h-\[var\(--workspace-topbar-height\)\]\!,.pb-\(--workspace-topbar-height\),.wco\:h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:max-h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:mt-\(--workspace-topbar-height\),.workspace-topbar-height)::after {
 	content: "" !important;
 	position: absolute !important;
 	inset: 0 !important;
 	border-radius: inherit !important;
-	padding: 1px !important;
+		padding: 1.5px !important;
 	background: transparent !important;
 	-webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
 	-webkit-mask-composite: xor;
@@ -423,7 +411,7 @@ html [data-slot="sidebar-inner"] div.relative.flex[class*="workspace-topbar-heig
 	pointer-events: none !important;
 	transition: var(--t15-ease) !important;
 }
-html [data-slot="sidebar-inner"] div.relative.flex[class*="workspace-topbar-height"]:hover::after {
+html [data-slot="sidebar-inner"] div.relative.flex:is(.\[--toast-header-offset\:var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\]\!,.max-h-\[var\(--workspace-topbar-height\)\]\!,.min-h-\[var\(--workspace-topbar-height\)\],.min-h-\[var\(--workspace-topbar-height\)\]\!,.pb-\(--workspace-topbar-height\),.wco\:h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:max-h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:mt-\(--workspace-topbar-height\),.workspace-topbar-height):hover::after {
 	background: linear-gradient(135deg, #89b4fa, #b4befe) !important;
 	box-shadow: var(--t22-halo) !important;
 }
@@ -436,7 +424,7 @@ html [data-slot="sidebar-inner"] div.flex.h-8:has(a[aria-label="T3 Code home"]) 
    pill over the stars; hover = same gradient ring at its own radius. ===== */
 html [data-slot="sidebar-inner"] a[aria-label="T3 Code home"] {
 	background-color: rgb(17 17 27 / 0.55) !important;
-	box-shadow: inset 0 0 0 1px rgb(108 112 134 / 0.65) !important;
+	box-shadow: inset 0 0 0 1.5px rgb(108 112 134 / 0.65) !important;
 	position: relative !important;
 }
 html [data-slot="sidebar-inner"] a[aria-label="T3 Code home"]::after {
@@ -444,7 +432,7 @@ html [data-slot="sidebar-inner"] a[aria-label="T3 Code home"]::after {
 	position: absolute !important;
 	inset: 0 !important;
 	border-radius: inherit !important;
-	padding: 1px !important;
+		padding: 1.5px !important;
 	background: transparent !important;
 	-webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
 	-webkit-mask-composite: xor;
@@ -468,15 +456,15 @@ html [data-slot="sidebar-inner"] div.flex.items-center.gap-1 > span {
    over the window glass. The traffic-light zone (bg-background/70) and the
    thread header container go fully transparent; only the compact title pill
    keeps its docked glass. ===== */
-div.relative[class*="bg-background/70"],
+div.relative.bg-background\/70,
 div.relative.bg-background:has(ol) {
 	background: transparent !important;
 	background-color: transparent !important;
 	-webkit-backdrop-filter: none !important;
 	backdrop-filter: none !important;
 }
-div.relative[class*="bg-background/70"]::before,
-div.relative[class*="bg-background/70"]::after,
+div.relative.bg-background\/70::before,
+div.relative.bg-background\/70::after,
 div.relative.bg-background:has(ol)::before,
 div.relative.bg-background:has(ol)::after {
 	content: none !important;
@@ -507,13 +495,13 @@ div[data-right-panel-surface-content] {
 	border-bottom-color: transparent !important;
 }
 /* changed-files card: rows and header chips are flat, hover tint only */
-html div[class*="@container/changed-files"] div.group.flex.h-7,
-html [data-timeline-root] [class*="[&_svg]:-mx-0.5"] {
+html div.\@container\/changed-files div.group.flex.h-7,
+html [data-timeline-root] .\[\&_svg\]\:-mx-0\.5 {
 	background: transparent !important;
 	box-shadow: none !important;
 	border: 0 !important;
 }
-html div[class*="@container/changed-files"] div.group.flex.h-7:hover {
+html div.\@container\/changed-files div.group.flex.h-7:hover {
 	background-color: rgb(49 50 68 / 0.5) !important;
 	border-radius: 8px !important;
 }
@@ -541,7 +529,7 @@ html [data-chat-provider-model-picker] {
 /* ===== 22. "Worked for" / working summary rows: ONE pill (the button), the
    row wrapper carries nothing. ===== */
 html [data-timeline-root] [data-timeline-row-kind="work-toggle"] > div,
-html [data-timeline-root] [data-timeline-row-kind="working"] > div[class*="border-b"] {
+html [data-timeline-root] [data-timeline-row-kind="working"] > div:is(.\*\:data-slot\:has-\[\~\[data-slot\]\]\:border-b-0,.\*\:not-first\:border-border\/50,.\*\:not-last\:border-b-0,.\@min-\[48rem\]\/providers\:border-b-0,.\[\&_tr\]\:border-b,.\[\.border-b\]\:pb-\[calc\(--spacing\(3\)-1px\)\],.\[\:hover\,\[data-pressed\]\]\:border-border,.border-b,.border-b-2,.border-background,.border-be,.border-blue-500\/70,.border-border,.border-border\/30,.border-border\/40,.border-border\/45,.border-border\/50,.border-border\/60,.border-border\/65,.border-border\/70,.border-border\/80,.border-box,.border-bs,.hover\:border-border,.hover\:border-border\/70,.in-data-\[preview-panel-mode\=inline\]\:border-b-transparent,.last\:border-b-0,.max-sm\:border-b-0,.not-last\:border-b) {
 	background: transparent !important;
 	box-shadow: none !important;
 	border: 0 !important;
@@ -556,25 +544,17 @@ html [data-timeline-root] [data-timeline-row-kind="working"] > div[class*="borde
 	border: 0 !important;
 }
 
-/* ===== 33. toasts ("Thread completed / Internal error: turn failed"):
-   real frosted glass over translucent Mocha. ===== */
-[data-sonner-toast],
-[data-sonner-toast] [data-content],
-div[class*="sonner"] [data-testid] {
-	background-color: rgb(30 30 46 / 0.62) !important;
-	-webkit-backdrop-filter: blur(28px) saturate(1.6) !important;
-	backdrop-filter: blur(28px) saturate(1.6) !important;
-}
-
+/* ===== 33. toasts: rule removed 2026-11-14, T3 no longer uses that toast library;
+   pass31f-status styles the current toasts. ===== */
 
 /* ===== 24. composer real frosted glass: kill the isolation/backdrop-root on
    the composer surface host, real blur on the glass, translucent fill, flat
    inner input box. ===== */
-[class*="composer-surface"] {
+:is(.\@container\/composer-surface,.\@max-\[320px\]\/composer-surface\:sr-only,.\@max-\[420px\]\/composer-surface\:sr-only,.\@max-\[480px\]\/composer-surface\:hidden,.\@max-\[560px\]\/composer-surface\:flex-col,.\@max-\[560px\]\/composer-surface\:gap-0\.5,.\@max-\[560px\]\/composer-surface\:items-start,.\@max-\[560px\]\/composer-surface\:text-xs,.\@max-\[640px\]\/composer-surface\:sr-only,.\@xl\/composer-surface\:flex,.\@xl\/composer-surface\:hidden,.\@xl\/composer-surface\:ml-auto,.dark\:group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:shadow-none,.data-chat-composer-surface,.group-data-context-row\/composer-surface\:before\:-z-1,.group-data-context-row\/composer-surface\:before\:absolute,.group-data-context-row\/composer-surface\:before\:backdrop-blur-\(--glass-blur\),.group-data-context-row\/composer-surface\:before\:backdrop-saturate-\(--glass-saturation\),.group-data-context-row\/composer-surface\:before\:bg-\(--chat-composer-glass-surface\)\/\(--glass-opacity\),.group-data-context-row\/composer-surface\:before\:inset-0,.group-data-context-row\/composer-surface\:before\:pointer-events-none,.group-data-context-row\/composer-surface\:before\:rounded-2xl,.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:\*\*\:data-\[chat-composer-mobile-collapsed\=true\]\:min-h-\[calc\(1rem\+1px\)\],.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:after\:block,.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:after\:hidden,.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:backdrop-blur-\(--glass-blur\),.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:backdrop-saturate-\(--glass-saturation\),.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:before\:hidden,.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:bg-\(--chat-composer-glass-surface\)\/\(--glass-opacity\),.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:shadow-composer,.group-has-data-\[composer-banner-surface\=attached\]\/composer-surface\:shadow-none,.group\/composer-surface) {
 	isolation: auto !important;
 }
-html[data-window-material] [class*="before:bg-(--chat-composer-glass-surface)"][class*="before:bg-(--chat-composer-glass-surface)"]::before,
-html [class*="before:bg-(--chat-composer-glass-surface)"][class*="before:bg-(--chat-composer-glass-surface)"]::before {
+html[data-window-material] :is(.before\:bg-\(--chat-composer-glass-surface\)\/\(--glass-opacity\),.group-data-context-row\/composer-surface\:before\:bg-\(--chat-composer-glass-surface\)\/\(--glass-opacity\),.not-supports-\[\(\(backdrop-filter\:blur\(1px\)\)_or_\(-webkit-backdrop-filter\:blur\(1px\)\)\)\]\:before\:bg-\(--chat-composer-glass-surface\)):is(.before\:bg-\(--chat-composer-glass-surface\)\/\(--glass-opacity\),.group-data-context-row\/composer-surface\:before\:bg-\(--chat-composer-glass-surface\)\/\(--glass-opacity\),.not-supports-\[\(\(backdrop-filter\:blur\(1px\)\)_or_\(-webkit-backdrop-filter\:blur\(1px\)\)\)\]\:before\:bg-\(--chat-composer-glass-surface\))::before,
+html :is(.before\:bg-\(--chat-composer-glass-surface\)\/\(--glass-opacity\),.group-data-context-row\/composer-surface\:before\:bg-\(--chat-composer-glass-surface\)\/\(--glass-opacity\),.not-supports-\[\(\(backdrop-filter\:blur\(1px\)\)_or_\(-webkit-backdrop-filter\:blur\(1px\)\)\)\]\:before\:bg-\(--chat-composer-glass-surface\)):is(.before\:bg-\(--chat-composer-glass-surface\)\/\(--glass-opacity\),.group-data-context-row\/composer-surface\:before\:bg-\(--chat-composer-glass-surface\)\/\(--glass-opacity\),.not-supports-\[\(\(backdrop-filter\:blur\(1px\)\)_or_\(-webkit-backdrop-filter\:blur\(1px\)\)\)\]\:before\:bg-\(--chat-composer-glass-surface\))::before {
 	background-color: rgb(24 24 37 / 0.62) !important;
 	-webkit-backdrop-filter: blur(28px) saturate(1.6) !important;
 	backdrop-filter: blur(28px) saturate(1.6) !important;
@@ -595,7 +575,7 @@ html .messages-timeline-scroll.messages-timeline-scroll.messages-timeline-scroll
 	-webkit-mask-image: none !important;
 	mask-image: none !important;
 }
-html .messages-timeline-scroll div[class*="sticky"][class*="sticky"] {
+html .messages-timeline-scroll div:is(.\)\+\(e\.sticky\?,.\30 \,stickyContainerPool\:new,.\30 \,this\.stickyContainer\.textContent\=,.\@min-\[90rem\]\/guide\:sticky,.Set\,stickyContainers\:new,.\[data-diffs-header\]\[data-sticky\],.\]\[data-file-tree-sticky-row\=,.data-file-tree-sticky-overlay,.data-file-tree-sticky-overlay-content,.data-file-tree-sticky-path,.data-file-tree-sticky-row,.data-file-tree-virtualized-sticky,.data-file-tree-virtualized-sticky-offset,.data-sticky,.n\=e\.stickyModelSelectionByProvider\[t\.instanceId\]\,r\=t\.options\=\=\=void,.sticky,.sticky-note,.sticky-parents,.stickyActiveProvider,.stickyHeader,.stickyModelSelectionByProvider,.stickyOptionsByModelByProvider,.t\.stickyModelSelectionByProvider\=\=,.y\=U\.getState\(\)\.stickyOptionsByModelByProvider\[e\]\?\.\[s\]\,b\=a\.modelSelection\,C\=y\!\=\=void):is(.\)\+\(e\.sticky\?,.\30 \,stickyContainerPool\:new,.\30 \,this\.stickyContainer\.textContent\=,.\@min-\[90rem\]\/guide\:sticky,.Set\,stickyContainers\:new,.\[data-diffs-header\]\[data-sticky\],.\]\[data-file-tree-sticky-row\=,.data-file-tree-sticky-overlay,.data-file-tree-sticky-overlay-content,.data-file-tree-sticky-path,.data-file-tree-sticky-row,.data-file-tree-virtualized-sticky,.data-file-tree-virtualized-sticky-offset,.data-sticky,.n\=e\.stickyModelSelectionByProvider\[t\.instanceId\]\,r\=t\.options\=\=\=void,.sticky,.sticky-note,.sticky-parents,.stickyActiveProvider,.stickyHeader,.stickyModelSelectionByProvider,.stickyOptionsByModelByProvider,.t\.stickyModelSelectionByProvider\=\=,.y\=U\.getState\(\)\.stickyOptionsByModelByProvider\[e\]\?\.\[s\]\,b\=a\.modelSelection\,C\=y\!\=\=void) {
 	background-image: none !important;
 	-webkit-mask-image: none !important;
 	mask-image: none !important;
@@ -627,7 +607,7 @@ html [data-chat-thread-status-line] {
 	background-color: rgb(24 24 37 / 0.62) !important;
 	-webkit-backdrop-filter: blur(28px) saturate(1.6) !important;
 	backdrop-filter: blur(28px) saturate(1.6) !important;
-	box-shadow: inset 0 0 0 1px var(--t15-edge) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t15-edge) !important;
 	overflow: hidden !important;
 }
 html [data-chat-thread-status-line] button {
@@ -656,13 +636,11 @@ html [data-chat-thread-status-line] span::after {
    popup-height arbitrary class (the old data-model-picker-* anchors do not
    exist here). bg-muted/40 wrapper levels between the popup and the items go
    flat; the search input keeps its own pill; rows keep their hover tint. ===== */
-html [role="dialog"][class*="popup-height"] div[class*="bg-muted/40"],
-html [role="dialog"][class*="popup-height"] div[class*="border-t"][class*="bg-muted/40"]:has([aria-label="Fast Mode"]),
-html [role="dialog"][class*="popup-height"] div[class*="bg-crust"],
-html [role="dialog"][class*="popup-height"] div[class*="bg-mantle"],
-html [role="dialog"][class*="popup-height"] div[class*="bg-secondary"],
-html [data-model-picker-content] div[class*="bg-muted/40"],
-html [data-model-picker-sidebar] div[class*="bg-muted/40"] {
+html [role="dialog"].h-\(--popup-height\,auto\) div:is(.bg-muted\/40,.hover\:bg-muted\/40),
+html [role="dialog"].h-\(--popup-height\,auto\) div:is(.\*\:\[\[data-slot\]\~\[data-slot\]\]\:border-t-0,.\*\:not-first\:border-t,.\*\:not-first\:border-t-0,.\[\&\+\[data-slot\=composer-banner-attachment\]_\[data-composer-banner-surface\=attached\]\]\:before\:border-t-0,.\[\&\:\:-webkit-scrollbar-thumb\]\:border-transparent,.\[\.border-t\]\:pt-\[calc\(--spacing\(3\)-1px\)\],.\[section\:not\(\:has\(\>div\:last-child\:empty\)\)\~\&\]\:border-t,.border-t,.border-t-0,.border-transparent,.border-transparent\!,.dark\:border-transparent,.first\:border-t-0,.forced-colors\:border-t-2,.in-\[\[data-slot\=dialog-popup\]\:has\(\[data-slot\=dialog-footer\]\:not\(\.border-t\)\)\]\:pb-1,.max-md\:border-t,.max-md\:first\:border-t-0,.max-sm\:border-t,.md\:border-t-0,.not-first\:border-t):is(.bg-muted\/40,.hover\:bg-muted\/40):has([aria-label="Fast Mode"]),
+html [role="dialog"].h-\(--popup-height\,auto\) div:is(.\[\:active\,\[data-pressed\]\]\:bg-secondary\/80,.\[\:hover\,\[data-pressed\]\]\:bg-secondary\/90,.\[button\&\,a\&\]\:hover\:bg-secondary\/90,.bg-secondary),
+html [data-model-picker-content] div:is(.bg-muted\/40,.hover\:bg-muted\/40),
+html [data-model-picker-sidebar] div:is(.bg-muted\/40,.hover\:bg-muted\/40) {
 	background-color: transparent !important;
 	box-shadow: none !important;
 	border: 0 !important;
@@ -686,7 +664,7 @@ html [data-composer-banner-surface]:not([data-composer-shoulder-tab]) {
 	background-color: rgb(45 29 42 / 0.68) !important;
 	-webkit-backdrop-filter: blur(28px) saturate(1.6) !important;
 	backdrop-filter: blur(28px) saturate(1.6) !important;
-	box-shadow: inset 0 0 0 1px var(--t15-edge) !important;
+	box-shadow: inset 0 0 0 1.5px var(--t15-edge) !important;
 }
 html [data-composer-banner-surface]:not([data-composer-shoulder-tab])::before,
 html [data-composer-banner-surface]:not([data-composer-shoulder-tab])::after {
@@ -700,12 +678,12 @@ html div:has(> [data-composer-banner-surface]:not([data-composer-shoulder-tab]))
 	overflow: clip !important;
 	outline: none !important;
 }
-html [role="alert"][class*="absolute"],
-html [role="alert"][class*="fixed"],
-html [role="alert"][class*="sticky"],
-html [role="status"][class*="absolute"],
-html [role="status"][class*="fixed"],
-html [role="status"][class*="sticky"] {
+html [role="alert"]:is(.\*\:after\:absolute,.\[\&\>\:not\(\[data-jump-hint\]\)\]\:absolute,.\[\&_\[data-composer-control-label\]\]\:absolute,.\[\&_\[data-slot\=select-icon\]\]\:before\:absolute,.\[button\&\,a\&\]\:pointer-coarse\:after\:absolute,.absolute,.absolutely,.absoluten,.absoluter,.after\:absolute,.before\:absolute,.data-\[composer-chip-selected\]\:after\:absolute,.group-any-hover\/sidebar-row\:absolute,.group-data-context-row\/composer-surface\:before\:absolute,.group-has-\[\:focus-visible\]\/sidebar-status-slot\:absolute,.keyword\.operator\.absolute\.apl,.max-md\:absolute,.pointer-coarse\:\[\&_\[data-slot\=inline-button\]\]\:after\:absolute,.pointer-coarse\:after\:absolute,.t\=\(0\,Q\.c\)\(29\)\,n\=Ue\(e\.absolutePath\,e\.workspaceRoot\)\.relativePath\=\=\=void),
+html [role="alert"]:is(.\#fixed-point,.\#fixed-size-buffer-declaration,.\#fixed-statement,.\#prefixed-name,.\30 \,a\.sizesKnown\.set\(t\,c\)\,a\.fixedItemSizeKeys\?\?\=new,.Suffixed,.assets\/fortran-fixed-form-DEKoE2YW\.js,.comment\.line\.cobol\.fixed,.enabled\|fixed,.fixed,.fixed-height,.fixed-point,.fixed-size-buffer-declaration,.fixed-statement,.fixed-width,.fixed128x128,.fixed_time,.fortran-fixed-form,.keyword\.control\.context\.fixed\.cs,.locate-fixed,.prefixed-name,.source\.fortran\.fixed,.sourceMappingURL\=fortran-fixed-form-D6mN0kjy\.js\.map,.sourceMappingURL\=fortran-fixed-form-DEKoE2YW\.js\.map,.storage\.modifier\.fixed\.cs,.suffixed_cookies,.t\=n\.sizesKnown\.has\(o\)\|\|i1\(n\,a\,r\,S\[r\]\)\.fixedItemSize\!\=\=void,.table-fixed,.ufixed,.ufixed128x128),
+html [role="alert"]:is(.\)\+\(e\.sticky\?,.\30 \,stickyContainerPool\:new,.\30 \,this\.stickyContainer\.textContent\=,.\@min-\[90rem\]\/guide\:sticky,.Set\,stickyContainers\:new,.\[data-diffs-header\]\[data-sticky\],.\]\[data-file-tree-sticky-row\=,.data-file-tree-sticky-overlay,.data-file-tree-sticky-overlay-content,.data-file-tree-sticky-path,.data-file-tree-sticky-row,.data-file-tree-virtualized-sticky,.data-file-tree-virtualized-sticky-offset,.data-sticky,.n\=e\.stickyModelSelectionByProvider\[t\.instanceId\]\,r\=t\.options\=\=\=void,.sticky,.sticky-note,.sticky-parents,.stickyActiveProvider,.stickyHeader,.stickyModelSelectionByProvider,.stickyOptionsByModelByProvider,.t\.stickyModelSelectionByProvider\=\=,.y\=U\.getState\(\)\.stickyOptionsByModelByProvider\[e\]\?\.\[s\]\,b\=a\.modelSelection\,C\=y\!\=\=void),
+html [role="status"]:is(.\*\:after\:absolute,.\[\&\>\:not\(\[data-jump-hint\]\)\]\:absolute,.\[\&_\[data-composer-control-label\]\]\:absolute,.\[\&_\[data-slot\=select-icon\]\]\:before\:absolute,.\[button\&\,a\&\]\:pointer-coarse\:after\:absolute,.absolute,.absolutely,.absoluten,.absoluter,.after\:absolute,.before\:absolute,.data-\[composer-chip-selected\]\:after\:absolute,.group-any-hover\/sidebar-row\:absolute,.group-data-context-row\/composer-surface\:before\:absolute,.group-has-\[\:focus-visible\]\/sidebar-status-slot\:absolute,.keyword\.operator\.absolute\.apl,.max-md\:absolute,.pointer-coarse\:\[\&_\[data-slot\=inline-button\]\]\:after\:absolute,.pointer-coarse\:after\:absolute,.t\=\(0\,Q\.c\)\(29\)\,n\=Ue\(e\.absolutePath\,e\.workspaceRoot\)\.relativePath\=\=\=void),
+html [role="status"]:is(.\#fixed-point,.\#fixed-size-buffer-declaration,.\#fixed-statement,.\#prefixed-name,.\30 \,a\.sizesKnown\.set\(t\,c\)\,a\.fixedItemSizeKeys\?\?\=new,.Suffixed,.assets\/fortran-fixed-form-DEKoE2YW\.js,.comment\.line\.cobol\.fixed,.enabled\|fixed,.fixed,.fixed-height,.fixed-point,.fixed-size-buffer-declaration,.fixed-statement,.fixed-width,.fixed128x128,.fixed_time,.fortran-fixed-form,.keyword\.control\.context\.fixed\.cs,.locate-fixed,.prefixed-name,.source\.fortran\.fixed,.sourceMappingURL\=fortran-fixed-form-D6mN0kjy\.js\.map,.sourceMappingURL\=fortran-fixed-form-DEKoE2YW\.js\.map,.storage\.modifier\.fixed\.cs,.suffixed_cookies,.t\=n\.sizesKnown\.has\(o\)\|\|i1\(n\,a\,r\,S\[r\]\)\.fixedItemSize\!\=\=void,.table-fixed,.ufixed,.ufixed128x128),
+html [role="status"]:is(.\)\+\(e\.sticky\?,.\30 \,stickyContainerPool\:new,.\30 \,this\.stickyContainer\.textContent\=,.\@min-\[90rem\]\/guide\:sticky,.Set\,stickyContainers\:new,.\[data-diffs-header\]\[data-sticky\],.\]\[data-file-tree-sticky-row\=,.data-file-tree-sticky-overlay,.data-file-tree-sticky-overlay-content,.data-file-tree-sticky-path,.data-file-tree-sticky-row,.data-file-tree-virtualized-sticky,.data-file-tree-virtualized-sticky-offset,.data-sticky,.n\=e\.stickyModelSelectionByProvider\[t\.instanceId\]\,r\=t\.options\=\=\=void,.sticky,.sticky-note,.sticky-parents,.stickyActiveProvider,.stickyHeader,.stickyModelSelectionByProvider,.stickyOptionsByModelByProvider,.t\.stickyModelSelectionByProvider\=\=,.y\=U\.getState\(\)\.stickyOptionsByModelByProvider\[e\]\?\.\[s\]\,b\=a\.modelSelection\,C\=y\!\=\=void) {
 	background-color: rgb(30 30 46 / 0.66) !important;
 	-webkit-backdrop-filter: blur(28px) saturate(1.6) !important;
 	backdrop-filter: blur(28px) saturate(1.6) !important;

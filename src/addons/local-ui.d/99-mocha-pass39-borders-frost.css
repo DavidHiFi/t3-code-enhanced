@@ -1,0 +1,90 @@
+/* Pass 39 (2026-11-14): owner screenshots, "borders cut off at the bottom in settings",
+   "search blinking cursor needs to be smoothened out", "borders need to be a bit thicker",
+   "top left and right corner the rounded border cuts off", "scrollbar squared",
+   "apply proper blur material to that top bar".
+
+   0. Edge weight lives in the older layers: every 1px inset edge, ring and gradient frame went
+      to 1.5px in place, and the dock edge tokens got stronger (notes\2026-11-14-t3-pass39).
+   1. The squared purple bar beside the settings menu was T3's keyboard focus ring on the menu's
+      scroll list. The list sits inside a rounded clip that stops at the profile card, so the
+      ring lost its top corners and its bottom edge. Scroll lists never draw that ring; the
+      items inside keep their own focus frames.
+   2. Top bar: the near solid fill from pass 38 read as a flat slab. It becomes frosted glass,
+      heavy enough that chat text under it cannot be read.
+   3. Text cursor fades in and out instead of hard blinking, Mocha blue.
+   4. Scroll thumbs float inside their track with round ends, so no end looks cut square.
+
+   Rollback: delete this file and reload T3 (and restore the backup folder for 0). */
+
+/* 1 */
+html [data-slot="scroll-area-viewport"][data-slot="scroll-area-viewport"],
+html [data-slot="scroll-area-viewport"][data-slot="scroll-area-viewport"]:is(:focus, :focus-visible, :focus-within) {
+	outline: none !important;
+	box-shadow: none !important;
+	--tw-ring-shadow: 0 0 #0000 !important;
+	--tw-ring-offset-shadow: 0 0 #0000 !important;
+}
+html nav[data-workspace-area="settings-nav"] > div:first-child:is(:focus, :focus-visible, :focus-within) {
+	outline: none !important;
+	box-shadow: none !important;
+}
+
+/* 2 */
+html body #root header[data-chat-header][data-chat-header][data-chat-header] {
+	background: rgb(30 30 46 / 0.8) !important;
+	-webkit-backdrop-filter: blur(28px) saturate(1.2) !important;
+	backdrop-filter: blur(28px) saturate(1.2) !important;
+	border: 1px solid rgb(108 112 134 / 0.58) !important;
+	box-shadow: 0 6px 18px -8px rgb(17 17 27 / 0.7), inset 0 1px 0 rgb(180 190 254 / 0.08) !important;
+}
+html body #root header[data-chat-header][data-chat-header][data-chat-header]::before {
+	content: none !important;
+}
+
+/* 3 */
+@keyframes t3p39-caret {
+	0%, 18% { caret-color: rgb(137 180 250); }
+	50%, 68% { caret-color: rgb(137 180 250 / 0); }
+	100% { caret-color: rgb(137 180 250); }
+}
+/* No caret-color !important here: an important colour outranks the animation and freezes it. */
+html :is(input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"]), textarea, [contenteditable="true"], [contenteditable=""]):focus {
+	caret-animation: manual !important;
+	animation: t3p39-caret 1.15s ease-in-out infinite !important;
+}
+
+/* 5. Real 1px borders cannot get thicker at this scale, so the thin faint ones get the same
+      stronger edge colour as the docks: settings cards and their row dividers, dropdowns,
+      the settings window, its menu and title dividers, side card sections, composer footer. */
+html [data-slot="settings-group"],
+html [data-slot="settings-group"] > * + *,
+html [data-slot="settings-row"],
+html button[data-slot="select-trigger"]:not(:hover, :focus-visible, [data-popup-open]),
+html div[data-open][data-nested]:has(nav[data-workspace-area="settings-nav"]),
+html nav[data-workspace-area="settings-nav"],
+html nav[data-workspace-area="settings-nav"] ~ * header,
+html div[data-thread-details-card] section {
+	border-color: rgb(108 112 134 / 0.58) !important;
+}
+/* 2026-11-14, 11:18 am (owner: "you fucked up the borders"): the composer's button row drew a
+   second, brighter box inside the composer's own frame. The row sits flat inside the one dock. */
+html div[data-chat-composer-footer][data-chat-composer-footer] {
+	border-color: transparent !important;
+	box-shadow: none !important;
+}
+
+/* 4 */
+html [data-slot="scroll-area-scrollbar"][data-orientation="vertical"] {
+	padding-block: 4px !important;
+	padding-inline: 1px !important;
+}
+html [data-slot="scroll-area-scrollbar"][data-orientation="horizontal"] {
+	padding-inline: 4px !important;
+	padding-block: 1px !important;
+}
+html [data-slot="scroll-area-thumb"][data-slot="scroll-area-thumb"] {
+	border-radius: 999px !important;
+}
+html ::-webkit-scrollbar-track:vertical {
+	margin-block: 4px !important;
+}

@@ -1,6 +1,6 @@
 /* T3 Mocha rice, pass 25 (2026-11-09): frosted composer and docks, secret-card input border,
    Enhanced badge gradient, right-panel tab hover on the whole tab.
-   Rollback: delete this file and reload T3. */
+   Rollback: delete this file and reload T3. Notes: H:\System Configuration\notes\2026-11-09-t3-pass25-frost-badge-tabs.md */
 
 /* 1. "Enhanced" badge: Mocha blue -> mauve gradient pill, crust text (same look as the
       Windhawk Enhanced Styler badge), instead of the mauve tint. */
@@ -69,7 +69,7 @@ html[data-window-material][data-window-material] :is(
 	[data-t3l-ba-row],
 	[data-slot="composer-context-strip"],
 	nav[aria-label$="breadcrumb"] > ol,
-	section[data-thread-queue] [class*="border-dashed"],
+	section[data-thread-queue] .border-dashed,
 	section[data-thread-queue] li[aria-label^="Queued message"] > div:last-child,
 	header[data-chat-header] button[data-slot]:not(nav[aria-label$="breadcrumb"] button),
 	[data-workspace-titlebar-controls] button[data-slot]
@@ -79,7 +79,7 @@ html[data-window-material][data-window-material] :is(
 }
 html[data-window-material][data-window-material] :is(
 	nav[aria-label$="breadcrumb"] > ol,
-	section[data-thread-queue] [class*="border-dashed"],
+	section[data-thread-queue] .border-dashed,
 	section[data-thread-queue] li[aria-label^="Queued message"] > div:last-child
 ) {
 	background-color: var(--t24-frost-fill) !important;
@@ -110,7 +110,7 @@ html [data-chat-column] header[data-chat-header] + div .messages-timeline-scroll
 	margin-top: calc(-1 * var(--workspace-topbar-height, 52px)) !important;
 	height: calc(100% + var(--workspace-topbar-height, 52px)) !important;
 }
-html [data-chat-column] header[data-chat-header] + div .legend-list-content-container > div:first-child > div[class*="titlebar-scroll-fade-height"] {
+html [data-chat-column] header[data-chat-header] + div .legend-list-content-container > div:first-child > div.h-\[var\(--workspace-titlebar-scroll-fade-height\)\] {
 	height: calc(var(--workspace-titlebar-scroll-fade-height, 1.5rem) + var(--workspace-topbar-height, 52px)) !important;
 }
 
@@ -161,8 +161,8 @@ html form:has(input[data-1p-ignore]) button[type="submit"][type="submit"]:disabl
 
 /* 7. Update button: same 8px corners as Settings / Pull requests / Usage beside it, idle and while
       updating (the wide "updating" pill and its inner click area too). The small ready dot stays round. */
-html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] :is(button, div)[class*="rounded-full"][class*="rounded-full"][class*="rounded-full"],
-html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] button[class*="rounded-full"][class*="rounded-full"][class*="rounded-full"]::after {
+html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] :is(button, div):is(.\*\:after\:rounded-full,.\[\&\:\:-moz-progress-bar\]\:rounded-full,.\[\&\:\:-moz-range-thumb\]\:rounded-full,.\[\&\:\:-webkit-progress-bar\]\:rounded-full,.\[\&\:\:-webkit-progress-value\]\:rounded-full,.\[\&\:\:-webkit-scrollbar-thumb\]\:rounded-full,.\[\&\:\:-webkit-slider-thumb\]\:rounded-full,.\[\&_button\]\:rounded-full,.after\:rounded-full,.before\:rounded-full,.rounded-full):is(.\*\:after\:rounded-full,.\[\&\:\:-moz-progress-bar\]\:rounded-full,.\[\&\:\:-moz-range-thumb\]\:rounded-full,.\[\&\:\:-webkit-progress-bar\]\:rounded-full,.\[\&\:\:-webkit-progress-value\]\:rounded-full,.\[\&\:\:-webkit-scrollbar-thumb\]\:rounded-full,.\[\&\:\:-webkit-slider-thumb\]\:rounded-full,.\[\&_button\]\:rounded-full,.after\:rounded-full,.before\:rounded-full,.rounded-full):is(.\*\:after\:rounded-full,.\[\&\:\:-moz-progress-bar\]\:rounded-full,.\[\&\:\:-moz-range-thumb\]\:rounded-full,.\[\&\:\:-webkit-progress-bar\]\:rounded-full,.\[\&\:\:-webkit-progress-value\]\:rounded-full,.\[\&\:\:-webkit-scrollbar-thumb\]\:rounded-full,.\[\&\:\:-webkit-slider-thumb\]\:rounded-full,.\[\&_button\]\:rounded-full,.after\:rounded-full,.before\:rounded-full,.rounded-full),
+html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] button:is(.\*\:after\:rounded-full,.\[\&\:\:-moz-progress-bar\]\:rounded-full,.\[\&\:\:-moz-range-thumb\]\:rounded-full,.\[\&\:\:-webkit-progress-bar\]\:rounded-full,.\[\&\:\:-webkit-progress-value\]\:rounded-full,.\[\&\:\:-webkit-scrollbar-thumb\]\:rounded-full,.\[\&\:\:-webkit-slider-thumb\]\:rounded-full,.\[\&_button\]\:rounded-full,.after\:rounded-full,.before\:rounded-full,.rounded-full):is(.\*\:after\:rounded-full,.\[\&\:\:-moz-progress-bar\]\:rounded-full,.\[\&\:\:-moz-range-thumb\]\:rounded-full,.\[\&\:\:-webkit-progress-bar\]\:rounded-full,.\[\&\:\:-webkit-progress-value\]\:rounded-full,.\[\&\:\:-webkit-scrollbar-thumb\]\:rounded-full,.\[\&\:\:-webkit-slider-thumb\]\:rounded-full,.\[\&_button\]\:rounded-full,.after\:rounded-full,.before\:rounded-full,.rounded-full):is(.\*\:after\:rounded-full,.\[\&\:\:-moz-progress-bar\]\:rounded-full,.\[\&\:\:-moz-range-thumb\]\:rounded-full,.\[\&\:\:-webkit-progress-bar\]\:rounded-full,.\[\&\:\:-webkit-progress-value\]\:rounded-full,.\[\&\:\:-webkit-scrollbar-thumb\]\:rounded-full,.\[\&\:\:-webkit-slider-thumb\]\:rounded-full,.\[\&_button\]\:rounded-full,.after\:rounded-full,.before\:rounded-full,.rounded-full)::after {
 	border-radius: 8px !important;
 }
 
@@ -218,7 +218,7 @@ html :is([data-workspace-titlebar-controls], header[data-chat-header], [data-pan
 
 /* image holders: sent-message grid tiles, queued-message tiles, composer attachments and chips */
 html :is(
-	div[class*="aspect-"][class*="overflow-hidden"][data-t3l-pv]:not(button),
+	div:is(.aspect-\[4\/3\],.aspect-auto,.aspect-square,.aspect-video):is(.group-data-\[collapsible\=icon\]\:overflow-hidden,.overflow-hidden)[data-t3l-pv]:not(button),
 	div[data-t3l-pvz][data-t3l-pvz]:not(button),
 	div[data-chat-composer-expanded-image],
 	button.cursor-zoom-in.overflow-hidden[aria-label^="Preview "]
@@ -229,7 +229,7 @@ html :is(
 	transition: box-shadow 0.22s ease !important;
 }
 html :is(
-	div[class*="aspect-"][class*="overflow-hidden"][data-t3l-pv]:not(button),
+	div:is(.aspect-\[4\/3\],.aspect-auto,.aspect-square,.aspect-video):is(.group-data-\[collapsible\=icon\]\:overflow-hidden,.overflow-hidden)[data-t3l-pv]:not(button),
 	div[data-t3l-pvz][data-t3l-pvz]:not(button),
 	div[data-chat-composer-expanded-image],
 	button.cursor-zoom-in.overflow-hidden[aria-label^="Preview "]
@@ -239,7 +239,7 @@ html :is(
 	inset: 0 !important;
 	z-index: 2 !important;
 	border-radius: inherit !important;
-	padding: 1px !important;
+		padding: 1.5px !important;
 	background: linear-gradient(135deg, var(--t25-ga), var(--t25-gb)) !important;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
 	-webkit-mask-composite: xor !important;
@@ -249,7 +249,7 @@ html :is(
 }
 /* inner glow along the edge, over the picture */
 html :is(
-	div[class*="aspect-"][class*="overflow-hidden"][data-t3l-pv]:not(button),
+	div:is(.aspect-\[4\/3\],.aspect-auto,.aspect-square,.aspect-video):is(.group-data-\[collapsible\=icon\]\:overflow-hidden,.overflow-hidden)[data-t3l-pv]:not(button),
 	div[data-t3l-pvz][data-t3l-pvz]:not(button),
 	div[data-chat-composer-expanded-image],
 	button.cursor-zoom-in.overflow-hidden[aria-label^="Preview "]
@@ -265,7 +265,7 @@ html :is(
 	transition: opacity 0.22s ease !important;
 }
 html :is(
-	div[class*="aspect-"][class*="overflow-hidden"][data-t3l-pv]:not(button),
+	div:is(.aspect-\[4\/3\],.aspect-auto,.aspect-square,.aspect-video):is(.group-data-\[collapsible\=icon\]\:overflow-hidden,.overflow-hidden)[data-t3l-pv]:not(button),
 	div[data-t3l-pvz][data-t3l-pvz]:not(button),
 	div[data-chat-composer-expanded-image],
 	button.cursor-zoom-in.overflow-hidden[aria-label^="Preview "]
@@ -275,7 +275,7 @@ html :is(
 	padding: 2px !important;
 }
 html :is(
-	div[class*="aspect-"][class*="overflow-hidden"][data-t3l-pv]:not(button),
+	div:is(.aspect-\[4\/3\],.aspect-auto,.aspect-square,.aspect-video):is(.group-data-\[collapsible\=icon\]\:overflow-hidden,.overflow-hidden)[data-t3l-pv]:not(button),
 	div[data-t3l-pvz][data-t3l-pvz]:not(button),
 	div[data-chat-composer-expanded-image],
 	button.cursor-zoom-in.overflow-hidden[aria-label^="Preview "]
@@ -283,7 +283,7 @@ html :is(
 	opacity: 1 !important;
 }
 html :is(
-	div[class*="aspect-"][class*="overflow-hidden"][data-t3l-pv]:not(button),
+	div:is(.aspect-\[4\/3\],.aspect-auto,.aspect-square,.aspect-video):is(.group-data-\[collapsible\=icon\]\:overflow-hidden,.overflow-hidden)[data-t3l-pv]:not(button),
 	div[data-t3l-pvz][data-t3l-pvz]:not(button),
 	div[data-chat-composer-expanded-image],
 	button.cursor-zoom-in.overflow-hidden[aria-label^="Preview "]
@@ -301,7 +301,7 @@ html :is(button[aria-label^="Preview "], div[data-chat-composer-expanded-image])
    border, painted from a gradient behind it; a dark fill under the picture keeps the gradient
    out of transparent pixels. The edge is always there (quiet grey), so nothing shifts on hover. */
 html :is(.chat-markdown, [data-timeline-row-kind="message"]) img:not(:is(
-	div[class*="aspect-"] img, button[aria-label^="Preview "] img, [data-chat-composer-expanded-image] img
+	div:is(.aspect-\[4\/3\],.aspect-auto,.aspect-square,.aspect-video) img, button[aria-label^="Preview "] img, [data-chat-composer-expanded-image] img
 )) {
 	border: 1.5px solid transparent !important;
 	background: linear-gradient(#181825, #181825) padding-box, linear-gradient(135deg, var(--t25-ga), var(--t25-gb)) border-box !important;
@@ -309,7 +309,7 @@ html :is(.chat-markdown, [data-timeline-row-kind="message"]) img:not(:is(
 	transition: --t25-ga 0.22s ease, --t25-gb 0.22s ease, box-shadow 0.22s ease !important;
 }
 html :is(.chat-markdown, [data-timeline-row-kind="message"]) img:not(:is(
-	div[class*="aspect-"] img, button[aria-label^="Preview "] img, [data-chat-composer-expanded-image] img
+	div:is(.aspect-\[4\/3\],.aspect-auto,.aspect-square,.aspect-video) img, button[aria-label^="Preview "] img, [data-chat-composer-expanded-image] img
 )):hover {
 	--t25-ga: #89b4fa;
 	--t25-gb: #cba6f7;
@@ -324,7 +324,7 @@ html [data-slot="sidebar-inner"] [data-testid="sidebar-row-card"][data-testid="s
 	inset: 0 !important;
 	z-index: 3 !important;
 	border-radius: 12px !important;
-	padding: 1px !important;
+		padding: 1.5px !important;
 	background: linear-gradient(100deg, var(--t25-ga), var(--t25-gb)) !important;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
 	-webkit-mask-composite: xor !important;
@@ -334,7 +334,7 @@ html [data-slot="sidebar-inner"] [data-testid="sidebar-row-card"][data-testid="s
 	--t25-gb: transparent;
 	transition: --t25-ga 0.22s ease, --t25-gb 0.22s ease !important;
 }
-html [data-slot="sidebar-inner"] [data-testid="sidebar-row-card"][data-testid="sidebar-row-card"]:is([class~="bg-sidebar-row-active"], [class~="bg-sidebar-row-selected"])::after {
+html [data-slot="sidebar-inner"] [data-testid="sidebar-row-card"][data-testid="sidebar-row-card"]:is(.bg-sidebar-row-active, .bg-sidebar-row-selected)::after {
 	--t25-ga: rgb(137 180 250 / 0.9);
 	--t25-gb: rgb(203 166 247 / 0.9);
 }
@@ -356,25 +356,25 @@ html [data-slot="sidebar-inner"] [data-testid="sidebar-row-card"][data-testid="s
        the owner asked. Pass 13 and pass 22 gave each trigger inside the box its own hover pill,
        which sat off-centre inside the box. Inner triggers now stay flat in every state; only their
        text brightens. */
-html div[data-right-panel-surface-content] [data-surface-subheader] > div[class*="diff-refs"][class*="diff-refs"] {
+html div[data-right-panel-surface-content] [data-surface-subheader] > div:is(.\@container\/diff-refs,.\@max-\[20rem\]\/diff-refs\:hidden,.\@max-\[20rem\]\/diff-refs\:inline):is(.\@container\/diff-refs,.\@max-\[20rem\]\/diff-refs\:hidden,.\@max-\[20rem\]\/diff-refs\:inline) {
 	position: relative !important;
 }
-html div[data-right-panel-surface-content] [data-surface-subheader] > div[class*="diff-refs"][class*="diff-refs"] :is(button, [data-slot="menu-trigger"], [data-slot="combobox-trigger"], span[data-slot="tooltip-trigger"]):not([data-t3l-none]) {
+html div[data-right-panel-surface-content] [data-surface-subheader] > div:is(.\@container\/diff-refs,.\@max-\[20rem\]\/diff-refs\:hidden,.\@max-\[20rem\]\/diff-refs\:inline):is(.\@container\/diff-refs,.\@max-\[20rem\]\/diff-refs\:hidden,.\@max-\[20rem\]\/diff-refs\:inline) :is(button, [data-slot="menu-trigger"], [data-slot="combobox-trigger"], span[data-slot="tooltip-trigger"]):not([data-t3l-none]) {
 	background-color: transparent !important;
 	background-image: none !important;
 	border-color: transparent !important;
 	box-shadow: none !important;
 	outline: none !important;
 }
-html div[data-right-panel-surface-content] [data-surface-subheader] > div[class*="diff-refs"][class*="diff-refs"] :is(button, [data-slot="menu-trigger"], [data-slot="combobox-trigger"]):is(:hover, [data-popup-open], [aria-expanded="true"]) {
+html div[data-right-panel-surface-content] [data-surface-subheader] > div:is(.\@container\/diff-refs,.\@max-\[20rem\]\/diff-refs\:hidden,.\@max-\[20rem\]\/diff-refs\:inline):is(.\@container\/diff-refs,.\@max-\[20rem\]\/diff-refs\:hidden,.\@max-\[20rem\]\/diff-refs\:inline) :is(button, [data-slot="menu-trigger"], [data-slot="combobox-trigger"]):is(:hover, [data-popup-open], [aria-expanded="true"]) {
 	color: #cdd6f4 !important;
 }
-html div[data-right-panel-surface-content] [data-surface-subheader] > div[class*="diff-refs"][class*="diff-refs"]::after {
+html div[data-right-panel-surface-content] [data-surface-subheader] > div:is(.\@container\/diff-refs,.\@max-\[20rem\]\/diff-refs\:hidden,.\@max-\[20rem\]\/diff-refs\:inline):is(.\@container\/diff-refs,.\@max-\[20rem\]\/diff-refs\:hidden,.\@max-\[20rem\]\/diff-refs\:inline)::after {
 	content: "" !important;
 	position: absolute !important;
 	inset: 0 !important;
 	border-radius: inherit !important;
-	padding: 1px !important;
+		padding: 1.5px !important;
 	background: linear-gradient(100deg, var(--t25-ga), var(--t25-gb)) !important;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
 	-webkit-mask-composite: xor !important;
@@ -384,11 +384,11 @@ html div[data-right-panel-surface-content] [data-surface-subheader] > div[class*
 	--t25-gb: transparent;
 	transition: --t25-ga 0.22s ease, --t25-gb 0.22s ease !important;
 }
-html div[data-right-panel-surface-content] [data-surface-subheader] > div[class*="diff-refs"][class*="diff-refs"]:is(:hover, :focus-within)::after {
+html div[data-right-panel-surface-content] [data-surface-subheader] > div:is(.\@container\/diff-refs,.\@max-\[20rem\]\/diff-refs\:hidden,.\@max-\[20rem\]\/diff-refs\:inline):is(.\@container\/diff-refs,.\@max-\[20rem\]\/diff-refs\:hidden,.\@max-\[20rem\]\/diff-refs\:inline):is(:hover, :focus-within)::after {
 	--t25-ga: #89b4fa;
 	--t25-gb: #cba6f7;
 }
-html div[data-right-panel-surface-content] [data-surface-subheader] > div[class*="diff-refs"][class*="diff-refs"]:is(:hover, :focus-within) {
+html div[data-right-panel-surface-content] [data-surface-subheader] > div:is(.\@container\/diff-refs,.\@max-\[20rem\]\/diff-refs\:hidden,.\@max-\[20rem\]\/diff-refs\:inline):is(.\@container\/diff-refs,.\@max-\[20rem\]\/diff-refs\:hidden,.\@max-\[20rem\]\/diff-refs\:inline):is(:hover, :focus-within) {
 	background-color: var(--t15-hover) !important;
 	box-shadow: var(--t22-halo) !important;
 }
@@ -461,7 +461,7 @@ html [data-composer-command-drawer][data-composer-command-drawer] [data-slot="co
 	position: absolute !important;
 	inset: 0 !important;
 	border-radius: inherit !important;
-	padding: 1px !important;
+		padding: 1.5px !important;
 	background: linear-gradient(100deg, var(--t25-ga), var(--t25-gb)) !important;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
 	-webkit-mask-composite: xor !important;
@@ -503,20 +503,20 @@ html [data-slot$="-popup"]::after {
        the hover was a light grey-blue wash (surface0 at 42% over the see-through card) and the
        chevron drew its own box inside the row. Now one dark Mocha hover per row, the same gradient
        frame and inner glow as thread rows, and every button inside the row stays flat. */
-html body [data-thread-details-card][data-thread-details-card] :is(.group\/details-split, .group\/details-items div.cursor-default, [data-slot="tooltip-trigger"][class*="grid-cols-subgrid"]) {
+html body [data-thread-details-card][data-thread-details-card] :is(.group\/details-split, .group\/details-items div.cursor-default, [data-slot="tooltip-trigger"].grid-cols-subgrid) {
 	position: relative !important;
 	border-radius: 9px !important;
 	background-color: transparent !important;
 	box-shadow: none !important;
 	transition: background-color 0.22s ease, box-shadow 0.22s ease !important;
 }
-html body [data-thread-details-card][data-thread-details-card] :is(.group\/details-split, .group\/details-items div.cursor-default, [data-slot="tooltip-trigger"][class*="grid-cols-subgrid"])::after {
+html body [data-thread-details-card][data-thread-details-card] :is(.group\/details-split, .group\/details-items div.cursor-default, [data-slot="tooltip-trigger"].grid-cols-subgrid)::after {
 	content: "" !important;
 	position: absolute !important;
 	inset: 0 !important;
 	z-index: 3 !important;
 	border-radius: inherit !important;
-	padding: 1px !important;
+		padding: 1.5px !important;
 	background: linear-gradient(100deg, var(--t25-ga), var(--t25-gb)) !important;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
 	-webkit-mask-composite: xor !important;
@@ -527,10 +527,10 @@ html body [data-thread-details-card][data-thread-details-card] :is(.group\/detai
 	transition: --t25-ga 0.22s ease, --t25-gb 0.22s ease !important;
 }
 /* subgrid rows have no padding of their own, so their frame sits 4px outside the text */
-html body [data-thread-details-card][data-thread-details-card] [data-slot="tooltip-trigger"][class*="grid-cols-subgrid"]::after {
+html body [data-thread-details-card][data-thread-details-card] [data-slot="tooltip-trigger"].grid-cols-subgrid::after {
 	inset: -3px -6px !important;
 }
-html body [data-thread-details-card][data-thread-details-card] :is(.group\/details-split, .group\/details-items div.cursor-default, [data-slot="tooltip-trigger"][class*="grid-cols-subgrid"]):is(:hover, [data-t25f])::after {
+html body [data-thread-details-card][data-thread-details-card] :is(.group\/details-split, .group\/details-items div.cursor-default, [data-slot="tooltip-trigger"].grid-cols-subgrid):is(:hover, [data-t25f])::after {
 	--t25-ga: #89b4fa;
 	--t25-gb: #cba6f7;
 	padding: 2px !important;
@@ -539,7 +539,7 @@ html body [data-thread-details-card][data-thread-details-card] :is(.group\/detai
 	background-color: rgb(24 24 37 / 0.72) !important;
 	box-shadow: inset 0 0 14px -6px rgb(137 180 250 / 0.5), inset 0 0 22px -10px rgb(203 166 247 / 0.45) !important;
 }
-html body [data-thread-details-card][data-thread-details-card] [data-slot="tooltip-trigger"][class*="grid-cols-subgrid"]:is(:hover, [data-t25f]) {
+html body [data-thread-details-card][data-thread-details-card] [data-slot="tooltip-trigger"].grid-cols-subgrid:is(:hover, [data-t25f]) {
 	background-color: rgb(24 24 37 / 0.72) !important;
 	box-shadow: 0 0 0 3px rgb(24 24 37 / 0.72), 0 0 0 6px rgb(24 24 37 / 0) !important;
 }
@@ -566,16 +566,18 @@ html[data-window-material][data-window-material][data-window-material]:not([data
 /* 18. Reply boxes in the thread: on hover they lit a plain light-blue edge. Now the Mocha blue to
        mauve gradient frame and glow, drawn on an overlay so the text never covers it. Replies inside
        a work run stay unframed (the run's lane is their box, pass 20). */
-html body :is([data-timeline-row-kind="message"][data-message-role="assistant"] > div:has(.chat-markdown), [data-timeline-row-kind="message"][data-message-role="user"] > div[class*="bg-message"]) {
+html body [data-timeline-row-kind="message"][data-message-role="assistant"] > div:has(.chat-markdown),
+html body [data-timeline-row-kind="message"][data-message-role="user"] > div:is(.bg-message,.bg-message-action,.hover\:bg-message-action-hover) {
 	position: relative !important;
 }
-html body :is([data-timeline-row-kind="message"][data-message-role="assistant"] > div:has(.chat-markdown), [data-timeline-row-kind="message"][data-message-role="user"] > div[class*="bg-message"])::after {
+html body [data-timeline-row-kind="message"][data-message-role="assistant"] > div:has(.chat-markdown)::after,
+html body [data-timeline-row-kind="message"][data-message-role="user"] > div:is(.bg-message,.bg-message-action,.hover\:bg-message-action-hover)::after {
 	content: "" !important;
 	position: absolute !important;
 	inset: 0 !important;
 	z-index: 2 !important;
 	border-radius: inherit !important;
-	padding: 1px !important;
+		padding: 1.5px !important;
 	background: linear-gradient(135deg, var(--t25-ga), var(--t25-gb)) !important;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
 	-webkit-mask-composite: xor !important;
@@ -583,10 +585,12 @@ html body :is([data-timeline-row-kind="message"][data-message-role="assistant"] 
 	pointer-events: none !important;
 	transition: --t25-ga 0.22s ease, --t25-gb 0.22s ease !important;
 }
-html body :is([data-timeline-row-kind="message"][data-message-role="assistant"] > div:has(.chat-markdown), [data-timeline-row-kind="message"][data-message-role="user"] > div[class*="bg-message"]):is(:hover, [data-t25f]) {
+html body [data-timeline-row-kind="message"][data-message-role="assistant"] > div:has(.chat-markdown):is(:hover, [data-t25f]),
+html body [data-timeline-row-kind="message"][data-message-role="user"] > div:is(.bg-message,.bg-message-action,.hover\:bg-message-action-hover):is(:hover, [data-t25f]) {
 	box-shadow: 0 0 14px -6px rgb(137 180 250 / 0.45), 0 0 22px -10px rgb(203 166 247 / 0.4) !important;
 }
-html body :is([data-timeline-row-kind="message"][data-message-role="assistant"] > div:has(.chat-markdown), [data-timeline-row-kind="message"][data-message-role="user"] > div[class*="bg-message"]):is(:hover, [data-t25f])::after {
+html body [data-timeline-row-kind="message"][data-message-role="assistant"] > div:has(.chat-markdown):is(:hover, [data-t25f])::after,
+html body [data-timeline-row-kind="message"][data-message-role="user"] > div:is(.bg-message,.bg-message-action,.hover\:bg-message-action-hover):is(:hover, [data-t25f])::after {
 	--t25-ga: #89b4fa;
 	--t25-gb: #cba6f7;
 	padding: 2px !important;
@@ -639,10 +643,10 @@ html section[data-thread-queue][data-thread-queue] {
        on hover. Hovering anywhere in the run now lights the whole box with the blue to mauve edge:
        blue down the left, mauve down the right, blending along the top and bottom. The box is
        drawn row by row, so each row draws its own share of the frame. */
-html .messages-timeline-row-frame[data-t15a-run] div[class*="chat-content-lane"] {
+html .messages-timeline-row-frame[data-t15a-run] div.chat-content-lane {
 	position: relative !important;
 }
-html .messages-timeline-row-frame[data-t15a-run] div[class*="chat-content-lane"]::after {
+html .messages-timeline-row-frame[data-t15a-run] div.chat-content-lane::after {
 	content: "" !important;
 	position: absolute !important;
 	inset: 0 !important;
@@ -658,20 +662,20 @@ html .messages-timeline-row-frame[data-t15a-run] div[class*="chat-content-lane"]
 	--t25-gb: transparent;
 	transition: --t25-ga 0.22s ease, --t25-gb 0.22s ease !important;
 }
-html .messages-timeline-row-frame[data-t15a-run][data-t15a-run-start] div[class*="chat-content-lane"]::after { padding: 2px 2px 0 !important; }
+html .messages-timeline-row-frame[data-t15a-run][data-t15a-run-start] div.chat-content-lane::after { padding: 2px 2px 0 !important; }
 /* rows sit at fractional pixel positions; reach 1px up into the row above so the edge never shows a 1px break at a join */
-html .messages-timeline-row-frame[data-t15a-run]:not([data-t15a-run-start]) div[class*="chat-content-lane"]::after { top: -1px !important; }
-html .messages-timeline-row-frame[data-t15a-run][data-t15a-run-end] div[class*="chat-content-lane"]::after { padding: 0 2px 2px !important; }
-html .messages-timeline-row-frame[data-t15a-run][data-t15a-run-start][data-t15a-run-end] div[class*="chat-content-lane"]::after { padding: 2px !important; }
-html .messages-timeline-scroll[data-t25-lit] .messages-timeline-row-frame[data-t15a-run] > .chat-content-lane::after {
+html .messages-timeline-row-frame[data-t15a-run]:not([data-t15a-run-start]) div.chat-content-lane::after { top: -1px !important; }
+html .messages-timeline-row-frame[data-t15a-run][data-t15a-run-end] div.chat-content-lane::after { padding: 0 2px 2px !important; }
+html .messages-timeline-row-frame[data-t15a-run][data-t15a-run-start][data-t15a-run-end] div.chat-content-lane::after { padding: 2px !important; }
+html .messages-timeline-row-frame[data-t15a-run][data-t25-lit] > .chat-content-lane::after {
 	--t25-ga: #89b4fa;
 	--t25-gb: #cba6f7;
 }
-html .messages-timeline-scroll[data-t25-lit] .messages-timeline-row-frame[data-t15a-run][data-t15a-run] > .chat-content-lane {
+html .messages-timeline-row-frame[data-t15a-run][data-t25-lit][data-t15a-run] > .chat-content-lane {
 	box-shadow: none !important; /* no inner glow: each row would glow on its own and leave a bright seam where two rows meet */
 }
 @media (prefers-reduced-motion: reduce) {
-	html .messages-timeline-row-frame[data-t15a-run] div[class*="chat-content-lane"]::after { transition: none !important; }
+	html .messages-timeline-row-frame[data-t15a-run] div.chat-content-lane::after { transition: none !important; }
 }
 
 /* 23. No inner hover boxes inside a work run (owner, 2026-11-09: "get rid of this unnecessary
@@ -680,10 +684,10 @@ html .messages-timeline-scroll[data-t25-lit] .messages-timeline-row-frame[data-t
        itself is the only thing that reacts now (section 22). The "Worked for" toggle keeps its pill. */
 html .messages-timeline-row-frame[data-t15a-run][data-t15a-run] :is(
 	div.group\/timeline-row,
-	[data-timeline-row-kind="work-live"] button[class*="live-work"],
+	[data-timeline-row-kind="work-live"] button.group\/live-work,
 	[data-timeline-row-kind="thinking"] button,
-	div[class*="chat-content-lane"] [data-timeline-row-kind]:not([data-timeline-row-kind="work-toggle"]) li,
-	div[class*="chat-content-lane"] [data-timeline-row-kind]:not([data-timeline-row-kind="work-toggle"]) [class*="hover:bg"]:not([data-changed-files-state] *)
+	div.chat-content-lane [data-timeline-row-kind]:not([data-timeline-row-kind="work-toggle"]) li,
+	div.chat-content-lane [data-timeline-row-kind]:not([data-timeline-row-kind="work-toggle"]) [class*="hover:bg"]:not([data-changed-files-state] *)
 ):is(:hover, :focus-visible, [data-t25f]) {
 	background-color: transparent !important;
 	background-image: none !important;
@@ -700,7 +704,7 @@ html body [data-thread-details-card][data-thread-details-card] .group\/details-s
 html body [data-thread-details-card][data-thread-details-card] .group\/details-split :is(div, button):not([data-t3l-none]) {
 	background-color: transparent !important;
 }
-html body [data-thread-details-card][data-thread-details-card][data-thread-details-card] :is(.group\/details-split, .group\/details-items div.cursor-default, [data-slot="tooltip-trigger"][class*="grid-cols-subgrid"]):is(:hover, [data-t25f]),
+html body [data-thread-details-card][data-thread-details-card][data-thread-details-card] :is(.group\/details-split, .group\/details-items div.cursor-default, [data-slot="tooltip-trigger"].grid-cols-subgrid):is(:hover, [data-t25f]),
 html [data-composer-command-drawer][data-composer-command-drawer][data-composer-command-drawer] [data-slot="command-item"][data-slot="command-item"]:is([aria-selected="true"], [data-highlighted], [data-active="true"], :hover, [data-t25f]) {
 	--accent: rgb(36 36 54 / 0.9);
 	--color-accent: rgb(36 36 54 / 0.9);
