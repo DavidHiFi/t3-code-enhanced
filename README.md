@@ -35,7 +35,7 @@ That's the last time you need the zip. New releases show up as a button in T3 Co
 
 ### Look
 
-- **Catppuccin Mocha theme:** Mocha colours across the whole app, with blue and mauve accents.
+- **Catppuccin Mocha theme:** Mocha colours across the whole app, with blue and mauve accents. T3's System appearance opens dark even when Windows is in light mode; pick Light in T3's settings to keep it light.
 - **Frosted surfaces:** the chat box, menus, tooltips and dialogs blur what's behind them, so text never shows through.
 - **Mocha text selection:** selected text gets a soft Mocha blue highlight everywhere, reply cards included.
 - **Hover frames:** rows, cards, buttons, menus and settings controls get a thin blue to mauve frame on hover and a grey edge at rest.

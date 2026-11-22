@@ -272,6 +272,36 @@ function startEvalBridge(mainWindow) {
 // is switched on as well. Chromium leaves pages that declare a dark color-scheme alone; pages that are
 // already dark without declaring it (AdGuard Home) are detected by their painted background and skipped.
 const SCHEMES = new Set(["light", "dark"]);
+
+// The theme is Mocha, a dark theme. T3 copies its Appearance choice onto nativeTheme.themeSource, and
+// its default "System" follows Windows, so on a PC set to light mode T3 opened light over a light,
+// see-through backdrop: grey with faint text (seen in the test PC 2026-11-22). "System" now means dark;
+// an explicit Light choice in T3's settings is kept. Wrapped once per process.
+function pinDarkTheme() {
+	const { nativeTheme } = require("electron");
+	if (global.__t3PinDark) return;
+	let desc;
+	for (let proto = nativeTheme; proto && !desc; proto = Object.getPrototypeOf(proto)) desc = Object.getOwnPropertyDescriptor(proto, "themeSource");
+	if (!desc || !desc.get || !desc.set) return;
+	Object.defineProperty(nativeTheme, "themeSource", {
+		configurable: true,
+		enumerable: desc.enumerable,
+		get() {
+			return desc.get.call(this);
+		},
+		set(value) {
+			desc.set.call(this, value === "system" ? "dark" : value);
+		},
+	});
+	global.__t3PinDark = true;
+	if (desc.get.call(nativeTheme) !== "system") return false;
+	const wasLight = !nativeTheme.shouldUseDarkColors;
+	desc.set.call(nativeTheme, "dark");
+	// T3's page picked light from Windows before this hook ran, and no listener re-reads it on every
+	// screen (the first-run welcome page has none), so the caller reloads the page once.
+	return wasLight;
+}
+
 const OWN_DARK_PROBE = `(() => {
 	const cs = getComputedStyle(document.documentElement).colorScheme || "";
 	const meta = (document.querySelector('meta[name="color-scheme"]') || {}).content || "";
@@ -620,6 +650,15 @@ module.exports = function onMainWindowLoad(window) {
 		log(`updater: ${error.message}`);
 	}
 	if (config.evalBridge === true) startEvalBridge(window);
+	try {
+		if (pinDarkTheme()) {
+			log("pinDark: Windows is in light mode; reloading once in dark");
+			contents.reload();
+			return;
+		}
+	} catch (error) {
+		log(`pinDark: ${error.message}`);
+	}
 	try {
 		installBrowserAppearance(config.browserAppearance);
 	} catch (error) {
