@@ -36,7 +36,7 @@ html.dark [data-composer-banner-surface][data-composer-banner-surface][data-comp
 	position: relative !important;
 	z-index: 30 !important;
 	transform: translateY(-14px) !important;
-	border: 1px solid var(--t5-edge) !important;
+	border: 2px solid var(--t5-edge) !important;
 	border-radius: 14px !important;
 	box-shadow: 0 14px 32px -14px rgb(17 17 27 / 0.9) !important;
 	transition: var(--t5-ease) !important;
@@ -59,7 +59,7 @@ html.dark [data-composer-banner-surface][data-composer-banner-surface][data-comp
 [data-slot="sidebar-inner"] [data-environment-identification="pill"][data-environment-identification="pill"],
 [data-slot="sidebar-inner"] div:has(> div > div > a[aria-label="T3 Code home"]) div.ml-1 > span {
 	background: rgb(17 17 27 / 0.75) !important;
-	border: 1px solid rgb(108 112 134 / 0.32) !important;
+	border: 2px solid rgb(108 112 134 / 0.32) !important;
 	color: #a6adc8 !important;
 	border-radius: 7px !important;
 	padding: 1px 7px !important;
@@ -100,7 +100,7 @@ html [data-thread-details-card][data-thread-details-card][data-thread-details-ca
 /* ================= composer footer: resting pills, glow on hover ================= */
 [data-chat-composer-footer] :is(button[aria-label="Attach files"], button[aria-label="More composer controls"], [data-chat-provider-model-picker]) {
 	background-color: var(--t5-pill) !important;
-	box-shadow: inset 0 0 0 1.5px var(--t5-edge) !important;
+	box-shadow: inset 0 0 0 2px var(--t5-edge) !important;
 	border-radius: 10px !important;
 	transition: var(--t5-ease) !important;
 }
@@ -122,7 +122,7 @@ html [data-thread-details-card][data-thread-details-card][data-thread-details-ca
 }
 [data-thread-queue] button:not([disabled]) {
 	background-color: var(--t5-pill) !important;
-	box-shadow: inset 0 0 0 1.5px var(--t5-edge) !important;
+	box-shadow: inset 0 0 0 2px var(--t5-edge) !important;
 	border-radius: 8px !important;
 	transition: var(--t5-ease) !important;
 }
@@ -136,7 +136,7 @@ html [data-thread-details-card][data-thread-details-card][data-thread-details-ca
 	padding: 2px 3px 2px 9px !important;
 	border-radius: 10px !important;
 	background: var(--t5-pill) !important;
-	box-shadow: inset 0 0 0 1.5px var(--t5-edge) !important;
+	box-shadow: inset 0 0 0 2px var(--t5-edge) !important;
 	transition: var(--t5-ease) !important;
 }
 [data-timeline-row-kind] div.justify-end:has(> p.tabular-nums[data-slot="tooltip-trigger"] + div > button):hover {
@@ -161,7 +161,7 @@ ul[role="tree"][aria-label="Threads"] > :is([data-testid="sidebar-working-header
 	height: 28px !important;
 	border-radius: 10px !important;
 	background-color: var(--t5-pill) !important;
-	box-shadow: inset 0 0 0 1.5px var(--sh-e, var(--t5-edge)) !important;
+	box-shadow: inset 0 0 0 2px var(--sh-e, var(--t5-edge)) !important;
 	transition: var(--t5-ease) !important;
 }
 [data-slot="sidebar-inner"] button[data-sidebar-row="shelf:working"] { --sh-e: rgb(137 180 250 / 0.38); }

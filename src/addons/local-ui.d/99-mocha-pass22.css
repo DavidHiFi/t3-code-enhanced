@@ -43,7 +43,7 @@ html [data-slot="sidebar-inner"] .bg-sidebar-row-selected {
 }
 /* composer hover: inset only (was two outer glows that clipped at the lane) */
 :is(.before\:bg-\(--chat-composer-glass-surface\)\/\(--glass-opacity\),.group-data-context-row\/composer-surface\:before\:bg-\(--chat-composer-glass-surface\)\/\(--glass-opacity\),.not-supports-\[\(\(backdrop-filter\:blur\(1px\)\)_or_\(-webkit-backdrop-filter\:blur\(1px\)\)\)\]\:before\:bg-\(--chat-composer-glass-surface\)):is(:hover, :focus-within)::before {
-	box-shadow: var(--t22-halo), inset 0 1px 0 rgb(205 214 244 / 0.08) !important;
+	box-shadow: var(--t22-halo), 0 0 #0000 !important;
 }
 /* brand link hover (pass 16 hardcoded an outer glow inside overflow:hidden) */
 [data-slot="sidebar-inner"] a[aria-label="T3 Code home"]:hover {
@@ -64,7 +64,7 @@ div.pointer-events-none.fixed:is(.left-\[var\(--workspace-controls-left\)\],.ml-
 div.pointer-events-none.fixed:is(.left-\[var\(--workspace-controls-left\)\],.ml-\[calc\(var\(--workspace-controls-left\)\+1px-env\(safe-area-inset-left\)\)\]) button {
 	border-radius: 8px !important;
 	background-color: var(--t15-dock) !important;
-	box-shadow: inset 0 0 0 1.5px var(--t15-edge) !important;
+	box-shadow: inset 0 0 0 2px var(--t15-edge) !important;
 	transition: var(--t15-ease) !important;
 }
 div.pointer-events-none.fixed:is(.left-\[var\(--workspace-controls-left\)\],.ml-\[calc\(var\(--workspace-controls-left\)\+1px-env\(safe-area-inset-left\)\)\]) button:hover {
@@ -149,7 +149,7 @@ html .messages-timeline-scroll div.flex.min-w-0.items-center.gap-2 > .h-px {
 html [data-timeline-root] div.flex.min-w-0.items-center.gap-2 > span.rounded-full {
 	width: fit-content !important;
 	background-color: var(--t15-dock) !important;
-	box-shadow: inset 0 0 0 1.5px var(--t15-edge) !important;
+	box-shadow: inset 0 0 0 2px var(--t15-edge) !important;
 }
 
 /* ---- 4b. error cards inside a run (owner item 25): the RUN dock is the one
@@ -177,8 +177,8 @@ html [data-timeline-root] [data-v2-item-type="error"] [data-v2-item-type="error"
 /* run lane hover: full edge-hi border + the inset halo (never clips) */
 .messages-timeline-row-frame[data-t15a-run]:hover div.chat-content-lane {
 	box-shadow:
-		inset 1px 0 0 var(--t15-edge-hi),
-		inset -1px 0 0 var(--t15-edge-hi),
+		inset 2px 0 0 var(--t15-edge-hi),
+		inset -2px 0 0 var(--t15-edge-hi),
 		var(--t22-halo) !important;
 }
 /* owner item 34 root cause: a single-frame run is BOTH -start and -end, and
@@ -186,10 +186,10 @@ html [data-timeline-root] [data-v2-item-type="error"] [data-v2-item-type="error"
    edges, for single-frame runs. */
 .messages-timeline-row-frame[data-t15a-run][data-t15a-run-start][data-t15a-run-end] div.chat-content-lane {
 	box-shadow:
-		inset 1px 0 0 var(--t15-edge),
-		inset -1px 0 0 var(--t15-edge),
-		inset 0 1px 0 var(--t15-edge),
-		inset 0 -1px 0 var(--t15-edge) !important;
+		inset 2px 0 0 var(--t15-edge),
+		inset -2px 0 0 var(--t15-edge),
+		inset 0 2px 0 var(--t15-edge),
+		inset 0 -2px 0 var(--t15-edge) !important;
 	border-radius: 14px !important;
 }
 
@@ -268,8 +268,8 @@ html [data-slot="sidebar-rail"][data-slot="sidebar-rail"][data-slot="sidebar-rai
 [data-slot="popover-popup"]:has([data-model-picker-content]) {
 	background-color: var(--t15-solid) !important;
 	border-radius: 14px !important;
-	border: 1px solid var(--t15-edge-hi) !important;
-	box-shadow: 0 16px 40px -16px rgb(17 17 27 / 0.92), inset 0 1px 0 rgb(205 214 244 / 0.08) !important;
+	border: 2px solid var(--t15-edge-hi) !important;
+	box-shadow: 0 16px 40px -16px rgb(17 17 27 / 0.92), 0 0 #0000 !important;
 }
 [data-model-picker-sidebar],
 [data-model-picker-content] > div:is(.bg-muted\/40,.hover\:bg-muted\/40),
@@ -308,7 +308,7 @@ html [data-slot="sidebar-rail"][data-slot="sidebar-rail"][data-slot="sidebar-rai
 }
 /* selected-indicator: inset ring + halo, never an outer glow */
 [data-model-picker-selected-indicator] {
-	box-shadow: 0 0 0 1.5px var(--t15-blue), var(--t22-halo) !important;
+	box-shadow: 0 0 0 2px var(--t15-blue), var(--t22-halo) !important;
 }
 /* model-list search row and option rows keep pass-4 geometry, aligned */
 
@@ -337,7 +337,7 @@ div[data-right-panel-surface-content] [data-surface-subheader] button:hover {
 div[data-right-panel-tabbar] div.group\/tab[data-active-tab="true"],
 div[data-right-panel-surface-content] [data-surface-subheader] button[data-pressed="true"] {
 	background-color: var(--t15-hover-hi) !important;
-	box-shadow: inset 0 0 0 1.5px var(--t15-edge) !important;
+	box-shadow: inset 0 0 0 2px var(--t15-edge) !important;
 }
 /* owner item 28a: hover pill must sit fully inside its dock - inner padding
    on the segmented group keeps the pill's outline and glow inside, WITHOUT
@@ -394,7 +394,7 @@ div[data-right-panel-tabbar] button:hover {
    background), radius = its radius. No ring on the inner content row. Hover
    turns the same ring into the Mocha blue -> lavender gradient + soft glow. ===== */
 html [data-slot="sidebar-inner"] div.relative.flex:is(.\[--toast-header-offset\:var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\]\!,.max-h-\[var\(--workspace-topbar-height\)\]\!,.min-h-\[var\(--workspace-topbar-height\)\],.min-h-\[var\(--workspace-topbar-height\)\]\!,.pb-\(--workspace-topbar-height\),.wco\:h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:max-h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:mt-\(--workspace-topbar-height\),.workspace-topbar-height) {
-	box-shadow: inset 0 0 0 1.5px var(--t15-edge) !important;
+	box-shadow: inset 0 0 0 2px var(--t15-edge) !important;
 	border-radius: 12px !important;
 }
 html [data-slot="sidebar-inner"] div.relative.flex:is(.\[--toast-header-offset\:var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\]\!,.max-h-\[var\(--workspace-topbar-height\)\]\!,.min-h-\[var\(--workspace-topbar-height\)\],.min-h-\[var\(--workspace-topbar-height\)\]\!,.pb-\(--workspace-topbar-height\),.wco\:h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:max-h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:mt-\(--workspace-topbar-height\),.workspace-topbar-height)::after {
@@ -402,7 +402,7 @@ html [data-slot="sidebar-inner"] div.relative.flex:is(.\[--toast-header-offset\:
 	position: absolute !important;
 	inset: 0 !important;
 	border-radius: inherit !important;
-		padding: 1.5px !important;
+		padding: 2px !important;
 	background: transparent !important;
 	-webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
 	-webkit-mask-composite: xor;
@@ -424,7 +424,7 @@ html [data-slot="sidebar-inner"] div.flex.h-8:has(a[aria-label="T3 Code home"]) 
    pill over the stars; hover = same gradient ring at its own radius. ===== */
 html [data-slot="sidebar-inner"] a[aria-label="T3 Code home"] {
 	background-color: rgb(17 17 27 / 0.55) !important;
-	box-shadow: inset 0 0 0 1.5px rgb(108 112 134 / 0.65) !important;
+	box-shadow: inset 0 0 0 2px rgb(108 112 134 / 0.65) !important;
 	position: relative !important;
 }
 html [data-slot="sidebar-inner"] a[aria-label="T3 Code home"]::after {
@@ -432,7 +432,7 @@ html [data-slot="sidebar-inner"] a[aria-label="T3 Code home"]::after {
 	position: absolute !important;
 	inset: 0 !important;
 	border-radius: inherit !important;
-		padding: 1.5px !important;
+		padding: 2px !important;
 	background: transparent !important;
 	-webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
 	-webkit-mask-composite: xor;
@@ -607,7 +607,7 @@ html [data-chat-thread-status-line] {
 	background-color: rgb(24 24 37 / 0.62) !important;
 	-webkit-backdrop-filter: blur(28px) saturate(1.6) !important;
 	backdrop-filter: blur(28px) saturate(1.6) !important;
-	box-shadow: inset 0 0 0 1.5px var(--t15-edge) !important;
+	box-shadow: inset 0 0 0 2px var(--t15-edge) !important;
 	overflow: hidden !important;
 }
 html [data-chat-thread-status-line] button {
@@ -664,7 +664,7 @@ html [data-composer-banner-surface]:not([data-composer-shoulder-tab]) {
 	background-color: rgb(45 29 42 / 0.68) !important;
 	-webkit-backdrop-filter: blur(28px) saturate(1.6) !important;
 	backdrop-filter: blur(28px) saturate(1.6) !important;
-	box-shadow: inset 0 0 0 1.5px var(--t15-edge) !important;
+	box-shadow: inset 0 0 0 2px var(--t15-edge) !important;
 }
 html [data-composer-banner-surface]:not([data-composer-shoulder-tab])::before,
 html [data-composer-banner-surface]:not([data-composer-shoulder-tab])::after {

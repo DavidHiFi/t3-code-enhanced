@@ -11,7 +11,7 @@
 /* the segmented track: deep Mocha fill, one grey resting edge, inner radius follows outer */
 [data-composer-permissions] > .bg-input\/40 {
 	background-color: rgb(17 17 27 / 0.55) !important;
-	border: 1px solid var(--t4-edge, rgb(108 112 134 / 0.34)) !important;
+	border: 2px solid var(--t4-edge, rgb(108 112 134 / 0.34)) !important;
 	border-radius: 9px !important;
 	transition: background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease !important;
 }
@@ -25,7 +25,7 @@
 /* checked: dark Mocha pill, 1px lavender ring, light text */
 [data-composer-permissions] [role="menuitemradio"][data-checked] {
 	background-color: rgb(49 50 68 / 0.85) !important;
-	box-shadow: var(--t4-ring-lav, inset 0 0 0 1.5px rgb(180 190 254 / 0.38)) !important;
+	box-shadow: var(--t4-ring-lav, inset 0 0 0 2px rgb(180 190 254 / 0.38)) !important;
 	color: #cdd6f4 !important;
 }
 
@@ -37,5 +37,5 @@
 /* unchecked hover/highlight: dark tint plus the blue ring - no light accent wash */
 [data-composer-permissions] [role="menuitemradio"]:not([data-checked]):is(:hover, [data-highlighted]) {
 	background-color: rgb(49 50 68 / 0.6) !important;
-	box-shadow: var(--t4-ring-blue, inset 0 0 0 1.5px rgb(137 180 250 / 0.7)) !important;
+	box-shadow: var(--t4-ring-blue, inset 0 0 0 2px rgb(137 180 250 / 0.7)) !important;
 }

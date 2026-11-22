@@ -1,0 +1,110 @@
+/* Pass 58 (2026-11-22): one edge weight everywhere.
+   Owner: borders wrap round but get skinnier in parts; same radius and thickness all the way round.
+   Causes found by a live sweep:
+   1. 140 edges in the older layers were 1.5px. The screen draws whole pixels, so a 1.5px edge
+      lands as 1px on some sides and 2px on others. They are now 2px in place.
+   2. Docks drew a 1px edge plus an extra light line along the top only, so the top read thicker.
+      Docks are 2px all round and the top line is gone; the work-run box sides are 2px too.
+   3. T3's own default edge (the "border" class: settings cards, pickers, buttons, inputs) is 1px
+      beside our 2px docks. This file makes it 2px. One-sided divider lines stay 1px.
+   Left alone on purpose: the tiny round provider badges on avatars and the miniature window
+   drawings inside the theme preview cards, where 2px would swallow the drawing.
+   Rollback: delete this file and reload T3. Causes 1 and 2 were fixed in the older layers themselves. */
+
+html body .border:not(.rounded-full.absolute.pointer-events-none):not([data-theme-preview] *):not(button[aria-label^="Use "] span):not(button[aria-label^="Follow the system"] span) {
+	border-width: 2px !important;
+}
+
+/* 4. Buttons whose grey rest ring was drawn inside a clear border (top-right panel buttons, the
+   queued-message buttons, attach and more-controls in the composer, sidebar toggle).
+   Their hover frame sits on the outer edge, so the ring moved 2px out on hover. The rest ring is now
+   the border itself, so rest and hover edges are the same 2px in the same place. */
+html body :is([data-panel-layout-controls], [data-workspace-titlebar-controls], [data-thread-queue]) button.border:not(:hover):not(:focus-visible):not([disabled]),
+html body [data-chat-composer-surface] button.border:is([aria-label="Attach files"], [aria-label="More composer controls"]):not(:hover):not(:focus-visible):not([disabled]),
+html body button.border.border.border[aria-label="Toggle main sidebar"][aria-label][aria-label][aria-label][data-slot]:not(:hover):not(:focus-visible):not([disabled]) {
+	border-color: rgb(108 112 134 / 0.4) !important;
+	box-shadow: none !important;
+}
+html body [data-thread-queue] button.border[data-slot="button"]:not([aria-label^="Remove"]):not(:hover):not(:focus-visible):not([disabled]) {
+	border-color: rgb(108 112 134 / 0.55) !important;
+}
+
+/* 5. Hover on those same buttons: the border went solid blue while a frame drew a second 2px ring
+   inside it (sidebar toggle, add panel), or the border went blue with no gradient at all (attach,
+   more controls). On hover the border is now clear and one 2px blue to mauve frame sits on it. */
+html body button.border.border.border:is([aria-label="Toggle main sidebar"], [aria-label="Add panel surface"], [aria-label="Attach files"], [aria-label="More composer controls"])[aria-label][aria-label]:not([disabled]):is(:hover, :focus-visible) {
+	border-color: transparent !important;
+}
+html body button.border.border.border:is([aria-label="Toggle main sidebar"], [aria-label="Attach files"], [aria-label="More composer controls"])[aria-label][aria-label]:not([disabled]):is(:hover, :focus-visible)::after {
+	content: "" !important;
+	display: block !important;
+	position: absolute !important;
+	inset: -2px !important;
+	z-index: 3 !important;
+	padding: 2px !important;
+	border: 0 !important;
+	border-radius: inherit !important;
+	background: linear-gradient(135deg, #89b4fa, #cba6f7) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	opacity: 1 !important;
+	pointer-events: none !important;
+}
+
+/* 6. The add panel button at the right end of the panel tab bar: pass 31d draws its rest ring and
+   frame 2px inside its clear border, with the outer corner curve. Ring onto the border, frame on it.
+   In @layer theme, where pass 31d's rules sit. */
+@layer theme {
+	html body div[data-right-panel-tabbar] button.border.border[aria-label="Add panel surface"][aria-label]:not(:hover):not(:focus-visible):not([disabled]) {
+		border-color: rgb(108 112 134 / 0.4) !important;
+		box-shadow: none !important;
+	}
+	html body div[data-right-panel-tabbar] button.border.border[aria-label="Add panel surface"][aria-label]:is(:hover, :focus-visible) {
+		border-color: transparent !important;
+	}
+	html body div[data-right-panel-tabbar] button.border.border[aria-label="Add panel surface"][aria-label]::after {
+		inset: -2px !important;
+		border-radius: inherit !important;
+	}
+}
+
+/* 7. The hover ring the owner pointed at ("Worked for" pill): pass 31i drew it as two offset inset
+   shadows, blue on the top and left, mauve on the bottom and right. Where they meet, at the top-right
+   and bottom-left corners, each colour fades to nothing, so the ring thins there. Every user of that
+   shared ring (menu items, details buttons, script rows, diff panels) now gets one even 2px ring in
+   the colour between blue and mauve. The pill, the sidebar shelf buttons and your message bubbles
+   get the real blue to mauve frame instead, drawn on the edge, with the glow kept. */
+:root:root:root {
+	--t5-ring: inset 0 0 0 2px rgb(180 190 254 / 0.85) !important;
+	--t15-ring: inset 0 0 0 2px rgb(180 190 254 / 0.85) !important;
+}
+html body :is([data-timeline-row-kind="work-toggle"], [data-timeline-row-kind="work-live"]) button[aria-expanded]:is(:hover, :focus-visible),
+html body li.t3l-shelf .t3l-shelf-btn.t3l-shelf-btn:is(:hover, :focus-visible),
+html body .t3l-shelf-btn.t3l-shelf-btn.t3l-shelf-btn:is(:hover, :focus-visible),
+html.dark body .bg-message.bg-message.bg-message.bg-message:hover {
+	box-shadow: 0 0 14px -4px rgb(137 180 250 / 0.35), 0 0 18px -5px rgb(203 166 247 / 0.3) !important;
+}
+html body .t3l-shelf-btn.t3l-shelf-btn.t3l-shelf-btn,
+html body :is([data-timeline-row-kind="work-toggle"], [data-timeline-row-kind="work-live"]) button[aria-expanded],
+html.dark body .bg-message.bg-message.bg-message.bg-message {
+	position: relative !important;
+}
+html body :is([data-timeline-row-kind="work-toggle"], [data-timeline-row-kind="work-live"]) button[aria-expanded]:is(:hover, :focus-visible)::after,
+html body .t3l-shelf-btn.t3l-shelf-btn.t3l-shelf-btn:is(:hover, :focus-visible)::after,
+html.dark body .bg-message.bg-message.bg-message.bg-message:hover::after {
+	content: "" !important;
+	display: block !important;
+	position: absolute !important;
+	inset: 0 !important;
+	z-index: 3 !important;
+	padding: 2px !important;
+	border: 0 !important;
+	border-radius: inherit !important;
+	background: linear-gradient(135deg, #89b4fa, #cba6f7) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	opacity: 1 !important;
+	pointer-events: none !important;
+}

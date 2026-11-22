@@ -93,10 +93,10 @@ html body [data-thread-details-card] [data-thread-panel-run-context] span[data-c
 html body [data-thread-details-card] [data-thread-panel-run-context] span[data-composer-context-control]::after {
 	content: "" !important;
 	position: absolute !important;
-	inset: -1px !important;
+	inset: -2px !important;
 	z-index: 3 !important;
 	border-radius: inherit !important;
-		padding: 1.5px !important;
+		padding: 2px !important;
 	background: linear-gradient(100deg, var(--p31g-a), var(--p31g-b)) !important;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
 	-webkit-mask-composite: xor !important;
@@ -132,10 +132,10 @@ button:focus-visible:where(:is(.relative, .absolute, .sticky, .fixed):not([class
 :where(button[class*="border"], button:is(.\#multiline-string-1-interp,.after\:ring-1,.dark\:ring-1,.data-\[popup-open\]\:ring-1,.focus-visible\:ring-1,.focus-within\:ring-1,.in-data-\[thread-context-over\]\:ring-1,.light\:ring-1,.multiline-string-1-interp,.ring-1), [data-panel-layout-controls] button):where(:is(.relative, .absolute, .sticky, .fixed):not([class*=" after:"], [class^="after:"], :is(.\[\&\+\[data-slot\=composer-banner-attachment\]_\[data-composer-banner-surface\=attached\]\]\:before\:rounded-none,.\[\&\>\[data-slot\=settings-row\]\]\:rounded-none,.\[\&_\[data-slot\=settings-row\]\]\:rounded-none,.data-panel-open\:rounded-none,.in-\[\.range-middle\]\:rounded-none,.max-sm\:rounded-none,.rounded-none), [class*="destructive"], [aria-label^="Preview "]):not(:is([data-chat-composer-surface], [data-chat-composer-footer], [data-chat-thread-status-line], [data-thread-details-card], [data-thread-queue], [data-right-panel-tabbar], [data-right-panel-surface-content], [data-slot="sidebar-footer"], [data-t3local-cpanel], [data-app-modal][aria-label="Settings"], :is(.\[--toast-header-offset\:var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\]\!,.max-h-\[var\(--workspace-topbar-height\)\]\!,.min-h-\[var\(--workspace-topbar-height\)\],.min-h-\[var\(--workspace-topbar-height\)\]\!,.pb-\(--workspace-topbar-height\),.wco\:h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:max-h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:mt-\(--workspace-topbar-height\),.workspace-topbar-height), .dropdown-glass, [data-slot$="popup"], [data-sonner-toaster]) *)):not([disabled]):is(:hover, :focus-visible)::after {
 	content: "" !important;
 	position: absolute !important;
-	inset: -1px !important;
+	inset: -2px !important;
 	z-index: 3 !important;
 	border-radius: inherit !important;
-		padding: 1.5px !important;
+		padding: 2px !important;
 	background: var(--p31g-grad) !important;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
 	-webkit-mask-composite: xor !important;
@@ -184,10 +184,10 @@ html span[data-slot="input-control"]:not(:has([aria-invalid="true"])):focus-with
 html span[data-slot="input-control"]:not(:has([aria-invalid="true"])):is(:hover, :focus-within)::after {
 	content: "" !important;
 	position: absolute !important;
-	inset: -1px !important;
+	inset: -2px !important;
 	z-index: 3 !important;
 	border-radius: inherit !important;
-		padding: 1.5px !important;
+		padding: 2px !important;
 	background: var(--p31g-grad) !important;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
 	-webkit-mask-composite: xor !important;
@@ -240,7 +240,7 @@ html [data-slot="sidebar-inner"] [data-sidebar-row].rounded-\(--control-radius\)
 	inset: 0 !important;
 	z-index: 3 !important;
 	border-radius: inherit !important;
-		padding: 1.5px !important;
+		padding: 2px !important;
 	background: linear-gradient(100deg, #89b4fa, #cba6f7) !important;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
 	-webkit-mask-composite: xor !important;
@@ -271,5 +271,5 @@ html [data-slot="sidebar"] [data-slot="sidebar-inner"]:hover,
 html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"]:hover,
 html [data-slot="sidebar-inner"] div.flex.items-center.gap-1:has(> div [aria-label="Search threads"]):is(:hover, :focus-within) {
 	border-color: var(--p31g-two-tone) !important;
-	box-shadow: var(--p31g-glow), inset 0 1px 0 var(--t3d-sheen, transparent) !important;
+	box-shadow: var(--p31g-glow), 0 0 #0000 !important;
 }

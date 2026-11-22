@@ -1,0 +1,57 @@
+/* Pass 57 (2026-11-22): the "Background activity updated" row in the chat.
+   T3 now draws it as a notification row (data-v2-item-type="notification"); pass 13 styled it as a
+   dynamic_tool row, so it lost its rounded dock. What was left was the square wrapper that pass 15
+   and pass 25 frost (data-t3l-ba-row, marked by 97-diff-docks.js): a flat, square, lighter box.
+   Now the wrapper paints nothing, and the row itself is a rounded dock: dock fill, 2px grey edge at
+   rest, the same 2px as the blue to mauve frame on hover (mask, as pass 31a and 53).
+   Rollback: delete this file and reload T3. */
+
+/* ---------- the square wrapper paints nothing ----------
+   Pass 25 item 4 lists this row in an :is() that also holds a header button selector, which lifts
+   the whole list to about (0,5,5); the repeats here outrank it. */
+html [data-t3l-ba-row][data-t3l-ba-row][data-t3l-ba-row],
+html[data-window-material][data-window-material] [data-t3l-ba-row][data-t3l-ba-row][data-t3l-ba-row][data-t3l-ba-row][data-t3l-ba-row][data-t3l-ba-row] {
+	background: none !important;
+	backdrop-filter: none !important;
+	-webkit-backdrop-filter: none !important;
+	box-shadow: none !important;
+	border: 0 !important;
+	outline: 0 !important;
+}
+
+/* ---------- the row: rounded dock, grey edge at rest ---------- */
+html [data-t3l-ba-row][data-t3l-ba-row] div.group\/timeline-row[data-v2-item-type="notification"][data-v2-item-type],
+html .messages-timeline-row-frame[data-t15a-run][data-t15a-run] [data-t3l-ba-row][data-t3l-ba-row] div.group\/timeline-row[data-v2-item-type="notification"]:is(*, :hover, :focus-visible, [data-t25f], [data-p57-hover]) {
+	position: relative !important;
+	background: var(--t5-pill) !important;
+	border-radius: 10px !important;
+	border: 2px solid rgb(108 112 134 / .55) !important;
+	box-shadow: none !important;
+	outline: 0 !important;
+	overflow: visible !important;
+	transition: border-color .18s ease !important;
+}
+html [data-t3l-ba-row][data-t3l-ba-row] div.group\/timeline-row[data-v2-item-type="notification"]::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: -2px !important;
+	padding: 2px !important;
+	border-radius: inherit !important;
+	background: linear-gradient(100deg, #89b4fa, #cba6f7) !important;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+	-webkit-mask-composite: xor !important;
+	mask-composite: exclude !important;
+	pointer-events: none !important;
+	opacity: 0 !important;
+	transition: opacity .18s ease !important;
+}
+
+/* ---------- hover: the same 2px as the blue to mauve frame ---------- */
+html .messages-timeline-row-frame[data-t15a-run][data-t15a-run] [data-t3l-ba-row][data-t3l-ba-row] div.group\/timeline-row[data-v2-item-type="notification"]:is(:hover, [data-p57-hover]),
+html [data-t3l-ba-row][data-t3l-ba-row] div.group\/timeline-row[data-v2-item-type="notification"][data-v2-item-type]:is(:hover, [data-p57-hover]) {
+	border-color: transparent !important;
+	background: var(--t5-pill-hi) !important;
+}
+html [data-t3l-ba-row][data-t3l-ba-row] div.group\/timeline-row[data-v2-item-type="notification"]:is(:hover, [data-p57-hover])::after {
+	opacity: 1 !important;
+}

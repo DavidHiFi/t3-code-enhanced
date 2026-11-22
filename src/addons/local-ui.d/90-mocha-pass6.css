@@ -4,7 +4,7 @@
    Rollback: delete this file and 90-section-shelves.js, reload. Notes: notes\2026-11-02-t3-mocha-docks.md */
 
 :root {
-	--t6-sheen: inset 0 1px 0 rgb(205 214 244 / 0.07);
+	--t6-sheen: 0 0 #0000;
 }
 
 /* ================= frosted acrylic ================= */
@@ -20,7 +20,7 @@ html[data-window-material]:not([data-t3local-extendedglass-off]) main.bg-backgro
 html[data-window-material] [data-slot="sidebar"] [data-slot="sidebar-inner"][data-slot="sidebar-inner"] {
 	background-color: rgb(24 24 37 / 0.3) !important;
 	background-image: linear-gradient(180deg, rgb(205 214 244 / 0.06), rgb(205 214 244 / 0.015) 30%, transparent 60%) !important;
-	box-shadow: inset 0 1px 0 rgb(205 214 244 / 0.1), 0 10px 30px -12px rgb(17 17 27 / 0.8) !important;
+	box-shadow: 0 0 #0000, 0 10px 30px -12px rgb(17 17 27 / 0.8) !important;
 }
 html[data-window-material] ul[role="tree"][aria-label="Threads"][aria-label="Threads"] > li {
 	--t4-tint: rgb(17 17 27 / 0.22);
@@ -77,7 +77,7 @@ div.pointer-events-none.fixed.left-\[var\(--workspace-controls-left\)\] button {
 html.dark .bg-message.bg-message.bg-message {
 	background-color: rgb(30 30 46 / 0.92) !important;
 	color: #cdd6f4 !important;
-	box-shadow: inset 0 0 0 1.5px rgb(180 190 254 / 0.28), var(--t6-sheen) !important;
+	box-shadow: inset 0 0 0 2px rgb(180 190 254 / 0.28), var(--t6-sheen) !important;
 	transition: var(--t6-ease) !important;
 }
 html.dark .bg-message.bg-message.bg-message:hover {
@@ -88,12 +88,12 @@ html.dark .bg-message.bg-message.bg-message:hover {
 div.overflow-hidden[data-t3l-pv]:not(button),
 .chat-markdown img {
 	border-radius: 12px !important;
-	box-shadow: 0 0 0 1.5px var(--t6-edge) !important;
+	box-shadow: 0 0 0 2px var(--t6-edge) !important;
 	transition: var(--t6-ease) !important;
 }
 div.overflow-hidden[data-t3l-pv]:not(button):hover,
 .chat-markdown img:hover {
-	box-shadow: 0 0 0 1.5px #89b4fa, 0 0 16px -2px rgb(137 180 250 / 0.55) !important;
+	box-shadow: 0 0 0 2px #89b4fa, 0 0 16px -2px rgb(137 180 250 / 0.55) !important;
 }
 
 /* ================= agent output: every reply and work group sits in a dock ================= */
@@ -101,11 +101,11 @@ div.overflow-hidden[data-t3l-pv]:not(button):hover,
 	padding: 12px 16px !important;
 	border-radius: 14px !important;
 	background-color: rgb(24 24 37 / 0.45) !important;
-	box-shadow: inset 0 0 0 1.5px rgb(108 112 134 / 0.3), var(--t6-sheen) !important;
+	box-shadow: inset 0 0 0 2px rgb(108 112 134 / 0.3), var(--t6-sheen) !important;
 	transition: var(--t6-ease) !important;
 }
 [data-timeline-row-kind="message"][data-message-role="assistant"] > div:hover {
-	box-shadow: inset 0 0 0 1.5px rgb(137 180 250 / 0.7), var(--t6-glow) !important;
+	box-shadow: inset 0 0 0 2px rgb(137 180 250 / 0.7), var(--t6-glow) !important;
 }
 [data-timeline-row-kind="work-toggle"] button[aria-expanded],
 [data-timeline-row-kind="working"] div:is(.\*\:data-slot\:has-\[\~\[data-slot\]\]\:border-b-0,.\*\:not-first\:border-border\/50,.\*\:not-last\:border-b-0,.\@min-\[48rem\]\/providers\:border-b-0,.\[\&_tr\]\:border-b,.\[\.border-b\]\:pb-\[calc\(--spacing\(3\)-1px\)\],.\[\:hover\,\[data-pressed\]\]\:border-border,.border-b,.border-b-2,.border-background,.border-be,.border-blue-500\/70,.border-border,.border-border\/30,.border-border\/40,.border-border\/45,.border-border\/50,.border-border\/60,.border-border\/65,.border-border\/70,.border-border\/80,.border-box,.border-bs,.hover\:border-border,.hover\:border-border\/70,.in-data-\[preview-panel-mode\=inline\]\:border-b-transparent,.last\:border-b-0,.max-sm\:border-b-0,.not-last\:border-b) > div,
@@ -114,7 +114,7 @@ div.overflow-hidden[data-t3l-pv]:not(button):hover,
 	border-radius: 10px !important;
 	border: 0 !important;
 	background-color: var(--t6-pill) !important;
-	box-shadow: inset 0 0 0 1.5px var(--t6-edge) !important;
+	box-shadow: inset 0 0 0 2px var(--t6-edge) !important;
 	transition: var(--t6-ease) !important;
 	/* pass 20: the button spans the whole 736px lane - hug the label instead,
 	   no full-width ghost bar around Working-for/Thinking rows */
@@ -134,7 +134,7 @@ div.overflow-hidden[data-t3l-pv]:not(button):hover,
 [data-changed-files-state] button,
 .chat-markdown .chat-markdown-codeblock button {
 	background-color: var(--t6-pill) !important;
-	box-shadow: inset 0 0 0 1.5px var(--t6-edge) !important;
+	box-shadow: inset 0 0 0 2px var(--t6-edge) !important;
 	border-radius: 8px !important;
 	transition: var(--t6-ease) !important;
 }
@@ -149,16 +149,16 @@ div.overflow-hidden[data-t3l-pv]:not(button):hover,
 /* ================= sidebar thread cards: crust, not surface0, in every section ================= */
 html [data-slot="sidebar-inner"] [data-testid="sidebar-row-card"][data-testid="sidebar-row-card"]:not(.bg-sidebar-row-active):not(.bg-sidebar-row-selected) {
 	background-color: rgb(17 17 27 / 0.42) !important;
-	box-shadow: inset 0 0 0 1.5px rgb(108 112 134 / 0.2) !important;
+	box-shadow: inset 0 0 0 2px rgb(108 112 134 / 0.2) !important;
 }
 html [data-slot="sidebar-inner"] [data-testid="sidebar-row-card"][data-testid="sidebar-row-card"]:is(.bg-sidebar-row-active, .bg-sidebar-row-selected) {
 	background-color: rgb(30 30 46 / 0.78) !important;
-	box-shadow: inset 0 0 0 1.5px rgb(180 190 254 / 0.32), 0 2px 8px -4px rgb(17 17 27 / 0.6) !important;
+	box-shadow: inset 0 0 0 2px rgb(180 190 254 / 0.32), 0 2px 8px -4px rgb(17 17 27 / 0.6) !important;
 }
 /* the resting rule above carries two :not()s, so the hover needs the extra weight to win */
 html [data-slot="sidebar-inner"] [data-testid="sidebar-row-card"][data-testid="sidebar-row-card"][data-testid="sidebar-row-card"][data-testid="sidebar-row-card"]:hover {
 	background-color: rgb(24 24 37 / 0.7) !important;
-	box-shadow: inset 0 0 0 1.5px rgb(137 180 250 / 0.7), var(--t6-glow) !important;
+	box-shadow: inset 0 0 0 2px rgb(137 180 250 / 0.7), var(--t6-glow) !important;
 }
 
 /* ================= working indicator and context-compacted marker ================= */
@@ -171,7 +171,7 @@ html [data-slot="sidebar-inner"] [data-testid="sidebar-row-card"][data-testid="s
 	padding: 3px 12px !important;
 	border-radius: 999px !important;
 	background-color: var(--t6-pill) !important;
-	box-shadow: inset 0 0 0 1.5px rgb(203 166 247 / 0.32) !important;
+	box-shadow: inset 0 0 0 2px rgb(203 166 247 / 0.32) !important;
 	transition: var(--t6-ease) !important;
 }
 [data-timeline-row-kind="context-compaction"] [role="separator"]:hover > span.relative {

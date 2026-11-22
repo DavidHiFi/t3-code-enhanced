@@ -40,8 +40,8 @@ html[data-window-material] :is(.before\:bg-\(--chat-composer-glass-surface\)\/\(
 	padding: 4px 4px 4px 6px !important;
 	border-radius: 12px !important;
 	background: var(--t3g-panel) !important;
-	border: 1px solid rgb(108 112 134 / 0.32) !important;
-	box-shadow: inset 0 1px 0 var(--t3d-sheen) !important;
+	border: 2px solid rgb(108 112 134 / 0.32) !important;
+	box-shadow: 0 0 #0000 !important;
 }
 [data-chat-composer-footer] button:not([disabled]):hover {
 	background-color: rgb(49 50 68 / 0.7) !important;
@@ -54,7 +54,7 @@ html[data-window-material] :is(.before\:bg-\(--chat-composer-glass-surface\)\/\(
 	padding: 4px 9px !important;
 	border-radius: 999px !important;
 	background: var(--t3d-tint) !important;
-	border: 1px solid var(--t3d-edge) !important;
+	border: 2px solid var(--t3d-edge) !important;
 	box-shadow: var(--t3d-shadow) !important;
 	color: #bac2de !important;
 	-webkit-backdrop-filter: var(--t3d-blur) !important;
@@ -89,7 +89,7 @@ html[data-t3l-brand-dock] div.pointer-events-none.fixed.left-\[var\(--workspace-
 /* pinned thread cards in the sidebar */
 [data-slot="sidebar-inner"] [data-testid="sidebar-row-card"]:not(.bg-sidebar-row-active):not(.bg-sidebar-row-selected) {
 	background-color: rgb(49 50 68 / 0.3) !important;
-	box-shadow: inset 0 0 0 1.5px rgb(108 112 134 / 0.22) !important;
+	box-shadow: inset 0 0 0 2px rgb(108 112 134 / 0.22) !important;
 	border-radius: 12px !important;
 }
 /* code blocks, tables, changed-files card, details card */
@@ -101,7 +101,7 @@ html.dark {
 .chat-markdown .chat-markdown-table-container,
 [data-changed-files-state] {
 	background-color: var(--t3g-panel) !important;
-	border: 1px solid var(--t3d-edge) !important;
+	border: 2px solid var(--t3d-edge) !important;
 	border-radius: 12px !important;
 	-webkit-backdrop-filter: var(--t3g-blur) !important;
 	backdrop-filter: var(--t3g-blur) !important;
@@ -123,8 +123,8 @@ html[data-window-material] :is(.dropdown-glass, .dialog-glass, .alert-glass) {
 	backdrop-filter: blur(26px) saturate(1.35) !important;
 }
 :is(.dropdown-glass, .dialog-glass, .alert-glass):not(:is(.\[\&\+\[data-slot\=composer-banner-attachment\]_\[data-composer-banner-surface\=attached\]\]\:before\:rounded-none,.\[\&\>\[data-slot\=settings-row\]\]\:rounded-none,.\[\&_\[data-slot\=settings-row\]\]\:rounded-none,.data-panel-open\:rounded-none,.in-\[\.range-middle\]\:rounded-none,.max-sm\:rounded-none,.rounded-none)) {
-	border: 1px solid var(--t3d-edge-strong) !important;
-	box-shadow: 0 18px 40px -16px rgb(17 17 27 / 0.9), inset 0 1px 0 var(--t3d-sheen) !important;
+	border: 2px solid var(--t3d-edge-strong) !important;
+	box-shadow: 0 18px 40px -16px rgb(17 17 27 / 0.9), 0 0 #0000 !important;
 }
 /* inner panes painted with --muted (surface0, the light grey): provider rail, effort panel */
 :is(.dropdown-glass, .dialog-glass, .alert-glass, [data-slot$="popup"]) :is(:is(.bg-muted\/10,.bg-muted\/15,.bg-muted\/20,.bg-muted\/24,.bg-muted\/25,.bg-muted\/30,.bg-muted\/32,.bg-muted\/35,.bg-muted\/40,.bg-muted\/45,.bg-muted\/48,.bg-muted\/50,.bg-muted\/55,.bg-muted\/60,.bg-muted\/72,.bg-muted\/8,.even\:bg-muted\/30,.focus-visible\:bg-muted\/25,.has-aria-expanded\:bg-muted\/50,.has-focus-visible\:bg-muted\/50,.hover\:bg-muted\/15,.hover\:bg-muted\/20,.hover\:bg-muted\/25,.hover\:bg-muted\/30,.hover\:bg-muted\/35,.hover\:bg-muted\/40,.hover\:bg-muted\/50,.hover\:bg-muted\/60), .bg-muted, :is(.\[\:active\,\[data-pressed\]\]\:bg-secondary\/80,.\[\:hover\,\[data-pressed\]\]\:bg-secondary\/90,.\[button\&\,a\&\]\:hover\:bg-secondary\/90,.bg-secondary)) {
@@ -139,6 +139,6 @@ html[data-window-material] :is(.dropdown-glass, .dialog-glass, .alert-glass) {
 }
 :is(.dropdown-glass, .dialog-glass, .alert-glass, [data-slot$="popup"]) :is([data-highlighted], [aria-selected="true"], [data-selected]) {
 	background-color: rgb(49 50 68 / 0.75) !important;
-	box-shadow: inset 0 0 0 1.5px rgb(180 190 254 / 0.28) !important;
+	box-shadow: inset 0 0 0 2px rgb(180 190 254 / 0.28) !important;
 	border-radius: 8px !important;
 }

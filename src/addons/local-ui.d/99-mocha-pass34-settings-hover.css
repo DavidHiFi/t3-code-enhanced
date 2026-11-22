@@ -39,7 +39,7 @@
 		content: "" !important;
 		position: absolute !important;
 		inset: 0 !important;
-		padding: 1.5px !important;
+		padding: 2px !important;
 		border-radius: inherit !important;
 		background: linear-gradient(100deg, #89b4fa, #cba6f7) !important;
 		-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
@@ -69,7 +69,7 @@
 		content: "" !important;
 		position: absolute !important;
 		inset: 0 !important;
-		padding: 1.5px !important;
+		padding: 2px !important;
 		border-radius: inherit !important;
 		background: linear-gradient(100deg, #89b4fa, #cba6f7) !important;
 		-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;

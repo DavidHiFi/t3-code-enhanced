@@ -53,7 +53,7 @@ html section[data-thread-queue] li[aria-label^="Queued message"] button[data-slo
 	min-height: 24px !important;
 	border-radius: 8px !important;
 	background-color: rgb(17 17 27 / .6) !important;
-	box-shadow: inset 0 0 0 1.5px rgb(108 112 134 / .55) !important;
+	box-shadow: inset 0 0 0 2px rgb(108 112 134 / .55) !important;
 	color: #bac2de !important;
 }
 html section[data-thread-queue] li[aria-label^="Queued message"] button[data-slot="button"]:not([class*="icon-"]):not([aria-label]) {
@@ -84,5 +84,5 @@ html [data-chat-composer-surface] button[type="submit"]:is(.bg-message-action,.h
 html [data-chat-composer-surface] button[type="submit"]:is(.bg-message-action,.hover\:bg-message-action-hover):disabled {
 	background-color: rgb(17 17 27 / .6) !important;
 	color: #6c7086 !important;
-	box-shadow: inset 0 0 0 1.5px rgb(108 112 134 / .55) !important;
+	box-shadow: inset 0 0 0 2px rgb(108 112 134 / .55) !important;
 }

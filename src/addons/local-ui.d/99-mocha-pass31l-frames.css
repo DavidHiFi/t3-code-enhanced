@@ -23,9 +23,9 @@ html body :is([data-panel-layout-controls], [data-workspace-titlebar-controls], 
 html body :is([data-panel-layout-controls], [data-workspace-titlebar-controls], header[data-chat-header]) button:not(nav[aria-label$="breadcrumb"] button):not([disabled]):is(:hover, :focus-visible)::after {
 	content: "" !important;
 	position: absolute !important;
-	inset: -1px !important;
+	inset: -2px !important;
 	z-index: 3 !important;
-	border-radius: 9px !important;
+	border-radius: inherit !important;
 	padding: 2px !important;
 	background: linear-gradient(135deg, #89b4fa, #cba6f7) !important;
 	box-shadow: none !important;

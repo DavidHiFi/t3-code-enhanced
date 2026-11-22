@@ -26,7 +26,7 @@ html[data-window-material] div[data-slot="composer-shell"][data-slot="composer-s
 html[data-window-material] div[data-slot="composer-shell"][data-slot="composer-shell"]:is(:hover, :focus-within)::before,
 html[data-window-material] [data-slot="composer-host"][data-slot="composer-host"]::before,
 html[data-window-material] [data-slot="composer-host"][data-slot="composer-host"]:is(:hover, :focus-within)::before {
-	box-shadow: inset 0 1px 0 rgb(205 214 244 / 0.08) !important;
+	box-shadow: 0 0 #0000 !important;
 }
 html[data-window-material] [data-slot="composer-host"][data-slot="composer-host"]::before {
 	-webkit-backdrop-filter: none !important;
@@ -70,7 +70,7 @@ html [data-composer-banner-surface][data-composer-banner-surface]:not([data-comp
 	background-image: none !important;
 	-webkit-backdrop-filter: var(--t24-frost) !important;
 	backdrop-filter: var(--t24-frost) !important;
-	box-shadow: inset 0 0 0 1.5px rgb(108 112 134 / 0.35) !important;
+	box-shadow: inset 0 0 0 2px rgb(108 112 134 / 0.35) !important;
 }
 html [data-composer-banner-surface][data-composer-banner-surface]:not([data-composer-shoulder-tab])::before {
 	display: none !important;
@@ -83,7 +83,7 @@ html [data-composer-banner-surface][data-composer-banner-surface]:not([data-comp
 	height: auto !important;
 	z-index: 3 !important;
 	border-radius: inherit !important;
-		padding: 1.5px !important;
+		padding: 2px !important;
 	background: linear-gradient(100deg, var(--t25-ga), var(--t25-gb)) !important;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
 	-webkit-mask-composite: xor !important;
@@ -118,7 +118,7 @@ html[data-window-material][data-window-material][data-window-material] :is([data
       blue to mauve on hover or while typing, 1.5px, .22s fade. */
 html [data-slot="composer-shell"] > [data-slot="composer-host"][data-slot="composer-host"]::after {
 	border: 0 !important;
-		padding: 1.5px !important;
+		padding: 2px !important;
 	box-shadow: none !important;
 	background: linear-gradient(100deg, var(--t25-ga), var(--t25-gb)) !important;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
@@ -143,7 +143,7 @@ html[data-window-material] [data-slot="composer-shell"]:has([data-composer-banne
 	inset: 0 !important;
 	z-index: 1 !important;
 	border-radius: inherit !important;
-		padding: 1.5px !important;
+		padding: 2px !important;
 	background: linear-gradient(100deg, var(--t25-ga), var(--t25-gb)) !important;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
 	-webkit-mask-composite: xor !important;
@@ -192,7 +192,7 @@ html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] div.h-8.bg-sidebar
 	transition: background-color 0.18s ease !important;
 }
 html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] div.h-8.bg-sidebar-control-surface.bg-sidebar-control-surface:not([class*="ring-"]) {
-	box-shadow: inset 0 0 0 1.5px var(--t15-edge, rgb(108 112 134 / 0.4)) !important;
+	box-shadow: inset 0 0 0 2px var(--t15-edge, rgb(108 112 134 / 0.4)) !important;
 }
 html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] div.h-8.bg-sidebar-control-surface.bg-sidebar-control-surface:has(> button.absolute:hover) {
 	background-color: rgb(17 17 27 / 0.7) !important;

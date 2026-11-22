@@ -21,7 +21,7 @@ html body #root header[data-chat-header][data-chat-header][data-chat-header][dat
 
 /* 2 */
 html div.relative.-translate-y-px.border-b:is(.has-data-\[align\=block-start\]\:\*\*\:\[input\]\:pb-1\.5,.pb-1\.5):has(> svg) {
-	border: 1px solid rgb(108 112 134 / 0.58) !important;
+	border: 2px solid rgb(108 112 134 / 0.58) !important;
 	border-radius: 10px !important;
 	padding: 3px 8px !important;
 	background: rgb(17 17 27 / 0.5) !important;

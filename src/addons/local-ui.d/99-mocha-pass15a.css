@@ -38,7 +38,7 @@
 }
 [data-timeline-root] [data-v2-item-type="error"]:hover {
 	box-shadow:
-		inset 0 0 0 1.5px var(--t15-edge),
+		inset 0 0 0 2px var(--t15-edge),
 		var(--t15-ring),
 		var(--t15-glow) !important;
 }
@@ -48,7 +48,7 @@
    and a rounded-full label pill. Dock the pill like the other dividers. */
 [data-timeline-root] div.flex.min-w-0.items-center.gap-2 > span.rounded-full {
 	background-color: var(--t15-dock) !important;
-	box-shadow: inset 0 0 0 1.5px var(--t15-edge) !important;
+	box-shadow: inset 0 0 0 2px var(--t15-edge) !important;
 	transition: var(--t15-ease) !important;
 	/* pass 20: hug the label; the flex-1 hairlines own the rest of the row */
 	width: fit-content !important;

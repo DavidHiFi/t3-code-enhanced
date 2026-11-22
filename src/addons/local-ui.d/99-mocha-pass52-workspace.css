@@ -14,7 +14,7 @@
 
   .flex.flex-wrap.items-center.gap-2:has(> :is(.\@lg\/issue-list\:basis-0, .\@lg\/pr-list\:basis-0)),
   :scope:is(header) {
-    border: 1px solid var(--workspace-edge) !important;
+    border: 2px solid var(--workspace-edge) !important;
     border-radius: 12px !important;
     background: rgb(30 30 46 / .8) !important;
     backdrop-filter: var(--t3-real-blur, blur(22px)) !important;
@@ -35,7 +35,7 @@
     .\[contain-intrinsic-block-size\:56\.5px\],
     header.\@container\/usage-header a[href^="/usage"]
   ) {
-    border: 1.5px solid var(--workspace-edge) !important;
+    border: 2px solid var(--workspace-edge) !important;
     border-radius: 9px !important;
     background: var(--workspace-fill) padding-box !important;
     box-shadow: none !important;

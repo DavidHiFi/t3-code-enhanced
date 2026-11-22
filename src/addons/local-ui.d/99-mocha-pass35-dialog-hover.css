@@ -37,7 +37,7 @@
 		position: absolute !important;
 		inset: 0 !important;
 		z-index: 2 !important;
-		padding: 1.5px !important;
+		padding: 2px !important;
 		border-radius: inherit !important;
 		background: linear-gradient(100deg, var(--p35-a), var(--p35-b)) !important;
 		-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
@@ -84,9 +84,9 @@
 		--p35-a: inherit !important;
 		--p35-b: inherit !important;
 		position: absolute !important;
-		inset: -1px !important;
+		inset: -2px !important;
 		z-index: 1 !important;
-		padding: 1.5px !important;
+		padding: 2px !important;
 		border-radius: inherit !important;
 		background: linear-gradient(100deg, var(--p35-a), var(--p35-b)) !important;
 		-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;

@@ -34,8 +34,8 @@ html body #root header[data-chat-header][data-chat-header][data-chat-header] {
 	background: rgb(30 30 46 / 0.8) !important;
 	-webkit-backdrop-filter: blur(28px) saturate(1.2) !important;
 	backdrop-filter: blur(28px) saturate(1.2) !important;
-	border: 1px solid rgb(108 112 134 / 0.58) !important;
-	box-shadow: 0 6px 18px -8px rgb(17 17 27 / 0.7), inset 0 1px 0 rgb(180 190 254 / 0.08) !important;
+	border: 2px solid rgb(108 112 134 / 0.58) !important;
+	box-shadow: 0 6px 18px -8px rgb(17 17 27 / 0.7), 0 0 #0000 !important;
 }
 html body #root header[data-chat-header][data-chat-header][data-chat-header]::before {
 	content: none !important;

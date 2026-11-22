@@ -7,12 +7,12 @@ html [data-slot="sidebar"] [data-slot="sidebar-inner"][data-slot="sidebar-inner"
 	box-shadow:
 		0 0 10px -3px rgb(137 180 250 / 0.5),
 		0 0 14px -7px rgb(203 166 247 / 0.45),
-		inset 0 1px 0 var(--t3d-sheen, transparent) !important;
+		0 0 #0000 !important;
 }
 html [data-slot="sidebar-inner"][data-slot="sidebar-inner"][data-slot="sidebar-inner"]:has(> [data-slot="sidebar-rail"]:hover),
 html [data-slot="sidebar-inner"][data-slot="sidebar-inner"][data-slot="sidebar-inner"]:has(> [data-slot="sidebar-rail"]:active) {
 	box-shadow:
 		2px 0 10px -3px rgb(137 180 250 / 0.5),
 		3px 0 14px -7px rgb(203 166 247 / 0.55),
-		inset 0 1px 0 var(--t3d-sheen, transparent) !important;
+		0 0 #0000 !important;
 }

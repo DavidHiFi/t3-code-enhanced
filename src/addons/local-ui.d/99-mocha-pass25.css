@@ -117,7 +117,7 @@ html [data-chat-column] header[data-chat-header] + div .legend-list-content-cont
 /* 6. Secret request card: one quiet edge at rest, Mocha blue on hover and while typing,
       matching the "Save securely" button beside it. */
 html form:has(input[data-1p-ignore]) span[data-slot="input-control"][data-slot="input-control"] {
-	border: 1px solid var(--t15-edge-hi, rgb(108 112 134 / 0.55)) !important;
+	border: 2px solid var(--t15-edge-hi, rgb(108 112 134 / 0.55)) !important;
 	background-color: rgb(17 17 27 / 0.55) !important;
 	border-radius: 10px !important;
 	box-shadow: none !important;
@@ -144,7 +144,7 @@ html form:has(input[data-1p-ignore]) span[data-slot="input-control"] input {
 	outline: none !important;
 }
 html form:has(input[data-1p-ignore]) button[type="submit"][type="submit"] {
-	border: 1px solid var(--t15-edge-hi, rgb(108 112 134 / 0.55)) !important;
+	border: 2px solid var(--t15-edge-hi, rgb(108 112 134 / 0.55)) !important;
 	background-color: var(--t15-dock, rgb(24 24 37 / 0.9)) !important;
 	color: #cdd6f4 !important;
 	border-radius: 10px !important;
@@ -239,7 +239,7 @@ html :is(
 	inset: 0 !important;
 	z-index: 2 !important;
 	border-radius: inherit !important;
-		padding: 1.5px !important;
+		padding: 2px !important;
 	background: linear-gradient(135deg, var(--t25-ga), var(--t25-gb)) !important;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
 	-webkit-mask-composite: xor !important;
@@ -303,7 +303,7 @@ html :is(button[aria-label^="Preview "], div[data-chat-composer-expanded-image])
 html :is(.chat-markdown, [data-timeline-row-kind="message"]) img:not(:is(
 	div:is(.aspect-\[4\/3\],.aspect-auto,.aspect-square,.aspect-video) img, button[aria-label^="Preview "] img, [data-chat-composer-expanded-image] img
 )) {
-	border: 1.5px solid transparent !important;
+	border: 2px solid transparent !important;
 	background: linear-gradient(#181825, #181825) padding-box, linear-gradient(135deg, var(--t25-ga), var(--t25-gb)) border-box !important;
 	box-shadow: none !important;
 	transition: --t25-ga 0.22s ease, --t25-gb 0.22s ease, box-shadow 0.22s ease !important;
@@ -324,7 +324,7 @@ html [data-slot="sidebar-inner"] [data-testid="sidebar-row-card"][data-testid="s
 	inset: 0 !important;
 	z-index: 3 !important;
 	border-radius: 12px !important;
-		padding: 1.5px !important;
+		padding: 2px !important;
 	background: linear-gradient(100deg, var(--t25-ga), var(--t25-gb)) !important;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
 	-webkit-mask-composite: xor !important;
@@ -374,7 +374,7 @@ html div[data-right-panel-surface-content] [data-surface-subheader] > div:is(.\@
 	position: absolute !important;
 	inset: 0 !important;
 	border-radius: inherit !important;
-		padding: 1.5px !important;
+		padding: 2px !important;
 	background: linear-gradient(100deg, var(--t25-ga), var(--t25-gb)) !important;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
 	-webkit-mask-composite: xor !important;
@@ -461,7 +461,7 @@ html [data-composer-command-drawer][data-composer-command-drawer] [data-slot="co
 	position: absolute !important;
 	inset: 0 !important;
 	border-radius: inherit !important;
-		padding: 1.5px !important;
+		padding: 2px !important;
 	background: linear-gradient(100deg, var(--t25-ga), var(--t25-gb)) !important;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
 	-webkit-mask-composite: xor !important;
@@ -516,7 +516,7 @@ html body [data-thread-details-card][data-thread-details-card] :is(.group\/detai
 	inset: 0 !important;
 	z-index: 3 !important;
 	border-radius: inherit !important;
-		padding: 1.5px !important;
+		padding: 2px !important;
 	background: linear-gradient(100deg, var(--t25-ga), var(--t25-gb)) !important;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
 	-webkit-mask-composite: xor !important;
@@ -577,7 +577,7 @@ html body [data-timeline-row-kind="message"][data-message-role="user"] > div:is(
 	inset: 0 !important;
 	z-index: 2 !important;
 	border-radius: inherit !important;
-		padding: 1.5px !important;
+		padding: 2px !important;
 	background: linear-gradient(135deg, var(--t25-ga), var(--t25-gb)) !important;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
 	-webkit-mask-composite: xor !important;
@@ -611,7 +611,7 @@ html body > button.fixed:is([aria-label="Cite selection in composer"], [aria-lab
 	-webkit-backdrop-filter: blur(18px) saturate(1.4) !important;
 	backdrop-filter: blur(18px) saturate(1.4) !important;
 	color: #cdd6f4 !important;
-	border: 1.5px solid transparent !important;
+	border: 2px solid transparent !important;
 	border-radius: 9px !important;
 	background: linear-gradient(rgb(24 24 37 / 0.9), rgb(24 24 37 / 0.9)) padding-box, linear-gradient(135deg, #89b4fa, #cba6f7) border-box !important;
 	box-shadow: 0 0 14px -4px rgb(137 180 250 / 0.5), 0 0 20px -8px rgb(203 166 247 / 0.45), 0 8px 20px -8px rgb(0 0 0 / 0.6) !important;

@@ -32,9 +32,9 @@
 	html body #root header[data-chat-header]::after {
 		content: "" !important;
 		position: absolute !important;
-		inset: -1px !important;
+		inset: -2px !important;
 		z-index: 3 !important;
-		border-radius: 13px !important;
+		border-radius: inherit !important;
 		padding: 0 !important;
 		border: 2px solid transparent !important;
 		background: linear-gradient(100deg, #89b4fa, #cba6f7) border-box !important;

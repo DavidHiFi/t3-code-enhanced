@@ -56,7 +56,7 @@ html body [data-slot="sidebar-inner"] div.relative.flex:is(.\[--toast-header-off
 	clip-path: inset(0 round 12px) !important;
 }
 html body [data-slot="sidebar-inner"] div.relative.flex:is(.\[--toast-header-offset\:var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\]\!,.max-h-\[var\(--workspace-topbar-height\)\]\!,.min-h-\[var\(--workspace-topbar-height\)\],.min-h-\[var\(--workspace-topbar-height\)\]\!,.pb-\(--workspace-topbar-height\),.wco\:h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:max-h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:mt-\(--workspace-topbar-height\),.workspace-topbar-height)::after {
-	padding: 1.5px !important;
+	padding: 2px !important;
 }
 html body [data-slot="sidebar-inner"] div.relative.flex:is(.\[--toast-header-offset\:var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\],.h-\[var\(--workspace-topbar-height\)\]\!,.max-h-\[var\(--workspace-topbar-height\)\]\!,.min-h-\[var\(--workspace-topbar-height\)\],.min-h-\[var\(--workspace-topbar-height\)\]\!,.pb-\(--workspace-topbar-height\),.wco\:h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:max-h-\[calc\(100\%-var\(--workspace-topbar-height\)\)\],.wco\:mt-\(--workspace-topbar-height\),.workspace-topbar-height):hover::after {
 	padding: 2px !important;
@@ -73,7 +73,7 @@ html [data-slot="sidebar-inner"] [data-testid="sidebar-draft-row"]::after {
 	inset: 0 !important;
 	z-index: 3 !important;
 	border-radius: inherit !important;
-		padding: 1.5px !important;
+		padding: 2px !important;
 	background: linear-gradient(100deg, var(--p31j-a), var(--p31j-b)) !important;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
 	-webkit-mask-composite: xor !important;

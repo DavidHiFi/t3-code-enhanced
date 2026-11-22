@@ -18,13 +18,13 @@ html [data-timeline-row-kind="message"][data-message-role="user"] > div:is(.bg-m
 	padding: 12px 16px !important;
 	border-radius: 14px !important;
 	background-color: rgb(24 24 37 / 0.45) !important;
-	box-shadow: inset 0 0 0 1.5px rgb(108 112 134 / 0.3), var(--t6-sheen) !important;
+	box-shadow: inset 0 0 0 2px rgb(108 112 134 / 0.3), var(--t6-sheen) !important;
 	margin-inline: 10px !important;
 	transition: var(--t6-ease) !important;
 }
 html [data-timeline-row-kind="message"][data-message-role="assistant"] > div:has(.chat-markdown):hover,
 html [data-timeline-row-kind="message"][data-message-role="user"] > div:is(.bg-message,.bg-message-action,.hover\:bg-message-action-hover):hover {
-	box-shadow: inset 0 0 0 1.5px rgb(137 180 250 / 0.7), var(--t6-glow) !important;
+	box-shadow: inset 0 0 0 2px rgb(137 180 250 / 0.7), var(--t6-glow) !important;
 }
 /* pass 20: inside a marked run the lane dock is the one surface - the bubble's
    own fill/edge here is the inner ~716px duplicate frame the owner screenshotted.
@@ -45,7 +45,7 @@ html [data-timeline-row-kind="attempt-fold"] button {
 	border: 0 !important;
 	border-radius: 999px !important;
 	background-color: var(--t6-pill) !important;
-	box-shadow: inset 0 0 0 1.5px var(--t6-edge) !important;
+	box-shadow: inset 0 0 0 2px var(--t6-edge) !important;
 	transition: var(--t6-ease) !important;
 }
 html [data-timeline-row-kind="turn-fold"] button:hover,
@@ -58,7 +58,7 @@ html button[aria-label="Load earlier turns"] > span.shrink-0 {
 	padding: 3px 12px !important;
 	border-radius: 999px !important;
 	background-color: var(--t6-pill) !important;
-	box-shadow: inset 0 0 0 1.5px var(--t6-edge) !important;
+	box-shadow: inset 0 0 0 2px var(--t6-edge) !important;
 	transition: var(--t6-ease) !important;
 }
 html button[aria-label="Load earlier turns"]:hover > span.shrink-0 {
@@ -96,7 +96,7 @@ html [data-timeline-row-kind="context-compaction"] [role="separator"] > span.rel
    the icon-button pills stay, re-pointed through the --t6-* aliases in pass 17. */
 html [data-slot="sidebar-inner"] div.flex.items-center.gap-1:has(> div [aria-label="Search threads"]) > button {
 	background-color: var(--t6-pill) !important;
-	box-shadow: inset 0 0 0 1.5px var(--t6-edge) !important;
+	box-shadow: inset 0 0 0 2px var(--t6-edge) !important;
 	border-radius: 8px !important;
 	color: #9399b2 !important;
 	transition: var(--t6-ease) !important;
@@ -124,7 +124,7 @@ html [data-slot="sidebar-inner"] .bg-sidebar-row-selected::after {
 	position: absolute !important;
 	inset: 0 !important;
 	border-radius: 12px !important;
-		padding: 1.5px !important;
+		padding: 2px !important;
 	background: linear-gradient(100deg, rgb(137 180 250 / 0.9), rgb(203 166 247 / 0.9)) !important;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
 	-webkit-mask-composite: xor !important;
@@ -139,7 +139,7 @@ html div:is(.aspect-\[4\/3\],.aspect-auto,.aspect-square,.aspect-video):is(.\*\*
 	transition: var(--t6-ease) !important;
 }
 html div:is(.aspect-\[4\/3\],.aspect-auto,.aspect-square,.aspect-video):is(.\*\*\:data-\[slot\=command-item\]\:rounded-lg,.group-data-\[variant\=floating\]\:rounded-lg,.rounded-lg,.rounded-lg\!).border-border\/80:hover {
-	box-shadow: inset 0 0 0 1.5px rgb(137 180 250 / 0.9) !important;
+	box-shadow: inset 0 0 0 2px rgb(137 180 250 / 0.9) !important;
 }
 html [data-thread-queue] :is(.bg-muted\/60,.hover\:bg-muted\/60) {
 	background-color: transparent !important;

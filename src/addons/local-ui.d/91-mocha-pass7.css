@@ -15,7 +15,7 @@ html.dark { --context-chip-skill: #b7a5e3 !important; }
 /* ---- context chips outside the composer (message bodies, previews): docked pill ---- */
 html.dark [data-slot="context-chip"] {
 	background-color: var(--t6-pill) !important;
-	box-shadow: inset 0 0 0 1.5px var(--t6-edge), var(--t6-sheen) !important;
+	box-shadow: inset 0 0 0 2px var(--t6-edge), var(--t6-sheen) !important;
 	border-radius: 9px !important;
 	transition: var(--t6-ease) !important;
 }
@@ -27,7 +27,7 @@ html.dark [data-slot="context-chip"]:hover {
 /* ---- composer mention/skill tokens: one dock per token, inner chrome cleared ---- */
 html.dark [data-node-view-wrapper] {
 	background-color: var(--t6-pill) !important;
-	box-shadow: inset 0 0 0 1.5px var(--t6-edge), var(--t6-sheen) !important;
+	box-shadow: inset 0 0 0 2px var(--t6-edge), var(--t6-sheen) !important;
 	border-radius: 999px !important;
 	padding: 0 5px !important;
 	transition: var(--t6-ease) !important;
@@ -52,7 +52,7 @@ html.dark [data-node-view-wrapper] :is([data-slot="context-chip"], [data-compose
 	padding: 3px 10px !important;
 	border-radius: 999px !important;
 	background-color: var(--t6-pill) !important;
-	box-shadow: inset 0 0 0 1.5px var(--t6-edge), var(--t6-sheen) !important;
+	box-shadow: inset 0 0 0 2px var(--t6-edge), var(--t6-sheen) !important;
 	transition: var(--t6-ease) !important;
 }
 [data-thread-queue] li[aria-label^="Queued message"][aria-current="true"] > div:last-child:hover,

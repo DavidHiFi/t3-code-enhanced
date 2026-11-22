@@ -157,7 +157,7 @@ html :is(
 	position: absolute !important;
 	inset: 0 !important;
 	z-index: 1 !important;
-		padding: 1.5px !important;
+		padding: 2px !important;
 	border-radius: inherit !important;
 	background: linear-gradient(100deg, var(--p29b-a), var(--p29b-b)) !important;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;

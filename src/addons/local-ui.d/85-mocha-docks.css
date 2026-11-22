@@ -18,8 +18,8 @@ html {
 	--t3d-tint: rgb(24 24 37 / 0.62);
 	--t3d-edge: rgb(108 112 134 / 0.58);
 	--t3d-edge-strong: rgb(127 132 156 / 0.6);
-	--t3d-sheen: rgb(180 190 254 / 0.09);
-	--t3d-shadow: 0 6px 18px -8px rgb(17 17 27 / 0.75), inset 0 1px 0 var(--t3d-sheen);
+	--t3d-sheen: transparent;
+	--t3d-shadow: 0 6px 18px -8px rgb(17 17 27 / 0.75), 0 0 #0000;
 	--t3d-radius: 12px;
 	--t3d-blur: none;
 }
@@ -34,7 +34,7 @@ div.flex.items-center.gap-1:has(> div [aria-label="Search threads"]),
 [data-slot="sidebar-footer"],
 [data-slot="composer-context-strip"]:has([data-composer-context-control]),
 [data-thread-queue] div.flex.items-center.gap-1:has([aria-label="Remove queued message"]) {
-	border: 1px solid var(--t3d-edge) !important;
+	border: 2px solid var(--t3d-edge) !important;
 	border-radius: var(--t3d-radius) !important;
 	box-shadow: var(--t3d-shadow) !important;
 	-webkit-backdrop-filter: var(--t3d-blur) !important;
@@ -180,9 +180,9 @@ div.flex.items-center.gap-1:has(> div [aria-label="Search threads"]) > div:has([
 /* ---- floating thread details card ---- */
 html [data-thread-details-card][data-thread-details-card][data-thread-details-card] {
 	background: var(--t3d-tint) !important;
-	border: 1px solid var(--t3d-edge-strong) !important;
+	border: 2px solid var(--t3d-edge-strong) !important;
 	border-radius: 16px !important;
-	box-shadow: 0 18px 40px -12px rgb(17 17 27 / 0.8), inset 0 1px 0 var(--t3d-sheen) !important;
+	box-shadow: 0 18px 40px -12px rgb(17 17 27 / 0.8), 0 0 #0000 !important;
 	-webkit-backdrop-filter: var(--t3d-blur) !important;
 	backdrop-filter: var(--t3d-blur) !important;
 }
@@ -194,7 +194,7 @@ html:not([data-window-material]) [data-thread-details-card][data-thread-details-
 [data-environment-identification="pill"],
 [data-slot="badge"]:is(.\[\:active\,\[data-pressed\]\]\:bg-secondary\/80,.\[\:hover\,\[data-pressed\]\]\:bg-secondary\/90,.\[button\&\,a\&\]\:hover\:bg-secondary\/90,.bg-secondary) {
 	background: #313244 !important;
-	border: 1px solid #45475a !important;
+	border: 2px solid #45475a !important;
 	color: #bac2de !important;
 }
 /* user message bubbles: surface0 with an edge instead of the bright surface1 block */
@@ -202,7 +202,7 @@ html.dark {
 	--app-theme-message-surface: #313244;
 }
 html.dark .bg-message {
-	box-shadow: inset 0 0 0 1.5px rgb(108 112 134 / 0.4);
+	box-shadow: inset 0 0 0 2px rgb(108 112 134 / 0.4);
 }
 
 /* ======== pass 2 (owner, 2026-11-02 10:30 am) ======== */
@@ -217,9 +217,9 @@ html.dark .bg-message {
 }
 [data-slot="sidebar"] [data-slot="sidebar-inner"] {
 	background: var(--t3d-tint) !important;
-	border: 1px solid var(--t3d-edge) !important;
+	border: 2px solid var(--t3d-edge) !important;
 	border-radius: 16px !important;
-	box-shadow: 0 16px 36px -14px rgb(17 17 27 / 0.85), inset 0 1px 0 var(--t3d-sheen) !important;
+	box-shadow: 0 16px 36px -14px rgb(17 17 27 / 0.85), 0 0 #0000 !important;
 	-webkit-backdrop-filter: var(--t3d-blur) !important;
 	backdrop-filter: var(--t3d-blur) !important;
 	overflow: hidden !important;
@@ -253,7 +253,7 @@ html:not([data-window-material]) [data-slot="sidebar"] [data-slot="sidebar-inner
    whole-word match skips the "active:" press variant. Surface0 fill, soft lavender edge. */
 [data-slot="sidebar-inner"] :is(.bg-sidebar-row-active, .bg-sidebar-row-selected) {
 	background-color: rgb(49 50 68 / 0.88) !important;
-	box-shadow: inset 0 0 0 1.5px rgb(180 190 254 / 0.3), 0 2px 8px -4px rgb(17 17 27 / 0.6) !important;
+	box-shadow: inset 0 0 0 2px rgb(180 190 254 / 0.3), 0 2px 8px -4px rgb(17 17 27 / 0.6) !important;
 	border-radius: 12px !important;
 }
 html [data-app-sidebar][data-app-sidebar] {
@@ -279,9 +279,9 @@ html [data-app-sidebar][data-app-sidebar] {
 	content: none !important;
 }
 [data-composer-shoulder-tab] [data-prompt-stash-badge] {
-	border: 1px solid var(--t3d-edge) !important;
+	border: 2px solid var(--t3d-edge) !important;
 	border-radius: 10px !important;
-	box-shadow: inset 0 1px 0 var(--t3d-sheen), 0 4px 12px -6px rgb(17 17 27 / 0.7) !important;
+	box-shadow: 0 0 #0000, 0 4px 12px -6px rgb(17 17 27 / 0.7) !important;
 	color: #a6adc8 !important;
 }
 [data-composer-shoulder-tab] [data-prompt-stash-badge]:hover,

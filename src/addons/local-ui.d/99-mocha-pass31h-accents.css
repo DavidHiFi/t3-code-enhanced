@@ -125,7 +125,7 @@ html [data-chat-composer-surface] button.isolate.rounded-full:has(> span > svg[d
 	position: absolute !important;
 	inset: 0 !important;
 	border-radius: inherit !important;
-		padding: 1.5px !important;
+		padding: 2px !important;
 	--p31h-a: inherit;
 	--p31h-b: inherit;
 	background: linear-gradient(135deg, var(--p31h-a), var(--p31h-b)) !important;

@@ -97,7 +97,7 @@ html .messages-timeline-row-frame[data-t15a-run][data-t15a-run] > div.chat-conte
 	background: linear-gradient(rgb(243 139 168 / 0.1), rgb(243 139 168 / 0.1)), var(--t15-panel) !important;
 }
 html .messages-timeline-row-frame[data-t15a-run][data-t15a-run-start][data-t15a-run-end] > div.chat-content-lane:has(> [data-timeline-row-kind="event"] [data-v2-item-type="error"]) {
-	box-shadow: inset 0 0 0 1.5px rgb(243 139 168 / 0.38) !important;
+	box-shadow: inset 0 0 0 2px rgb(243 139 168 / 0.38) !important;
 }
 html .messages-timeline-row-frame[data-t15a-run][data-t15a-run] div.chat-content-lane [data-v2-item-type="error"][data-v2-item-type="error"] {
 	background: transparent !important;
@@ -108,10 +108,10 @@ html .messages-timeline-row-frame[data-t15a-run][data-t15a-run] div.chat-content
    hover keeps the fill and strengthens the edge */
 html .messages-timeline-row-frame:not([data-t15a-run]) [data-timeline-row-kind="event"] [data-v2-item-type="error"][data-v2-item-type="error"] {
 	background: linear-gradient(rgb(243 139 168 / 0.1), rgb(243 139 168 / 0.1)), var(--t5-solid) !important;
-	box-shadow: inset 0 0 0 1.5px rgb(243 139 168 / 0.38) !important;
+	box-shadow: inset 0 0 0 2px rgb(243 139 168 / 0.38) !important;
 }
 html .messages-timeline-row-frame:not([data-t15a-run]) [data-timeline-row-kind="event"] [data-v2-item-type="error"][data-v2-item-type="error"]:is(:hover, [data-p31a-hover]) {
-	box-shadow: inset 0 0 0 1.5px rgb(243 139 168 / 0.7), 0 0 14px -3px rgb(243 139 168 / 0.4) !important;
+	box-shadow: inset 0 0 0 2px rgb(243 139 168 / 0.7), 0 0 14px -3px rgb(243 139 168 / 0.4) !important;
 }
 
 /* Pinned alerts over the chat (Alert, error and warning variants). Pass 13 and the glass
@@ -144,11 +144,11 @@ html .messages-timeline-row-frame:not([data-t15a-run]) [data-timeline-row-kind="
    26's blue to mauve hover frame still draws on top and the fill stays. */
 html [data-composer-banner-surface][data-composer-banner-surface][data-variant="error"][data-variant="error"]:not([data-composer-shoulder-tab]) {
 	background-image: linear-gradient(rgb(243 139 168 / 0.12), rgb(243 139 168 / 0.12)) !important;
-	box-shadow: inset 0 0 0 1.5px rgb(243 139 168 / 0.4) !important;
+	box-shadow: inset 0 0 0 2px rgb(243 139 168 / 0.4) !important;
 }
 html [data-composer-banner-surface][data-composer-banner-surface][data-variant="warning"][data-variant="warning"]:not([data-composer-shoulder-tab]) {
 	background-image: linear-gradient(rgb(249 226 175 / 0.1), rgb(249 226 175 / 0.1)) !important;
-	box-shadow: inset 0 0 0 1.5px rgb(249 226 175 / 0.38) !important;
+	box-shadow: inset 0 0 0 2px rgb(249 226 175 / 0.38) !important;
 }
 
 /* 6. Chat and composer buttons: attach, more controls, model picker, mic, context strip
@@ -230,7 +230,7 @@ html [data-chat-composer-surface] :is(button[type="submit"]:is(.bg-message-actio
 	min-height: 0 !important;
 	width: auto !important;
 	height: auto !important;
-		padding: 1.5px !important;
+		padding: 2px !important;
 	border-radius: inherit !important;
 	background: linear-gradient(100deg, var(--p31a-a), var(--p31a-b)) !important;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
@@ -240,7 +240,7 @@ html [data-chat-composer-surface] :is(button[type="submit"]:is(.bg-message-actio
 	transition: --p31a-a 0.18s ease, --p31a-b 0.18s ease !important;
 }
 html :is([data-chat-composer-surface], [data-slot="composer-context-strip"], [data-timeline-root], [data-thread-queue]) button[data-slot="button"]:not(:is(.\[\:hover\,\[data-pressed\]\]\:bg-black\/80,.\[\:hover\,\[data-pressed\]\]\:bg-black\/90,.active\:bg-black\/\[0\.06\],.bg-black,.bg-black\/10,.bg-black\/50,.bg-black\/65,.bg-black\/70,.bg-black\/75,.bg-black\/9,.bg-black\/90,.bg-black\/\[0\.035\],.dark\:bg-black,.dark\:bg-black\/35,.dark\:hover\:bg-black\/50,.data-popup-open\:\!bg-black\/\[0\.035\],.data-popup-open\:bg-black\/\[0\.035\],.data-pressed\:\!bg-black\/\[0\.035\],.data-pressed\:\!bg-black\/\[0\.06\],.has-\[\[data-popup-open\]\]\:bg-black\/\[0\.035\],.hover\:\!bg-black\/\[0\.035\],.hover\:\!bg-black\/\[0\.06\],.hover\:bg-black\/14,.hover\:bg-black\/\[0\.035\],.hover\:bg-black\/\[0\.055\])):not(.surface-glass):not(:is(.\[\&\>a\]\:underline-offset-4,.underline-offset,.underline-offset-2,.underline-offset-3,.underline-offset-4,.underline-offset-\[0\.2em\])):not(:is(.\*\:after\:absolute,.\[\&\>\:not\(\[data-jump-hint\]\)\]\:absolute,.\[\&_\[data-composer-control-label\]\]\:absolute,.\[\&_\[data-slot\=select-icon\]\]\:before\:absolute,.\[button\&\,a\&\]\:pointer-coarse\:after\:absolute,.absolute,.absolutely,.absoluten,.absoluter,.after\:absolute,.before\:absolute,.data-\[composer-chip-selected\]\:after\:absolute,.group-any-hover\/sidebar-row\:absolute,.group-data-context-row\/composer-surface\:before\:absolute,.group-has-\[\:focus-visible\]\/sidebar-status-slot\:absolute,.keyword\.operator\.absolute\.apl,.max-md\:absolute,.pointer-coarse\:\[\&_\[data-slot\=inline-button\]\]\:after\:absolute,.pointer-coarse\:after\:absolute,.t\=\(0\,Q\.c\)\(29\)\,n\=Ue\(e\.absolutePath\,e\.workspaceRoot\)\.relativePath\=\=\=void)):not(:is([data-chat-composer-floating-layer], [data-model-picker-content], [data-composer-command-drawer], [data-testid="timeline-minimap"]) *)::after {
-	inset: -1px !important;
+	inset: -2px !important;
 }
 @media (prefers-reduced-motion: reduce) {
 	html :is([data-chat-composer-surface], [data-slot="composer-context-strip"], [data-timeline-root], [data-thread-queue]) :is(button, [role="combobox"])::after { transition: none !important; }

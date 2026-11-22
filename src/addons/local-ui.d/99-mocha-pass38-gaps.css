@@ -83,10 +83,10 @@ html [data-slot="sidebar-inner"] input[aria-label="Search threads"] {
    Pass 37 stripped the sidebar column's frame at rest and on hover. The owner wants it back:
    the same edge as every other dock at rest, and the blue two-tone glow on hover. */
 html [data-slot="sidebar-container"][data-slot="sidebar-container"][data-slot="sidebar-container"] > [data-slot="sidebar-inner"][data-slot="sidebar-inner"][data-slot="sidebar-inner"] {
-	border: 1px solid var(--t3d-edge, rgb(108 112 134 / 0.58)) !important;
-	box-shadow: 0 16px 36px -14px rgb(17 17 27 / 0.85), inset 0 1px 0 var(--t3d-sheen, transparent) !important;
+	border: 2px solid var(--t3d-edge, rgb(108 112 134 / 0.58)) !important;
+	box-shadow: 0 16px 36px -14px rgb(17 17 27 / 0.85), 0 0 #0000 !important;
 }
 html [data-slot="sidebar-container"][data-slot="sidebar-container"][data-slot="sidebar-container"] > [data-slot="sidebar-inner"][data-slot="sidebar-inner"][data-slot="sidebar-inner"]:hover {
 	border-color: var(--p31g-two-tone, rgb(137 180 250 / 0.6)) !important;
-	box-shadow: var(--p31g-glow, 0 0 14px -3px rgb(137 180 250 / 0.45)), inset 0 1px 0 var(--t3d-sheen, transparent) !important;
+	box-shadow: var(--p31g-glow, 0 0 14px -3px rgb(137 180 250 / 0.45)), 0 0 #0000 !important;
 }

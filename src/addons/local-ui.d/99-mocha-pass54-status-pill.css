@@ -20,26 +20,26 @@
 /* ---------- 1. the toggle while the sidebar is hidden ---------- */
 html[data-t3l-tog-dock][data-t3l-tog-dock] div.pointer-events-none.fixed:is(.left-\[var\(--workspace-controls-left\)\],.ml-\[calc\(var\(--workspace-controls-left\)\+1px-env\(safe-area-inset-left\)\)\]):is(.left-\[var\(--workspace-controls-left\)\],.ml-\[calc\(var\(--workspace-controls-left\)\+1px-env\(safe-area-inset-left\)\)\]) button {
 	background-color: rgb(17 17 27 / 0.6) !important;
-	box-shadow: inset 0 0 0 1.5px rgb(108 112 134 / 0.55) !important;
+	box-shadow: inset 0 0 0 2px rgb(108 112 134 / 0.55) !important;
 	color: #cdd6f4 !important;
 	border-radius: 9px !important;
 }
 html[data-t3l-tog-dock][data-t3l-tog-dock] div.pointer-events-none.fixed:is(.left-\[var\(--workspace-controls-left\)\],.ml-\[calc\(var\(--workspace-controls-left\)\+1px-env\(safe-area-inset-left\)\)\]):is(.left-\[var\(--workspace-controls-left\)\],.ml-\[calc\(var\(--workspace-controls-left\)\+1px-env\(safe-area-inset-left\)\)\]) button:not(:disabled):is(:hover, [data-p31a-hover]) {
 	background-color: rgb(24 24 37 / 0.72) !important;
-	box-shadow: inset 0 0 0 1.5px #89b4fa !important;
+	box-shadow: inset 0 0 0 2px #89b4fa !important;
 	color: #cdd6f4 !important;
 }
 
 @layer theme {
 	html[data-t3l-tog-dock][data-t3l-tog-dock] div.pointer-events-none.fixed:is(.left-\[var\(--workspace-controls-left\)\],.ml-\[calc\(var\(--workspace-controls-left\)\+1px-env\(safe-area-inset-left\)\)\]):is(.left-\[var\(--workspace-controls-left\)\],.ml-\[calc\(var\(--workspace-controls-left\)\+1px-env\(safe-area-inset-left\)\)\]) button {
 		background-color: rgb(17 17 27 / 0.6) !important;
-		box-shadow: inset 0 0 0 1.5px rgb(108 112 134 / 0.55) !important;
+		box-shadow: inset 0 0 0 2px rgb(108 112 134 / 0.55) !important;
 		color: #cdd6f4 !important;
 		border-radius: 9px !important;
 	}
 	html[data-t3l-tog-dock][data-t3l-tog-dock] div.pointer-events-none.fixed:is(.left-\[var\(--workspace-controls-left\)\],.ml-\[calc\(var\(--workspace-controls-left\)\+1px-env\(safe-area-inset-left\)\)\]):is(.left-\[var\(--workspace-controls-left\)\],.ml-\[calc\(var\(--workspace-controls-left\)\+1px-env\(safe-area-inset-left\)\)\]) button:not(:disabled):is(:hover, [data-p31a-hover]) {
 		background-color: rgb(24 24 37 / 0.72) !important;
-		box-shadow: inset 0 0 0 1.5px #89b4fa !important;
+		box-shadow: inset 0 0 0 2px #89b4fa !important;
 		color: #cdd6f4 !important;
 	}
 
@@ -76,7 +76,7 @@ html[data-t3l-tog-dock][data-t3l-tog-dock] div.pointer-events-none.fixed:is(.lef
 		position: absolute !important;
 		inset: 0 !important;
 		z-index: 1 !important;
-		padding: 1.5px !important;
+		padding: 2px !important;
 		border-radius: inherit !important;
 		background: linear-gradient(100deg, var(--p31f-a), var(--p31f-b)) !important;
 		-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;

@@ -24,7 +24,7 @@
 	letter-spacing: 0.04em !important;
 	color: var(--t15-mauve) !important;
 	background: rgb(203 166 247 / 0.12) !important;
-	border: 1px solid rgb(203 166 247 / 0.35) !important;
+	border: 2px solid rgb(203 166 247 / 0.35) !important;
 	border-radius: 99px !important;
 	padding: 2px 7px !important;
 	flex: none !important;
@@ -150,7 +150,7 @@ nav[data-workspace-area="settings-nav"] div.flex.h-8.items-center.gap-2 {
    pass-15 material ladder; the old --t6-* vars are gone ---- */
 .t3l-shelf-btn {
 	background-color: var(--t15-dock) !important;
-	box-shadow: inset 0 0 0 1.5px var(--t15-edge) !important;
+	box-shadow: inset 0 0 0 2px var(--t15-edge) !important;
 	transition: var(--t15-ease) !important;
 	border-radius: 10px !important;
 }
