@@ -143,7 +143,8 @@ if (-not $NoTask) {
     Get-CimInstance Win32_Process -Filter "Name = 'pwsh.exe' OR Name = 'wscript.exe'" -ErrorAction SilentlyContinue |
         Where-Object { $_.CommandLine -and $_.CommandLine.Contains($libDir, [StringComparison]::OrdinalIgnoreCase) -and $_.CommandLine -match 'guard\.(ps1|vbs)' } |
         Sort-Object Name -Descending | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }
-    $user      = "$env:USERDOMAIN\$env:USERNAME"
+    # the signed-in account by its real name; USERDOMAIN reads WORKGROUP in a remote shell
+    $user      = [Security.Principal.WindowsIdentity]::GetCurrent().Name
     $action    = New-ScheduledTaskAction -Execute 'wscript.exe' -Argument ('"{0}"' -f $vbs)
     $trigger   = [CimInstance[]]@((New-ScheduledTaskTrigger -AtLogOn -User $user),
                  (New-ScheduledTaskTrigger -Once -At (Get-Date).Date -RepetitionInterval (New-TimeSpan -Minutes 15)))
