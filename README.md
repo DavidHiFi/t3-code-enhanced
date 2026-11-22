@@ -25,7 +25,7 @@ Install it once. It keeps itself up to date and puts its patches back after ever
 ## Installation
 
 1. Install [T3 Code](https://github.com/pingdotgg/t3code) for your Windows user. Nightly and Beta both work.
-2. Download `T3-Code-Enhanced-v2.1.1.zip` from the [latest release](https://github.com/DavidHiFi/t3-code-enhanced/releases/latest) and unzip it anywhere.
+2. Download `T3-Code-Enhanced-v2.1.2.zip` from the [latest release](https://github.com/DavidHiFi/t3-code-enhanced/releases/latest) and unzip it anywhere.
 3. Double-click `install.cmd`. If PowerShell 7 is missing, it offers to install it with winget first.
 4. Restart T3 Code.
 
@@ -63,10 +63,10 @@ That's the last time you need the zip. New releases show up as a button in T3 Co
 
 - **No terminal for scripts:** running a project script never opens the bottom terminal, and closing the right panel never floats the preview.
 - **Longer RPC budget:** slow backend calls get 60 seconds instead of 15, so long operations don't abort.
-- **One button per script:** project scripts show as separate buttons, with an arrow that runs them all. *Skipped on the newest nightly.*
-- **Seconds on sidebar timers:** `Working 23m 27s` in the sidebar, like the open thread shows. *Skipped on the newest nightly.*
-- **Every account in the Limits popover:** usage for every account T3 can read for that provider, including each CLIProxyAPI account. Name rows with `"accountNames": { "you@example.com": "Max" }` in the config. *Skipped on the newest nightly.*
-- **OpenCode budget (opt-in):** shorter budgets for OpenCode calls. Off by default, and skipped on the tested nightly because that code changed.
+- **One button per script:** project scripts show as separate buttons, with an arrow that runs them all.
+- **Seconds on sidebar timers:** `Working 23m 27s` in the sidebar, like the open thread shows.
+- **Every account in the Limits popover:** usage for every account T3 can read for that provider, including each CLIProxyAPI account. Name rows with `"accountNames": { "you@example.com": "Max" }` in the config.
+- **OpenCode budget (opt-in):** a longer start-up budget for OpenCode. Off by default. T3 now sets two of the three budgets itself, so the patch covers the one that is left.
 
 ### Upkeep
 
@@ -80,7 +80,7 @@ That's the last time you need the zip. New releases show up as a button in T3 Co
 > **Speed.** Version 2.0 rewrote the theme rules that made T3 Code sluggish. Adding a chat message used to cost about 90 ms of style work with the theme on; it now costs under 2 ms.
 
 > [!IMPORTANT]
-> **Tested builds.** Checked against T3 Code `0.1.12-nightly.20261121.5064`. T3 rewrote some of its code on that build, so three patches skip themselves there: one button per script, seconds on sidebar timers and every account in Limits. Closing the right panel still keeps the preview docked, but the device preview can float. Everything else applies. On any build with changed internals, the affected patch is skipped and reported, and the rest still apply.
+> **Tested builds.** Checked against T3 Code `0.1.12-nightly.20261122.5071`, where every patch applies. On any build with changed internals, the affected patch is skipped and reported, and the rest still apply.
 
 > [!WARNING]
 > **This modifies installed files.** The patchers rewrite `app.asar` and `server.asar` in T3 Code's install folder, and the Riced app icon is written into `T3 Code.exe` after T3 closes. The originals are backed up to `%LOCALAPPDATA%\T3CodeEnhanced\backups`, and `uninstall.cmd` puts them back byte for byte, original icon included. Some antivirus software flags asar edits.
