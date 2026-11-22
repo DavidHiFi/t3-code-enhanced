@@ -68,7 +68,10 @@ try {
         $zip = Join-Path $work 'release.zip'
         Log "downloading $ZipUrl"
         Invoke-WebRequest -Uri $ZipUrl -OutFile $zip -Headers $headers -TimeoutSec 120
-        $want = ((Invoke-WebRequest -Uri $SumUrl -Headers $headers -TimeoutSec 30).Content | Out-String).Trim().Split()[0].ToUpperInvariant()
+        # GitHub serves the checksum file as raw bytes; turn them into text before reading the hash
+        $sumBody = (Invoke-WebRequest -Uri $SumUrl -Headers $headers -TimeoutSec 30).Content
+        if ($sumBody -is [byte[]]) { $sumBody = [Text.Encoding]::ASCII.GetString($sumBody) }
+        $want = "$sumBody".Trim().Split()[0].ToUpperInvariant()
         $have = (Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash
         if ($want -notmatch '^[0-9A-F]{64}$') { throw 'the checksum file is unreadable' }
         if ($have -ne $want) { throw "the download is damaged (SHA-256 $have, expected $want); nothing was changed" }
