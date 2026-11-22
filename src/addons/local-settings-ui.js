@@ -15,6 +15,27 @@ try {
 	const INLINE_ATTR = "data-t3local-glassrow";
 	const state = { section: false, error: null };
 
+	// Read by the server.asar "usageaccounts" patch (thread popover usage limits). Gets the usage store's account
+	// list, T3's "unavailable reason" function and the instance id; returns one limits object with a row per
+	// readable account, each labelled with the name set for that email in accountNames (self.T3N) or the first 5
+	// characters of the email. Returns T3's own pick when no account has readable limits.
+	self.T3A = function (accs, reason, instanceId) {
+		try {
+			const list = Array.isArray(accs) ? accs : [];
+			const ok = list.filter((a) => a && a.limits && Array.isArray(a.limits.windows) && !reason(a.limits));
+			if (!ok.length) return (list.find((a) => a && a.instanceId === instanceId) || {}).limits;
+			const names = self.T3N || {};
+			const windows = [];
+			for (const a of ok) {
+				const who = names[a.email] !== undefined ? names[a.email] : String(a.email || a.id || "").slice(0, 5);
+				for (const w of a.limits.windows) windows.push({ ...w, id: String(a.id || a.email) + ":" + w.id, label: who + " " + w.label });
+			}
+			return { ...ok[0].limits, windows, t3a: 1 };
+		} catch (e) {
+			return undefined;
+		}
+	};
+
 	const ROWS = [
 		{ id: "versionBadge", key: "t3local.showVersion", title: "Version in header badge", desc: "Shows the app version next to the Nightly label in the sidebar header." },
 		{ id: "galaxyHeader", key: "t3local.galaxyHeader", title: "Galaxy in the sidebar header", desc: "The star-field artwork behind the T3 Code title at the top left." },

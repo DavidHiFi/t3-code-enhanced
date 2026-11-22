@@ -185,12 +185,14 @@ function Resolve-SlowRpc([string]$direction) {
 # (5/5/4) are kept per site so -Revert restores them exactly.
 $sites = @(
     @{ Name = 'model-list budget (makeOpenCode2ModelLoader)'; Region = 'packages/provider-opencode/src/server/status.ts'
-       OrigRe = 'timeoutOption\("5 seconds"\)'; PatchRe = 'timeoutOption\("9 seconds"\)'; Stock = '5' },
+       OrigRe = 'timeoutOption\("5 seconds"\)'; PatchRe = 'timeoutOption\("9 seconds"\)'; Stock = '5'
+       UpstreamFixedRe = 'timeoutOption\(resolveProviderProbeTimeoutMs\("opencode", 1e4,' },   # 2026-11-14 build: 10 s
+    # 2026-11-14 build: the constant became INFO_TIMEOUT_MS = 5e3 (milliseconds); 5e3 -> 9e3 keeps the length
     @{ Name = '/api/info readiness (INFO_TIMEOUT)'; Region = 'packages/provider-opencode/src/server/v2/OpenCode2Server.ts'
-       OrigRe = 'const \w+ = "5 seconds";'; PatchRe = 'const \w+ = "9 seconds";'; Stock = '5' },
+       OrigRe = 'const \w+ = "5 seconds";|const INFO_TIMEOUT_MS = 5e3;'; PatchRe = 'const \w+ = "9 seconds";|const INFO_TIMEOUT_MS = 9e3;'; Stock = '5' },
     @{ Name = 'version probe (OPENCODE_VERSION_PROBE_TIMEOUT)'; Region = 'packages/provider-opencode/src/server/versionProbe.ts'
        OrigRe = 'const \w+ = "4 seconds";'; PatchRe = 'const \w+ = "9 seconds";'; Stock = '4'
-       UpstreamFixedRe = 'const \w+ = "10 seconds";' }
+       UpstreamFixedRe = 'const \w+ = "10 seconds";|const OPENCODE_VERSION_PROBE_TIMEOUT_MS = 1e4;' }
 )
 
 function Resolve-OpenCode([string]$direction) {
@@ -208,9 +210,21 @@ function Resolve-OpenCode([string]$direction) {
         foreach ($r in [regex]::Matches($text, '//#region ([^\r\n]+)')) {
             if ($r.Groups[1].Value.Contains($s.Region)) { $mark = $r; break }
         }
+        # 2026-10-29: builds from 0.0.5x on drop the //#region pair. Each source file starts with an inline
+        # `// ../../packages/<file>` comment, and the file runs until the next such comment.
+        if (-not $mark) {
+            foreach ($r in [regex]::Matches($text, '// \.\./\.\./(packages/[^\s;]+)')) {
+                if ($r.Groups[1].Value -eq $s.Region) { $mark = $r; break }
+            }
+        }
         if (-not $mark) { $siteResults += [pscustomobject]@{ Name = $s.Name; State = 'UNKNOWN'; Detail = "region marker for '$($s.Region)' not found" }; continue }
         $rStart = $mark.Index
-        $endMark = $text.IndexOf('//#endregion', $rStart)
+        if ($mark.Value.StartsWith('//#region')) {
+            $endMark = $text.IndexOf('//#endregion', $rStart)
+        } else {
+            $next = [regex]::Match($text.Substring($rStart + 1), '// \.\./\.\./packages/')
+            $endMark = if ($next.Success) { $rStart + 1 + $next.Index } else { -1 }
+        }
         $sliceLen = if ($endMark -lt 0) { $text.Length - $rStart } else { $endMark - $rStart }
         $slice = $text.Substring($rStart, $sliceLen)
         $mOrigS  = [regex]::Matches($slice, $s.OrigRe)
@@ -229,7 +243,8 @@ function Resolve-OpenCode([string]$direction) {
         if ($wantEdit) {
             $m = if ($isPatched) { $mPatchS[0] } else { $mOrigS[0] }
             $digit = if ($direction -eq 'patched') { '9' } else { $s.Stock }
-            $newVal = [regex]::Replace($m.Value, '"\d+ seconds"', ('"' + $digit + ' seconds"'))
+            $newVal = if ($m.Value -match '"\d+ seconds"') { [regex]::Replace($m.Value, '"\d+ seconds"', ('"' + $digit + ' seconds"')) }
+                      else { [regex]::Replace($m.Value, '= \de3;', ('= ' + $digit + 'e3;')) }
             if ($newVal.Length -ne $m.Value.Length) { $siteResults += [pscustomobject]@{ Name = $s.Name; State = 'UNKNOWN'; Detail = 'replacement length differs, refusing to write' }; continue }
             $edits += @{ Kind = 'region'; Patch = 'opencode'; Off = [int64]($dataOffset + $chunk.Offset + $rStart + $m.Index); Old = $m.Value; New = $newVal; Chunk = $chunk; ChunkText = $text }
         }
@@ -841,7 +856,99 @@ function Get-SbNames([System.Text.RegularExpressions.Match]$m, [hashtable]$group
     foreach ($k in $groups.Keys) { if ($m.Groups[$groups[$k]].Success) { $names[$k] = $m.Groups[$groups[$k]].Value } }
     return $names
 }
+$script:SbTplStock4 = @'
+~e~?(0,~$~.jsxs)(~C~,{role:`group`,"aria-label":~b~(`Project scripts`),...~S~?{className:~Xb~,ref:~w~}:{},children:[(0,~$~.jsxs)(~Fn~,{children:[(0,~$~.jsxs)(~on~,{render:(0,~$~.jsx)(~Vb~,{size:`xs`,variant:~S~?`ghost`:`outline`,part:`primary`,panel:~S~,className:~S~?void 0:`w-7 sm:w-6 @3xl/header-actions:w-auto!`,"aria-label":~b~(`Run {name}`,{name:~e~.name}),"data-toolbar-control":``,"aria-disabled":!~u~||void 0,onClick:()=>~u~?.(~e~)}),children:[(0,~$~.jsx)(~rw~,{icon:~e~~%~,...~S~?{className:~eS~}:{}}),(0,~$~.jsx)(`span`,{className:~kr~(`sr-only @3xl/header-actions:not-sr-only @3xl/header-actions:ml-0.5`,~S~&&~kr~(`not-sr-only ml-0 truncate`,`[text-box:trim-both_cap_alphabetic] overflow-x-clip overflow-y-visible`)),children:~e~.name})]}),(0,~$~.jsx)(~Xt~,{side:`top`,children:~u~?~b~(`Run {name}`,{name:~e~.name}):~b~(`Pair this client again with permission to run terminal commands.`)})]}),~S~?(0,~$~.jsx)(`span`,{"aria-hidden":`true`,className:~wb~}):(0,~$~.jsx)(~aD~,{className:`hidden @3xl/header-actions:block`}),(0,~$~.jsxs)(~Ut~,{open:~O~.scripts,onOpenChange:~e~=>~k~({presentation:~g~,scripts:~e~,imports:!1}),children:[(0,~$~.jsxs)(~Fn~,{children:[(0,~$~.jsx)(~on~,{render:(0,~$~.jsx)(~Ke~,{render:(0,~$~.jsx)(~Vb~,{size:~S~?`sm`:`icon-xs`,variant:~S~?`ghost`:`outline`,part:`secondary`,panel:~S~,"aria-label":~b~(`Script actions`),"data-toolbar-control":``})}),children:(0,~$~.jsx)(~fa~,{className:~S~?~sb~:`size-4`})}),(0,~$~.jsx)(~Xt~,{side:`top`,children:(0,~$~.jsx)(~X~,{children:`Script actions`})})]}),(0,~$~.jsx)(~Jr~,{align:`end`,...~S~?{anchor:~w~}:{},className:~S~?`w-(--anchor-width)`:void 0,children:~L~})]})]}):~o~.length>0||~r~.length>0?~S~?(0,~$~.jsxs)(`div`,{role:`group`,"aria-label":~b~(`Project actions`),className:~Xb~,ref:~w~,children:[(0,~$~.jsxs)(~Vb~,{size:`sm`,variant:`ghost`,part:`primary`,"aria-label":~b~(`Project actions`),onClick:()=>~k~({presentation:~g~,scripts:!1,imports:!0}),children:[(0,~$~.jsx)(~$a~,{className:~eS~}),(0,~$~.jsx)(`span`,{className:~kr~(`min-w-0 truncate`,~nb~),children:(0,~$~.jsx)(~X~,{context:`project actions menu`,children:`Actions`})})]}),(0,~$~.jsx)(`span`,{"aria-hidden":`true`,className:~wb~}),(0,~$~.jsxs)(~Ut~,{highlightItemOnHover:!1,open:~O~.imports,onOpenChange:~e~=>~k~({presentation:~g~,scripts:!1,imports:~e~}),children:[(0,~$~.jsx)(~Ke~,{render:(0,~$~.jsx)(~Vb~,{size:`sm`,variant:`ghost`,part:`secondary`,"aria-label":~b~(`Choose project action`)}),children:(0,~$~.jsx)(~fa~,{className:~sb~})}),(0,~$~.jsx)(~Jr~,{align:`end`,anchor:~w~,className:`w-(--anchor-width)`,children:~L~})]})]}):(0,~$~.jsxs)(~Ut~,{highlightItemOnHover:!1,open:~O~.imports,onOpenChange:~e~=>~k~({presentation:~g~,scripts:!1,imports:~e~}),children:[(0,~$~.jsxs)(~Ke~,{render:(0,~$~.jsx)(~Rt~,{size:`xs`,variant:`outline`,"aria-label":~b~(`Project actions`)}),children:[(0,~$~.jsx)(~$a~,{className:`size-3.5`}),(0,~$~.jsx)(`span`,{className:`sr-only @3xl/header-actions:not-sr-only @3xl/header-actions:ml-0.5`,children:(0,~$~.jsx)(~X~,{context:`project actions menu`,children:`Actions`})}),(0,~$~.jsx)(~fa~,{className:`size-3.5`})]}),(0,~$~.jsx)(~Jr~,{align:`end`,children:~L~})]}):(0,~$~.jsxs)(~Fn~,{children:[(0,~$~.jsxs)(~on~,{render:(0,~$~.jsx)(~Vb~,{size:`xs`,variant:~S~?`ghost`:`outline`,part:`row`,panel:~S~,className:~S~?void 0:`w-7 sm:w-6 @3xl/header-actions:w-auto!`,"aria-label":~b~(~S~?`Add project script`:`Add action`),"data-toolbar-control":``,onClick:~c~}),children:[(0,~$~.jsx)(~Ga~,{className:`size-3.5`}),(0,~$~.jsx)(`span`,{className:~kr~(`sr-only @3xl/header-actions:not-sr-only @3xl/header-actions:ml-0.5`,~S~&&~kr~(`not-sr-only ml-0.5`,`[text-box:trim-both_cap_alphabetic] overflow-x-clip overflow-y-visible`)),children:~b~(~S~?`Add project script`:`Add action`)})]}),(0,~$~.jsx)(~Xt~,{side:`top`,children:~b~(~S~?`Add project script`:`Add action`)})]})
+'@
+$script:SbTplV4 = @'
+[~e~&&~o~.map((~e~,~I1~,~L1~,~Z1~=~o~[~I1~+1])=>(0,~$~.jsxs)(~C~,{role:`group`,"aria-label":~b~(`Project scripts`),className:~Xb~,ref:~Z1~?~L1~=>~w~[~I1~]=~L1~:~w~,draggable:!0,onDragStart:~L1~=>~L1~.dataTransfer.setData(`t3sb`,~I1~),onDragOver:~L1~=>~L1~.preventDefault(),onDrop:~L1~=>{~L1~=~L1~.dataTransfer.getData(`t3sb`);let ~Z1~=[...~o~];~L1~&&~L1~!=~I1~&&(~Z1~.splice(~I1~,0,...~Z1~.splice(~L1~,1)),~p~(~Z1~))},children:[(0,~$~.jsxs)(~Fn~,{children:[(0,~$~.jsxs)(~on~,{render:(0,~$~.jsx)(~Vb~,{size:`xs`,variant:`ghost`,part:`primary`,panel:~S~,"aria-label":~b~(`Run {name}`,{name:~e~.name}),"data-toolbar-control":``,"aria-disabled":!~u~||void 0,onClick:()=>~u~?.(~e~)}),children:[(0,~$~.jsx)(~rw~,{icon:~e~~%~,...~S~?{className:~eS~}:{}}),(0,~$~.jsx)(`span`,{className:~kr~(`sr-only @3xl/header-actions:not-sr-only @3xl/header-actions:ml-0.5`,~S~&&~kr~(`not-sr-only ml-0 truncate`,`[text-box:trim-both_cap_alphabetic] overflow-x-clip overflow-y-visible`)),children:~e~.name})]}),(0,~$~.jsx)(~Xt~,{side:`top`,children:~u~?`Run ${~e~.name}`:`Re-pair.`})]}),~S~?(0,~$~.jsx)(`span`,{"aria-hidden":`true`,className:~wb~}):!~aD~,(0,~$~.jsxs)(~Ut~,{open:~O~.scripts==~I1~+1,onOpenChange:~e~=>~k~({presentation:~g~,scripts:~e~&&~I1~+1,imports:!1}),children:[(0,~$~.jsx)(~Ke~,{render:(0,~$~.jsx)(~Vb~,{size:`sm`,variant:`ghost`,part:`secondary`,panel:~S~,"aria-label":~b~(`Script actions`)}),children:(0,~$~.jsx)(~fa~,{className:~sb~})}),(0,~$~.jsx)(~Jr~,{align:`end`,anchor:~Z1~?()=>~w~[~I1~]:~w~,className:`w-(--anchor-width)`,children:[(0,~$~.jsxs)(~Qr~,{onClick:()=>{~k~({presentation:~g~,scripts:!1,imports:!1}),~j~(~XC~(~e~,~T~))},children:[(0,~$~.jsx)(~Nx~,{className:`size-4`}),`Edit`]}),(0,~$~.jsxs)(~Qr~,{variant:`destructive`,onClick:()=>~Nu~()?.dialogs.confirm(`Remove ${~e~.name}?`,{variant:`destructive`}).then(~r~=>~r~&&~t~[~#~](~e~.id)),children:[(0,~$~.jsx)(~Qa~,{className:`size-4`}),`Remove`]}),~n~]})]})]})),!~e~&&(~o~.length>0||~r~.length>0)?(0,~$~.jsxs)(`div`,{role:`group`,"aria-label":~b~(`Project actions`),className:~Xb~,ref:~w~,children:[(0,~$~.jsxs)(~Vb~,{size:`sm`,variant:`ghost`,part:`primary`,"aria-label":~b~(`Project actions`),onClick:()=>~k~({presentation:~g~,scripts:!1,imports:!0}),children:[(0,~$~.jsx)(~$a~,{className:~eS~}),(0,~$~.jsx)(`span`,{className:~kr~(`min-w-0 truncate`,~nb~),children:(0,~$~.jsx)(~X~,{context:`project actions menu`,children:`Actions`})})]}),(0,~$~.jsx)(`span`,{"aria-hidden":`true`,className:~wb~}),(0,~$~.jsxs)(~Ut~,{highlightItemOnHover:!1,open:~O~.imports,onOpenChange:~e~=>~k~({presentation:~g~,scripts:!1,imports:~e~}),children:[(0,~$~.jsx)(~Ke~,{render:(0,~$~.jsx)(~Vb~,{size:`sm`,variant:`ghost`,part:`secondary`,"aria-label":~b~(`Choose project action`)}),children:(0,~$~.jsx)(~fa~,{className:~sb~})}),(0,~$~.jsx)(~Jr~,{align:`end`,anchor:~w~,className:`w-(--anchor-width)`,children:~L~})]}),!~Rt~]}):(0,~$~.jsxs)(~Fn~,{children:[(0,~$~.jsxs)(~on~,{render:(0,~$~.jsx)(~Vb~,{size:`xs`,variant:`ghost`,part:`row`,panel:~S~,"aria-label":~b~(`Add project script`),"data-toolbar-control":``,onClick:~c~}),children:[(0,~$~.jsx)(~Ga~,{className:`size-3.5`}),(0,~$~.jsx)(`span`,{className:~kr~(`sr-only @3xl/header-actions:not-sr-only @3xl/header-actions:ml-0.5`,~S~&&~kr~(`not-sr-only ml-0.5`,`[text-box:trim-both_cap_alphabetic] overflow-x-clip overflow-y-visible`)),children:~b~(`Add project script`)})]}),(0,~$~.jsx)(~Xt~,{side:`top`,children:~b~(`Add project script`)})]})]
+'@
+# 2026-11-22 build (0.1.12-nightly.20261122): the same dock with its labels wrapped for translation and
+# the menu pieces under new names. Same idea as the older templates: ~name~ is a minified name read from
+# the chunk; the new menu needs a few names the stock block never touches (save list, edit request,
+# confirm box, delete callback slot), read from the surrounding component. Returns $null when this shape
+# is not in the build, so the older logic still runs.
+function Resolve-SbDockV4([string]$direction) {
+    $bq = [string]$bt
+    $anchorRe = ('role:' + $bq + 'group' + $bq + ',"aria-label":(?:@I@\()?' + $bq + 'Project scripts' + $bq).Replace('@I@', $I)
+    $cands = @($script:files | Where-Object { $_.Path -match '/client/assets/[^/]*\.js$' })
+    $hits = @()
+    foreach ($c in $cands) {
+        $t = Get-ChunkText $c.Offset $c.Size
+        if (-not $t.Contains('Project scripts')) { continue }
+        $am = [regex]::Match($t, $anchorRe)
+        if ($am.Success) { $hits += [pscustomobject]@{ Chunk = $c; Text = $t; At = $am.Index } }
+    }
+    if ($hits.Count -ne 1) { return $null }
+    $chunk = $hits[0].Chunk; $text = $hits[0].Text
+    $winStart = [Math]::Max(0, $hits[0].At - 400)
+    $win = $text.Substring($winStart, [Math]::Min(6000, $text.Length - $winStart))
+    $gS = [hashtable]::new([StringComparer]::Ordinal); $reS = ConvertTo-SbRegex $script:SbTplStock4 $gS
+    $gP = [hashtable]::new([StringComparer]::Ordinal); $reP = (ConvertTo-SbRegex $script:SbTplV4 $gP) + '(?<pad> *)'
+    $mp = [regex]::Matches($win, $reP)
+    $ms = [regex]::Matches($win, $reS)
+    if ($mp.Count -eq 0 -and $ms.Count -eq 0) { return $null }
+    if ($mp.Count + $ms.Count -ne 1) { return @{ State = 'UNKNOWN'; Detail = "script dock (2026-11-22 shape) matched $($mp.Count) patched and $($ms.Count) stock times"; Edits = @() } }
+    if ($mp.Count -eq 1) {
+        $m = $mp[0]
+        $names = Get-SbNames $m $gP
+        $stockText = Format-SbTemplate $script:SbTplStock4 $names
+        if ($stockText.Length -gt $m.Length) { return @{ State = 'UNKNOWN'; Detail = 'stock rebuild is longer than the patched block'; Edits = @() } }
+        $edits = @()
+        if ($direction -eq 'stock') {
+            $edits += @{ Kind = 'region'; Patch = 'scriptbuttons'; Off = [int64]($dataOffset + $chunk.Offset + $winStart + $m.Index); Old = $m.Value; New = $stockText + (' ' * ($m.Length - $stockText.Length)); Chunk = $chunk; ChunkText = $text }
+        }
+        return @{ State = 'PATCHED'; Detail = "dock: one button per script, Edit/Remove menus, drag order"; Edits = $edits }
+    }
+    $m = $ms[0]
+    $names = Get-SbNames $m $gS
+    $detail = 'dock: one split button'
+    if ($direction -ne 'patched') { return @{ State = 'ORIGINAL'; Detail = $detail; Edits = @() } }
+    $startRel = $winStart + $m.Index
+    $fnStart = $text.LastIndexOf('function ', $startRel, [StringComparison]::Ordinal)
+    if ($fnStart -lt 0) { return @{ State = 'UNKNOWN'; Detail = 'script dock component start not found'; Edits = @() } }
+    $comp = $text.Substring($fnStart, [Math]::Min($text.Length - $fnStart, ($startRel - $fnStart) + $m.Length + 2500))
+    $J = [regex]::Escape($names['$'])
+    $upd = [regex]::Match($comp, 'onUpdateScript:(?<u>@I@),onDeleteScript:'.Replace('@I@', $I))
+    $del = [regex]::Match($comp, 'onDeleteScript:(?<d>@I@)\}='.Replace('@I@', $I))
+    $slot = [regex]::Match($comp, ('let (?<O>@I@);(?<t>@I@)\[(?<n>\d+)\]===(?<d>@I@)\?\k<O>=\k<t>\[\d+\]:\(\k<O>=(?<q>@I@)=>void \k<d>\(\k<q>\),\k<t>\[\k<n>\]=\k<d>').Replace('@I@', $I))
+    if (-not $upd.Success -or -not $del.Success -or -not $slot.Success -or $slot.Groups['d'].Value -ne $del.Groups['d'].Value -or -not $comp.Contains('onDelete:' + $slot.Groups['O'].Value + ',')) { return @{ State = 'UNKNOWN'; Detail = 'update/delete callbacks not found'; Edits = @() } }
+    $eh = [regex]::Match($comp, ('let (?<h>@I@)=(?<q>@I@)=>\{@I@\.current\+=1,@I@\?\.\(\),(?<k>@I@)\(\{presentation:(?<g>@I@),scripts:!1,imports:!1\}\),(?<j>@I@)\((?<XC>@I@)\(\k<q>,(?<T>@I@)\)\)\}').Replace('@I@', $I))
+    if (-not $eh.Success -or $eh.Groups['k'].Value -cne $names['k'] -or $eh.Groups['g'].Value -cne $names['g']) { return @{ State = 'UNKNOWN'; Detail = 'edit handler not found'; Edits = @() } }
+    $eb = [regex]::Match($comp, ('"aria-label":@I@\(' + $bq + 'Edit \{name\}' + $bq + ',\{name:(?<q>@I@)\.name\}\),onPointerDown:@I@,onClick:(?<w>@I@)=>\{\k<w>\.preventDefault\(\),\k<w>\.stopPropagation\(\),(?<h>@I@)\(\k<q>\)\},children:\(0,' + $J + '\.jsx\)\((?<pen>@I@),\{className:' + $bq + 'size-3\.5' + $bq + '\}\)').Replace('@I@', $I))
+    if (-not $eb.Success -or $eb.Groups['h'].Value -cne $eh.Groups['h'].Value) { return @{ State = 'UNKNOWN'; Detail = 'edit button not found'; Edits = @() } }
+    $item = [regex]::Match($comp, ('\(0,' + $J + '\.jsxs\)\((?<a>@I@),\{density:@I@,onClick:' + [regex]::Escape($names['c']) + ',children:\[').Replace('@I@', $I))
+    if (-not $item.Success) { return @{ State = 'UNKNOWN'; Detail = 'menu item component not found'; Edits = @() } }
+    $frag = [regex]::Match($comp, ('\((?<j>@I@)=\(0,' + $J + '\.jsxs\)\(' + $J + '\.Fragment,\{children:\[@I@,(?<f>@I@),@I@\]\}\)[^;]*;let ' + [regex]::Escape($names['L']) + '=\k<j>[;,]').Replace('@I@', $I))
+    if (-not $frag.Success) { return @{ State = 'UNKNOWN'; Detail = 't3.json import list not found'; Edits = @() } }
+    $bin = [regex]::Match($text, ('"aria-label":@I@\(' + $bq + 'Delete side chat' + $bq + '\),[^}]{0,120}children:\(0,' + $J + '\.jsx\)\((?<ke>@I@),\{\}\)\}').Replace('@I@', $I))
+    if (-not $bin.Success) { return @{ State = 'UNKNOWN'; Detail = 'bin icon not found'; Edits = @() } }
+    $dlg = [regex]::Matches($text, '(?<![\w$.])(?<pd>@I@)\(\)\?\.dialogs\.confirm\('.Replace('@I@', $I))
+    if ($dlg.Count -lt 1) { return @{ State = 'UNKNOWN'; Detail = 'confirm dialog helper not found'; Edits = @() } }
+    $names['t'] = $slot.Groups['t'].Value; $names['#'] = $slot.Groups['n'].Value
+    $names['p'] = $upd.Groups['u'].Value
+    $names['j'] = $eh.Groups['j'].Value; $names['XC'] = $eh.Groups['XC'].Value; $names['T'] = $eh.Groups['T'].Value
+    $names['Nx'] = $eb.Groups['pen'].Value; $names['Qr'] = $item.Groups['a'].Value; $names['n'] = $frag.Groups['f'].Value
+    $names['Qa'] = $bin.Groups['ke'].Value; $names['Nu'] = $dlg[0].Groups['pd'].Value
+    $taken = @($names.Values)
+    $free = @()
+    foreach ($ch in [char[]]'ILZQWKJHGFDSAPMNBXUTRYqjkzxwp') {
+        $cs = [string]$ch
+        if ($taken -cnotcontains $cs -and -not [regex]::IsMatch($m.Value, '(?<![\w$])' + [regex]::Escape($cs) + '(?![\w$])')) { $free += $cs }
+        if ($free.Count -eq 3) { break }
+    }
+    if ($free.Count -lt 3) { return @{ State = 'UNKNOWN'; Detail = 'no free names for the map callback'; Edits = @() } }
+    $names['I1'] = $free[0]; $names['L1'] = $free[1]; $names['Z1'] = $free[2]
+    $new = Format-SbTemplate $script:SbTplV4 $names
+    if ($new.Length -gt $m.Length) { return @{ State = 'UNKNOWN'; Detail = "new script menu is $($new.Length - $m.Length) chars too long"; Edits = @() } }
+    $new += (' ' * ($m.Length - $new.Length))
+    $back = [regex]::Matches($new, $reP)
+    if ($back.Count -ne 1 -or $back[0].Length -ne $new.Length -or (Format-SbTemplate $script:SbTplStock4 (Get-SbNames $back[0] $gP)) -cne $m.Value) { return @{ State = 'UNKNOWN'; Detail = 'new script menu does not round-trip to the stock text'; Edits = @() } }
+    $edits = @(@{ Kind = 'region'; Patch = 'scriptbuttons'; Off = [int64]($dataOffset + $chunk.Offset + $startRel); Old = $m.Value; New = $new; Chunk = $chunk; ChunkText = $text })
+    return @{ State = 'ORIGINAL'; Detail = $detail; Edits = $edits }
+}
 function Resolve-SbDock([string]$direction) {
+    $v4 = Resolve-SbDockV4 $direction
+    if ($null -ne $v4) { return $v4 }
     $bq = [string]$bt
     $anchor = 'role:' + $bq + 'group' + $bq + ',"aria-label":' + $bq + 'Project scripts' + $bq
     $cands = @($script:files | Where-Object { $_.Path -match '/client/assets/[^/]*\.js$' })
@@ -950,6 +1057,53 @@ function Get-SbFreeNames([string]$text, [int]$count) {
 }
 # order: updateProjectScript(list) saves a reordered list through the same settings write as Edit.
 function Resolve-SbOrder([string]$direction) {
+    $r1 = Resolve-SbOrderV1 $direction
+    if ($null -ne $r1) { return $r1 }
+    return Resolve-SbOrderV2 $direction
+}
+# 2026-11 build: the save hook's messages are the same, the edit handler now calls the shared save
+# function with the project folder and the previous list too. The old messages are still in the
+# language catalog chunk, so chunks are counted by whole-pattern matches, not by a text search.
+function Resolve-SbOrderV2([string]$direction) {
+    $bq = [string]$bt
+    $s1 = $bq + 'The script was deleted, but its keyboard shortcut could not be removed because permission changed.' + $bq
+    $s2 = $bq + 'The script was saved, but this connection can no longer change keyboard shortcuts.' + $bq
+    $p1 = $bq + 'Deleted; shortcut not removed.' + $bq
+    $p2 = $bq + 'Saved; shortcut not changed.' + $bq
+    $mid = '(?<mid>[\s\S]{0,4000}?=async\((?<a>@I@),@I@\)=>\{if\(!(?<r>@I@)\)return @I@\(void 0\);)'
+    $tail = '(?=let @I@=@I@\.find\(@I@=>@I@\.id===\k<a>\);if\(!@I@\)return @I@\(@I@\(Error\(@I@\(@I@\(' + $bq + 'Script not found\.' + $bq + '\)\)\)\)\);[\s\S]{0,300}?return (?<m>@I@)\(\{projectId:\k<r>\.id,projectCwd:(?<cw>[^,{}]{1,40}),previousScripts:(?<p>@I@),nextScripts:)'
+    $reS = ([regex]::Escape($s1 + ':' + $s2) + $mid + $tail).Replace('@I@', $I)
+    $reP = ([regex]::Escape($p1 + ':' + $p2) + $mid + 'if\(\k<a>\.map\)return (?<m2>@I@)\(\{projectId:\k<r>\.id,projectCwd:(?<cw2>[^,{}]{1,40}),previousScripts:(?<p2>@I@),nextScripts:\k<a>\}\);(?<pad> *)' + $tail).Replace('@I@', $I)
+    $hits = @()
+    foreach ($c in @($script:files | Where-Object { $_.Path -match '/client/assets/[^/]*\.js$' })) {
+        $t = Get-ChunkText $c.Offset $c.Size
+        if (-not ($t.Contains($s1) -or $t.Contains($p1))) { continue }
+        $ms = [regex]::Matches($t, $reS); $mp = [regex]::Matches($t, $reP)
+        if ($ms.Count + $mp.Count -gt 0) { $hits += [pscustomobject]@{ Chunk = $c; Text = $t; S = $ms; P = $mp } }
+    }
+    if ($hits.Count -ne 1) { return @{ State = 'UNKNOWN'; Detail = "order: script save hook found in $($hits.Count) chunks (expected 1)"; Edits = @() } }
+    $chunk = $hits[0].Chunk; $text = $hits[0].Text
+    if ($hits[0].S.Count + $hits[0].P.Count -ne 1) { return @{ State = 'UNKNOWN'; Detail = "order: save hook matched $($hits[0].S.Count) stock / $($hits[0].P.Count) patched"; Edits = @() } }
+    if ($hits[0].P.Count -eq 1) {
+        $m = $hits[0].P[0]; $g = $m.Groups
+        if ($g['m2'].Value -cne $g['m'].Value -or $g['cw2'].Value -cne $g['cw'].Value -or $g['p2'].Value -cne $g['p'].Value) { return @{ State = 'UNKNOWN'; Detail = 'order: list save call differs from the edit save call'; Edits = @() } }
+        $edits = @()
+        if ($direction -eq 'stock') {
+            $new = $s1 + ':' + $s2 + $g['mid'].Value
+            if ($new.Length -ne $m.Length) { return @{ State = 'UNKNOWN'; Detail = 'order: stock rebuild length differs'; Edits = @() } }
+            $edits += @{ Kind = 'region'; Patch = 'scriptbuttons'; Off = [int64]($dataOffset + $chunk.Offset + $m.Index); Old = $m.Value; New = $new; Chunk = $chunk; ChunkText = $text }
+        }
+        return @{ State = 'PATCHED'; Detail = 'order: list save on'; Edits = $edits }
+    }
+    $m = $hits[0].S[0]; $g = $m.Groups
+    if ($direction -ne 'patched') { return @{ State = 'ORIGINAL'; Detail = 'order: stock save hook'; Edits = @() } }
+    $a = $g['a'].Value
+    $new = $p1 + ':' + $p2 + $g['mid'].Value + 'if(' + $a + '.map)return ' + $g['m'].Value + '({projectId:' + $g['r'].Value + '.id,projectCwd:' + $g['cw'].Value + ',previousScripts:' + $g['p'].Value + ',nextScripts:' + $a + '});'
+    if ($new.Length -gt $m.Length) { return @{ State = 'UNKNOWN'; Detail = "order: edit is $($new.Length - $m.Length) chars too long"; Edits = @() } }
+    $new += ' ' * ($m.Length - $new.Length)
+    return @{ State = 'ORIGINAL'; Detail = 'order: stock save hook'; Edits = @(@{ Kind = 'region'; Patch = 'scriptbuttons'; Off = [int64]($dataOffset + $chunk.Offset + $m.Index); Old = $m.Value; New = $new; Chunk = $chunk; ChunkText = $text }) }
+}
+function Resolve-SbOrderV1([string]$direction) {
     $bq = [string]$bt
     $msgS = $bq + 'The script was deleted, but its keyboard shortcut could not be removed because permission changed.' + $bq
     $msgP = $bq + 'Deleted; shortcut not removed.' + $bq
@@ -960,8 +1114,9 @@ function Resolve-SbOrder([string]$direction) {
     $hits = @()
     foreach ($c in @($script:files | Where-Object { $_.Path -match '/client/assets/[^/]*\.js$' })) {
         $t = Get-ChunkText $c.Offset $c.Size
-        if ($t.Contains($msgS) -or $t.Contains($msgP)) { $hits += [pscustomobject]@{ Chunk = $c; Text = $t } }
+        if (($t.Contains($msgS) -or $t.Contains($msgP)) -and ([regex]::IsMatch($t, $reS) -or [regex]::IsMatch($t, $reP))) { $hits += [pscustomobject]@{ Chunk = $c; Text = $t } }
     }
+    if ($hits.Count -eq 0) { return $null }
     if ($hits.Count -ne 1) { return @{ State = 'UNKNOWN'; Detail = "order: script save hook found in $($hits.Count) chunks (expected 1)"; Edits = @() } }
     $chunk = $hits[0].Chunk; $text = $hits[0].Text
     $mp = [regex]::Matches($text, $reP)
@@ -1102,7 +1257,11 @@ function Resolve-BrowserDark([string]$direction) {
 # -Revert restores the exact bytes.
 function Resolve-SidebarSeconds([string]$direction) {
     $bq = [string]$bt
-    $reCall = ('(?<pre>(?<n>@I@)=@I@\(\)-@I@\.startedMs,(?<r>@I@);@I@\[0\]===\k<n>\?\k<r>=@I@\[1\]:\(\k<r>=@I@\(\k<n>\))').Replace('@I@', $I)
+    # two recognised shapes: older builds (clock read with no arguments, one-slot cache) and the
+    # 2026-11 build (clock read takes the environment id, two-slot cache keyed on locale and elapsed)
+    $reOld = '(?<n>@I@)=@I@\(\)-@I@\.startedMs,(?<r>@I@);@I@\[0\]===\k<n>\?\k<r>=@I@\[1\]:\(\k<r>=@I@\(\k<n>\)'
+    $reNew = '(?<n>@I@)=@I@\([^()]{1,60}\)-@I@\.startedMs,(?<r>@I@);@I@\[0\]!==@I@\|\|@I@\[1\]!==\k<n>\?\(\k<r>=@I@\(\k<n>,@I@\)'
+    $reCall = ('(?<pre>' + $reOld + '|' + $reNew + ')').Replace('@I@', $I)
     $cands = @($script:files | Where-Object { $_.Path -match '/client/assets/[^/]*\.js$' })
     $hits = @()
     foreach ($c in $cands) {
@@ -1150,8 +1309,71 @@ function Resolve-SidebarSeconds([string]$direction) {
 # accountNames (the loader passes it to the page as self.T3N). Rows are keyed by label so the accounts' windows don't
 # collide. When no account has limits, the first account's reason shows. The bytes come from the Unavailable tooltip wrapper, the heading id and a
 # redundant tone:null.
+# 2026-11 build (T3 Code 0.1.12-nightly.20261122): the popover's limits come from one function in the
+# chat chunk (CW) that reads the instance's account out of the usage store; when that account has no
+# limits T3 now pools the other accounts into averaged rows itself. The patch hands the account list
+# to self.T3A (defined in ~/.t3/local-settings-ui.js), which returns one row per readable account,
+# labelled like the older patch (name from accountNames, else the first 5 characters of the email), or
+# nothing, in which case T3's own result is used. Only the `let o=...;` statement changes, and the
+# bytes come from spaces after it. Returns $null when this build's shape is not there.
+function Resolve-UsageAccountsV2([string]$direction) {
+    $bq = [string]$bt
+    $tail = ';@PAD@if(!@o@)return null;let @s@=@K@(@a@,@r@);return @Q@@W@(@o@)===null||@s@.length===0?{kind:' + $bq + 'instance' + $bq + ',limits:@o@}:@T@(@a@.driver,@t@,@n@,@s@,@i@)??{kind:' + $bq + 'instance' + $bq + ',limits:@o@}}'
+    $stockT = 'let @o@=@H@(@a@.instanceId,@n@,@r@,@i@,@t@)?.accounts.find(e=>e.instanceId===@a@.instanceId)?.limits??@a@.usageLimits' + $tail.Replace('@PAD@', '').Replace('@Q@', '')
+    $patchT = 'let @o@=self.T3A?.(@H@(@a@.instanceId,@n@,@r@,@i@,@t@)?.accounts,@W@,@a@.instanceId)??@a@.usageLimits' + $tail.Replace('@Q@', '@o@.t3a||')
+    $toRe = {
+        param($tmpl)
+        $sb = New-Object System.Text.StringBuilder
+        $seen = [hashtable]::new([StringComparer]::Ordinal)
+        foreach ($p in [regex]::Split($tmpl, '(@[A-Za-z]+@)')) {
+            if ($p.Length -gt 2 -and $p.StartsWith('@') -and $p.EndsWith('@')) {
+                $k = $p.Substring(1, $p.Length - 2)
+                $pat = if ($k -ceq 'PAD') { ' *' } else { $I }
+                if ($seen.ContainsKey($k)) { [void]$sb.Append('\k<' + $k + '>') }
+                else { $seen[$k] = $true; [void]$sb.Append('(?<' + $k + '>' + $pat + ')') }
+            } elseif ($p.Length) { [void]$sb.Append([regex]::Escape($p)) }
+        }
+        return $sb.ToString()
+    }
+    $fill = {
+        param($tmpl, $m, $pad)
+        $s = $tmpl.Replace('@PAD@', $pad)
+        foreach ($k in 'o', 'H', 'a', 'n', 'r', 'i', 't', 's', 'K', 'W', 'T') { $s = $s.Replace('@' + $k + '@', $m.Groups[$k].Value) }
+        return $s
+    }
+    $reS = & $toRe $stockT
+    $reP = & $toRe $patchT
+    $hits = @()
+    foreach ($c in @($script:files | Where-Object { $_.Path -match '/client/assets/[^/]*\.js$' })) {
+        $t = Get-ChunkText $c.Offset $c.Size
+        if (-not $t.Contains($bq + 'Usage limits' + $bq) -or -not $t.Contains('.usageLimits;')) { continue }
+        foreach ($pair in @(@('ORIGINAL', $reS), @('PATCHED', $reP))) {
+            foreach ($m in [regex]::Matches($t, $pair[1])) { $hits += [pscustomobject]@{ Chunk = $c; Text = $t; M = $m; State = $pair[0] } }
+        }
+    }
+    if ($hits.Count -eq 0) { return $null }
+    if ($hits.Count -ne 1) { return @{ State = 'UNKNOWN'; Detail = "popover usage function matched $($hits.Count) times (expected 1)"; Edits = @() } }
+    $h = $hits[0]; $m = $h.M
+    $stockText = & $fill $stockT $m ''
+    $patchBare = & $fill $patchT $m ''
+    if ($patchBare.Length -gt $stockText.Length) { return @{ State = 'UNKNOWN'; Detail = "usageaccounts edit is $($patchBare.Length - $stockText.Length) chars too long"; Edits = @() } }
+    $patchText = & $fill $patchT $m (' ' * ($stockText.Length - $patchBare.Length))
+    if ($m.Length -ne $stockText.Length) { return @{ State = 'UNKNOWN'; Detail = "usageaccounts block length $($m.Length) differs from stock $($stockText.Length)"; Edits = @() } }
+    if ($h.State -eq 'ORIGINAL' -and $direction -eq 'patched') { $old = $stockText; $new = $patchText }
+    elseif ($h.State -eq 'PATCHED' -and $direction -eq 'stock') { $old = $patchText; $new = $stockText }
+    else { $old = $null }
+    $edits = @()
+    if ($null -ne $old) {
+        if ($old -cne $m.Value) { return @{ State = 'UNKNOWN'; Detail = 'usageaccounts rebuild does not match the live text'; Edits = @() } }
+        $edits += @{ Kind = 'region'; Patch = 'usageaccounts'; Off = [int64]($dataOffset + $h.Chunk.Offset + $m.Index); Old = $old; New = $new; Chunk = $h.Chunk; ChunkText = $h.Text }
+    }
+    $what = if ($h.State -eq 'PATCHED') { 'all accounts (self.T3A)' } else { 'own account / pooled (stock)' }
+    return @{ State = $h.State; Detail = "popover usage in $(Split-Path $h.Chunk.Path -Leaf), $what"; Edits = $edits }
+}
 function Resolve-UsageAccounts([string]$direction) {
-    $stockT = 't=(n===null?null:@H@(n,r,i,e))?.accounts.find(e=>e.instanceId===n)?.limits??r.find(e=>e.instanceId===n)?.usageLimits;if(!t){f=null;break bb0}let p=@W@(t);o=@D@,l=`thread-details-usage-heading`,u=`Usage limits`,d=!1,s=`grid grid-cols-[auto_minmax(3rem,1fr)_auto] gap-x-3 text-xs`,c=p?(0,@J@.jsx)(@U@,{label:`Limits`,fill:null,tone:null,value:`Unavailable`,tooltip:(0,@J@.jsx)(`span`,{className:`text-foreground`,children:p})}):t.windows.map(t=>(0,@J@.jsx)(@C@,{window:t,now:e},t.id))'
+    $v2 = Resolve-UsageAccountsV2 $direction
+    if ($null -ne $v2) { return $v2 }
+    $stockT ='t=(n===null?null:@H@(n,r,i,e))?.accounts.find(e=>e.instanceId===n)?.limits??r.find(e=>e.instanceId===n)?.usageLimits;if(!t){f=null;break bb0}let p=@W@(t);o=@D@,l=`thread-details-usage-heading`,u=`Usage limits`,d=!1,s=`grid grid-cols-[auto_minmax(3rem,1fr)_auto] gap-x-3 text-xs`,c=p?(0,@J@.jsx)(@U@,{label:`Limits`,fill:null,tone:null,value:`Unavailable`,tooltip:(0,@J@.jsx)(`span`,{className:`text-foreground`,children:p})}):t.windows.map(t=>(0,@J@.jsx)(@C@,{window:t,now:e},t.id))'
     $patchT = 'B=@H@(n,r,i,e)?.accounts??[],A=B.filter(e=>!@W@(e.limits)),t=A[0]?{windows:A.flatMap(a=>a.limits.windows.map(w=>({...w,label:(self.T3N?.[a.email]??(a.email??a.id).slice(0,5))+` `+w.label})))}:B[0]?.limits;   if(!t){f=null;break bb0}let p=@W@(t);o=@D@,l=`ul`,u=`Usage limits`,d=!1,s=`grid grid-cols-[auto_minmax(3rem,1fr)_auto] gap-x-3 text-xs`,c=p?(0,@J@.jsx)(@U@,{label:`Limits`,fill:null,value:`Unavailable`,tooltip:p}):t.windows.map(t=>(0,@J@.jsx)(@C@,{window:t,now:e},t.label))'
     $oldT   = 'A=(@H@(n,r,i,e)?.accounts??[]).filter(e=>!@W@(e.limits)),t=A[0]?{windows:A.flatMap(a=>a.limits.windows.map(w=>({...w,label:(a.email??a.id).slice(0,5)+` `+w.label})))}:r.find(e=>e.instanceId===n)?.usageLimits;if(!t){f=null;break bb0}let p=@W@(t);o=@D@,l=`ul`,u=`Usage limits`,d=!1,s=`grid grid-cols-[auto_minmax(3rem,1fr)_auto] gap-x-3 text-xs`,c=p?(0,@J@.jsx)(@U@,{label:`Limits`,fill:null,value:`Unavailable`,tooltip:p}):t.windows.map(t=>(0,@J@.jsx)(@C@,{window:t,now:e},t.label))'
     $keys = 'H', 'W', 'D', 'J', 'U', 'C'

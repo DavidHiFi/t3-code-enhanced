@@ -75,6 +75,27 @@ function layerFiles(ext) {
 	}
 }
 
+// 2026-11-21: T3 draws its own top bar 52px tall but asks Windows for 40px caption buttons, so the
+// minimize/maximize/close glyphs sat higher than the panel toggles beside them (the top bar is inset ~8px, so
+// its middle is at y=34). Ask for 68px so the glyphs are centred there; kept when T3 re-sends the overlay on a theme change.
+const TITLEBAR_FIT_HEIGHT = 68;
+function installTitleBarFit(window) {
+	if (process.platform !== "win32" || typeof window.setTitleBarOverlay !== "function") return;
+	if (!window.__t3LocalFitOverlay) {
+		const original = window.setTitleBarOverlay.bind(window);
+		window.__t3LocalFitOverlay = original;
+		window.setTitleBarOverlay = (options) => {
+			if (options && typeof options === "object") original({ ...options, height: TITLEBAR_FIT_HEIGHT });
+			else original(options);
+		};
+	}
+	try {
+		const colors = window.__t3LocalOverlayColors || {};
+		window.__t3LocalFitOverlay({ color: colors.color || "#01000000", symbolColor: colors.symbolColor || "#f8fafc", height: TITLEBAR_FIT_HEIGHT });
+	} catch (error) {
+		log("titleBarFit: " + error.message);
+	}
+}
 function applyMaterial(window, material) {
 	if (process.platform !== "win32" || typeof window.setBackgroundMaterial !== "function") return null;
 	if (!MATERIALS.has(material)) material = "none";
@@ -673,6 +694,11 @@ module.exports = function onMainWindowLoad(window) {
 		installFrameSelection(window);
 	} catch (error) {
 		log(`frameSelection: ${error.message}`);
+	}
+	try {
+		installTitleBarFit(window);
+	} catch (error) {
+		log(`titleBarFit: ${error.message}`);
 	}
 	let material = null;
 	try {
