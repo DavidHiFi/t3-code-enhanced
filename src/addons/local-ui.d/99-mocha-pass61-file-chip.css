@@ -1,0 +1,42 @@
+/* Pass 61 (2026-11-24): file links inside chat text (icon + name, like "SPEC.md").
+   Pass 7 gave every context chip outside the composer a 9px pill with a 2px inset edge, but
+   no padding. The link is a 17px line of 14px text, so the edge sat on the letters and the
+   name looked too big for its bubble (owner: "fix the text size or remove the bubble").
+   Inside chat text the pill goes: the link is the coloured icon and name, underlined on
+   hover like stock T3. Attachment chips in sent messages (pass 31a) and composer tokens
+   (pass 7) keep their pills. Declared unlayered and in @layer theme, like pass 54 and 60.
+   Rollback: delete this file, reload T3. */
+
+html.dark .chat-markdown [data-slot="context-chip"]:not([data-message-role="user"] [data-slot="context-chip"]),
+html.dark .chat-markdown [data-slot="context-chip"]:not([data-message-role="user"] [data-slot="context-chip"]):is(:hover, :focus-visible, [data-p31a-hover]) {
+	background: transparent !important;
+	box-shadow: none !important;
+	border: 0 !important;
+	border-radius: 3px !important;
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+	padding: 0 !important;
+}
+html.dark .chat-markdown [data-slot="context-chip"]:not([data-message-role="user"] [data-slot="context-chip"])::before,
+html.dark .chat-markdown [data-slot="context-chip"]:not([data-message-role="user"] [data-slot="context-chip"])::after {
+	content: none !important;
+	display: none !important;
+}
+
+@layer theme {
+	html.dark .chat-markdown [data-slot="context-chip"]:not([data-message-role="user"] [data-slot="context-chip"]),
+	html.dark .chat-markdown [data-slot="context-chip"]:not([data-message-role="user"] [data-slot="context-chip"]):is(:hover, :focus-visible, [data-p31a-hover]) {
+		background: transparent !important;
+		box-shadow: none !important;
+		border: 0 !important;
+		border-radius: 3px !important;
+		-webkit-backdrop-filter: none !important;
+		backdrop-filter: none !important;
+		padding: 0 !important;
+	}
+	html.dark .chat-markdown [data-slot="context-chip"]:not([data-message-role="user"] [data-slot="context-chip"])::before,
+	html.dark .chat-markdown [data-slot="context-chip"]:not([data-message-role="user"] [data-slot="context-chip"])::after {
+		content: none !important;
+		display: none !important;
+	}
+}

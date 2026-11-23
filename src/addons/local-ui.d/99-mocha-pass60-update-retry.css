@@ -1,0 +1,58 @@
+/* Pass 60 (2026-11-24): the "Retry" / "Install" link inside the sidebar update pill.
+   The footer-button rules (pass 6, 15, 16) dress every footer button as a dock, so this plain
+   text link got its own grey bubble that ran into the pill's red edge (owner: "remove that
+   bubble around the text, just keep the red bubble"). The link goes back to plain underlined
+   text with room to the pill's right edge; hover turns it Mocha blue. The pill and its red or
+   yellow ring are untouched. Declared unlayered and in @layer theme, like pass 54, so one copy
+   always wins against the layered footer rules.
+   Rollback: delete this file, reload T3. */
+
+html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] div.h-8.bg-sidebar-control-surface.bg-sidebar-control-surface > button.relative.underline.underline {
+	background: transparent !important;
+	box-shadow: none !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+	padding: 0 12px 0 6px !important;
+	margin-right: 2px !important;
+	height: auto !important;
+	color: #cdd6f4 !important;
+	transition: color 0.18s ease !important;
+}
+html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] div.h-8.bg-sidebar-control-surface.bg-sidebar-control-surface > button.relative.underline.underline:is(:hover, :focus-visible, [data-p31a-hover]) {
+	background: transparent !important;
+	box-shadow: none !important;
+	color: #89b4fa !important;
+}
+html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] div.h-8.bg-sidebar-control-surface.bg-sidebar-control-surface > button.relative.underline.underline::before,
+html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] div.h-8.bg-sidebar-control-surface.bg-sidebar-control-surface > button.relative.underline.underline::after {
+	content: none !important;
+	display: none !important;
+}
+
+@layer theme {
+	html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] div.h-8.bg-sidebar-control-surface.bg-sidebar-control-surface > button.relative.underline.underline {
+		background: transparent !important;
+		box-shadow: none !important;
+		border: 0 !important;
+		border-radius: 0 !important;
+		-webkit-backdrop-filter: none !important;
+		backdrop-filter: none !important;
+		padding: 0 12px 0 6px !important;
+		margin-right: 2px !important;
+		height: auto !important;
+		color: #cdd6f4 !important;
+		transition: color 0.18s ease !important;
+	}
+	html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] div.h-8.bg-sidebar-control-surface.bg-sidebar-control-surface > button.relative.underline.underline:is(:hover, :focus-visible, [data-p31a-hover]) {
+		background: transparent !important;
+		box-shadow: none !important;
+		color: #89b4fa !important;
+	}
+	html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] div.h-8.bg-sidebar-control-surface.bg-sidebar-control-surface > button.relative.underline.underline::before,
+	html [data-slot="sidebar-inner"] [data-slot="sidebar-footer"] div.h-8.bg-sidebar-control-surface.bg-sidebar-control-surface > button.relative.underline.underline::after {
+		content: none !important;
+		display: none !important;
+	}
+}
