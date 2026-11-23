@@ -6,11 +6,16 @@
    In @layer theme so it beats pass 38's unlayered !important rule.
    2026-11-22: the rest edge is now the 2px border itself and the hover frame sits exactly on it
    (inset -2px, same radius), so the edge keeps one thickness and one corner in both states.
+   2026-11-24: the pill sized to its text and grew past the header's room when a side panel was
+   open, so the nav cut off its right edge. It now stays inside the nav and the title shrinks
+   with an ellipsis instead.
    Rollback: delete this file and reload T3. */
 @layer theme {
 
 html body header[data-chat-header][data-chat-header] nav[aria-label$="breadcrumb"] > ol {
 	position: relative !important;
+	max-width: 100% !important;
+	min-width: 0 !important;
 	border: 2px solid rgb(108 112 134 / 0.4) !important;
 	border-radius: 10px !important;
 	box-shadow: none !important;
