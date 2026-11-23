@@ -7,7 +7,8 @@
    3. While a queued message is being edited, the composer's send button turns into a tick
       ("Update queued message") and drew T3's stock near-white fill. Every non-galaxy state of
       the send button (update, queue, steer, compact) now uses the Mocha blue the normal send
-      button uses, with a dark icon.
+      button uses, with a dark icon. 2026-11-24: the "Resume thread" state is a plain button,
+      not a submit, so it kept the white fill; the rules now match the round button too.
    Rollback: delete this file and reload T3. */
 
 /* ---------- 1. the card ---------- */
@@ -73,15 +74,15 @@ html section[data-thread-queue] li[aria-label^="Queued message"] button[aria-lab
 }
 
 /* ---------- 3. the send button in its other states ---------- */
-html [data-chat-composer-surface] button[type="submit"]:is(.bg-message-action,.hover\:bg-message-action-hover):not(:disabled) {
+html [data-chat-composer-surface] button:is([type="submit"],.isolate.rounded-full):is(.bg-message-action,.hover\:bg-message-action-hover):not(:disabled) {
 	background-color: #89b4fa !important;
 	color: #11111b !important;
 }
-html [data-chat-composer-surface] button[type="submit"]:is(.bg-message-action,.hover\:bg-message-action-hover):not(:disabled):is(:hover, [data-p31a-hover]) {
+html [data-chat-composer-surface] button:is([type="submit"],.isolate.rounded-full):is(.bg-message-action,.hover\:bg-message-action-hover):not(:disabled):is(:hover, [data-p31a-hover]) {
 	background-color: #b4befe !important;
 	color: #11111b !important;
 }
-html [data-chat-composer-surface] button[type="submit"]:is(.bg-message-action,.hover\:bg-message-action-hover):disabled {
+html [data-chat-composer-surface] button:is([type="submit"],.isolate.rounded-full):is(.bg-message-action,.hover\:bg-message-action-hover):disabled {
 	background-color: rgb(17 17 27 / .6) !important;
 	color: #6c7086 !important;
 	box-shadow: inset 0 0 0 2px rgb(108 112 134 / .55) !important;
