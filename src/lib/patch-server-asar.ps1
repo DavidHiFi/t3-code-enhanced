@@ -268,7 +268,8 @@ function Resolve-NoTermV3([string]$direction) {
     $rePB = 'place:(?<pe>@I@)=>\((?<o>@I@)&&(?<fa>@I@)\?(?<nt>@I@):(?<sa>@I@)\)\((?<xa>@I@),\k<pe>\)'.Replace('@I@', $I)
     $reH  = 'async\((?<p1>@I@),@I@\)=>\{'.Replace('@I@', $I)
 
-    $cands = @($script:files | Where-Object { $_.Path -match '/client/assets/_chat-[A-Za-z0-9_-]+\.js$' -and $_.Size -gt 400000 })
+    # the run handler lived in _chat-*.js until the 0.1.12 nightlies moved it to ThreadRouteView-*.js
+    $cands = @($script:files | Where-Object { $_.Path -match '/client/assets/(_chat|ThreadRouteView)-[A-Za-z0-9_-]+\.js$' -and $_.Size -gt 400000 })
     $target = $null
     foreach ($c in $cands) {
         $text = Get-ChunkText $c.Offset $c.Size
@@ -393,7 +394,7 @@ function Resolve-NoTermV3([string]$direction) {
             }
         }
     }
-    return @{ State = 'UNKNOWN'; Detail = 'no _chat-*.js chunk matches the expected script-run shape (upstream restructure?)'; Edits = @() }
+    return @{ State = 'UNKNOWN'; Detail = 'no _chat-*.js or ThreadRouteView-*.js chunk matches the expected script-run shape (upstream restructure?)'; Edits = @() }
 
     $chunk = $target.Chunk
     $text = $target.Text
