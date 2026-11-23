@@ -41,7 +41,7 @@ try {
 		{ id: "galaxyHeader", key: "t3local.galaxyHeader", title: "Galaxy in the sidebar header", desc: "The star-field artwork behind the T3 Code title at the top left." },
 		{ id: "galaxySend", key: "t3local.galaxySend", title: "Galaxy on the send button", desc: "The star-field artwork inside the round send button of the message box." },
 		{ id: "contrast", key: "t3local.contrast", title: "Stronger highlights", desc: "Clearer selected rows in lists and menus, and visible edges on panels, in Catppuccin Mocha tones." },
-		{ id: "sidebarSeconds", key: "t3local.sidebarSeconds", title: "Seconds on sidebar timers", desc: "Shows how long a thread has been working down to the second in the sidebar, like 23m 27s." },
+		{ id: "sidebarSeconds", key: "t3local.sidebarSeconds", title: "Seconds on sidebar timers", desc: "Shows how long a thread or helper agent has been working down to the second in the sidebar, like 23m 27s." },
 		{ id: "extendedGlass", key: "t3local.extendedGlass", inline: true, title: "Extend glass across the whole window", desc: "Lets the blur show through the chat area and sidebar as well as menus. Off keeps glass to menus, dialogs, and the message box." },
 		{ id: "glassMenus", config: "glassMenus", def: true, title: "Frosted glass right-click menus", desc: "Draws right-click menus as blurred glass panels. Applies after a reload (Ctrl+R)." },
 		{ id: "nativeTitleBar", config: "nativeTitleBar", def: false, title: "Native Windows title bar", desc: "Uses the Windows title bar instead of T3's own drawn one. Applies after you restart T3 Code." },

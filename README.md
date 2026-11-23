@@ -64,7 +64,7 @@ That's the last time you need the zip. New releases show up as a button in T3 Co
 - **No terminal for scripts:** running a project script never opens the bottom terminal, and closing the right panel never floats the preview.
 - **Longer RPC budget:** slow backend calls get 60 seconds instead of 15, so long operations don't abort.
 - **One button per script:** project scripts show as separate buttons, with an arrow that runs them all.
-- **Seconds on sidebar timers:** `Working 23m 27s` in the sidebar, like the open thread shows.
+- **Seconds on sidebar timers:** `Working 23m 27s` in the sidebar, like the open thread shows. Helper agents in the Lineage list get seconds too.
 - **Every account in the Limits popover:** usage for every account T3 can read for that provider, including each CLIProxyAPI account. Name rows with `"accountNames": { "you@example.com": "Max" }` in the config.
 - **OpenCode budget (opt-in):** a longer start-up budget for OpenCode. Off by default. T3 now sets two of the three budgets itself, so the patch covers the one that is left.
 

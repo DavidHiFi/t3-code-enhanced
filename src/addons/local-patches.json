@@ -24,6 +24,7 @@
 		"scriptbuttons": true,
 		"browserdark": false,
 		"sidebarsecs": true,
+		"agentsecs": true,
 		"usageaccounts": true
 	}
 }

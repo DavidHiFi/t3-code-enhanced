@@ -1300,6 +1300,55 @@ function Resolve-SidebarSeconds([string]$direction) {
     return @{ State = 'ORIGINAL'; Detail = "$short, minutes only (stock)"; Edits = $edits }
 }
 
+# --- seconds on the subagent timers -------------------------------------------------
+# The Lineage list under a thread shows each helper agent's time with the compact
+# formatter ("26m"), which drops seconds after the first minute. Its element already
+# refreshes every second while the agent runs. The formatter's return gets a suffix
+# that adds " 14s" under an hour when self.T3S is true (the same Settings switch as
+# sidebarsecs). Room comes from the chunk's source-map trailer, like sidebarsecs.
+function Resolve-AgentSeconds([string]$direction) {
+    $bq = [string]$bt
+    $re = ('function @I@\((?<s>@I@),(?<t>@I@)\)\{let (?<n>@I@)=Math\.max\(0,Math\.floor\(\k<s>\)\);if\(\k<n><60\)return \k<t>\(@I@\(' +
+           $bq + '\{seconds\}s' + $bq + '[^;]*;let (?<r>@I@)=Math\.floor\(\k<n>/60\);return \k<t>\(\k<r><60\?@I@\(' +
+           $bq + '\{minutes\}m' + $bq + '[^;]*?\}\)\)(?=\}|\+\(self\.T3S)').Replace('@I@', $I)
+    $cands = @($script:files | Where-Object { $_.Path -match '/client/assets/[^/]*\.js$' })
+    $hits = @()
+    foreach ($c in $cands) {
+        $t = Get-ChunkText $c.Offset $c.Size
+        if (-not $t.Contains('elapsed time, minutes')) { continue }
+        foreach ($m in [regex]::Matches($t, $re)) { $hits += [pscustomobject]@{ Chunk = $c; Text = $t; M = $m } }
+    }
+    if ($hits.Count -ne 1) { return @{ State = 'UNKNOWN'; Detail = "subagent compact timer matched $($hits.Count) times (expected 1)"; Edits = @() } }
+    $h = $hits[0]
+    $text = $h.Text
+    $n = $h.M.Groups['n'].Value; $r = $h.M.Groups['r'].Value
+    $ins = '+(self.T3S&&' + $r + '<60?' + $bq + ' ${' + $n + '%60}s' + $bq + ':' + $bq + $bq + ')'
+    $name = Split-Path $h.Chunk.Path -Leaf
+    $tail = $nl + '//# sourceMappingURL=' + $name + '.map'
+    $at = $h.M.Index + $h.M.Length
+    $patched = ($text.Length -ge $at + $ins.Length) -and ($text.Substring($at, $ins.Length) -ceq $ins)
+    $short = "subagent timer in $name"
+    if ($patched) {
+        if (-not $text.EndsWith(' ')) { return @{ State = 'UNKNOWN'; Detail = "$short is patched but the trailer pad is missing"; Edits = @() } }
+        $edits = @()
+        if ($direction -eq 'stock') {
+            $restored = $text.Remove($at, $ins.Length).TrimEnd(' ') + $tail
+            if ($restored.Length -ne $text.Length) { return @{ State = 'UNKNOWN'; Detail = "$short revert would change length ($($restored.Length) vs $($text.Length))"; Edits = @() } }
+            $edits = @(@{ Kind = 'chunk'; Patch = 'agentsecs'; Chunk = $h.Chunk; ChunkText = $text; NewChunkText = $restored })
+        }
+        return @{ State = 'PATCHED'; Detail = "$short, seconds suffix"; Edits = $edits }
+    }
+    if (-not $text.EndsWith($tail)) { return @{ State = 'UNKNOWN'; Detail = "$short is stock but the chunk has no source-map trailer to make room"; Edits = @() } }
+    if ($ins.Length -gt $tail.Length) { return @{ State = 'UNKNOWN'; Detail = "seconds suffix ($($ins.Length)) is longer than the trailer ($($tail.Length))"; Edits = @() } }
+    $edits = @()
+    if ($direction -eq 'patched') {
+        $newText = $text.Substring(0, $text.Length - $tail.Length).Insert($at, $ins)
+        $newText = $newText + (' ' * ($text.Length - $newText.Length))
+        $edits = @(@{ Kind = 'chunk'; Patch = 'agentsecs'; Chunk = $h.Chunk; ChunkText = $text; NewChunkText = $newText })
+    }
+    return @{ State = 'ORIGINAL'; Detail = "$short, minutes only (stock)"; Edits = $edits }
+}
+
 # --- every account in the thread popover's usage limits ---------------------------
 # The popover reads only the selected instance's own account. Behind CLIProxyAPI that
 # account has no limits ("Unavailable"), while the proxy usage source has one account
@@ -1539,6 +1588,7 @@ $patches = @(
     @{ Name = 'scriptbuttons'; Fn = 'Resolve-ScriptButtons'; Default = $true },
     @{ Name = 'browserdark';   Fn = 'Resolve-BrowserDark';   Default = $false },
     @{ Name = 'sidebarsecs';   Fn = 'Resolve-SidebarSeconds'; Default = $true },
+    @{ Name = 'agentsecs';     Fn = 'Resolve-AgentSeconds';  Default = $true },
     @{ Name = 'usageaccounts'; Fn = 'Resolve-UsageAccounts'; Default = $true }
 )
 
