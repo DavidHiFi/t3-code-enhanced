@@ -1,0 +1,48 @@
+/* Pass 59 (2026-11-23): fewer redraws, same look.
+   T3 drew a new frame on nearly every screen refresh (about 117 a second on the 165 Hz screen)
+   because the looping theme animations changed a little on every refresh, and window drawing
+   (dwm) sat at over half a core with nobody at the PC. Each loop now moves in small even steps,
+   so T3 only draws when something really changes:
+   1. Working spinner (pass 31h): 33 steps a turn, one every 5th refresh at 165 Hz. Same 1 s turn.
+   2. Breathing live label (pass 25): 12 steps each way, one every 0.1 s. Same 2.4 s breath.
+   3. Cursor fade (pass 39, and the pass 40 message box cursor): 8 steps per fade. Same 1.15 s blink.
+   4. Where the pass 40 cursor is drawn, the pass 39 fade kept running on the box underneath
+      (invisible there, the box's own cursor is clear) because pass 40's "animation: none" was
+      outranked. It now stops there, as pass 40 meant.
+   99-mocha-pass59-calm-frames.js lines the spinners and labels up so they all step together.
+   Rollback: delete this file and 99-mocha-pass59-calm-frames.js, then reload T3. */
+
+/* 1 */
+html :is(
+	.text-info-foreground > svg.lucide-circle-dashed,
+	[data-composer-banner-row] svg.lucide-circle-dashed,
+	[data-chat-thread-status-line] svg.lucide-circle-dashed
+) {
+	animation-timing-function: steps(33, end) !important;
+}
+@media (prefers-reduced-motion: reduce) {
+	html :is(
+		.text-info-foreground > svg.lucide-circle-dashed,
+		[data-composer-banner-row] svg.lucide-circle-dashed,
+		[data-chat-thread-status-line] svg.lucide-circle-dashed
+	) {
+		animation-timing-function: steps(99, end) !important;
+	}
+}
+
+/* 2 */
+html .live-tool-shine.live-tool-shine,
+html div.relative[data-t3l-live] > :not(.live-activity-focus) {
+	animation-timing-function: steps(12, jump-none) !important;
+}
+
+/* 3 */
+html :is(input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"]), textarea, [contenteditable="true"], [contenteditable=""]):focus,
+html #t3gc-caret {
+	animation-timing-function: steps(8, jump-none) !important;
+}
+
+/* 4 */
+html :is(input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"]), textarea, [contenteditable="true"], [contenteditable=""]):focus.t3gc-on {
+	animation: none !important;
+}
