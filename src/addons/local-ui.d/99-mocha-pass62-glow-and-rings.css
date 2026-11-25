@@ -1,0 +1,35 @@
+/* Pass 62 (2026-11-26): two hover fixes.
+   1. The project name on the new-thread screen ("Windhawk Configuration") glowed with a text
+      shadow, and the name sits in a box that cuts off long names, so the glow was cut flat into
+      a square. The glow is now drawn on the whole button (drop-shadow, like the T3 icon in the
+      top-left corner), which nothing clips, so it follows the letters all the way round.
+      Same for the other muted links pass 43 styled.
+   2. The small buttons beside a message's time (edit, copy, copy link) got two rings on hover:
+      pass 5 drew a light lavender inner ring, pass 31a a gradient frame on top of it,
+      and that frame landed on the time row's own edge. Now the gradient frame is the only
+      ring, it sits inside the button, and the time row has 2px more room inside, top and bottom
+      (taken from the space under it, so nothing moves).
+   Rollback: delete this file and reload T3. */
+@layer theme {
+
+/* 1. project picker and muted links: glow on the unclipped button */
+html :is([data-draft-project-trigger], [data-draft-project-trigger] ~ * button, button:is(.group-hover\:underline,.hover\:underline):is(.\[\&\>svg\:not\(\[class\*\=\'text-\'\]\)\]\:text-muted-foreground,.\[\&_\[data-markdown-details-summary\]\>svg\]\:text-muted-foreground\/60,.\[\&_\[data-slot\=select-icon\]\>svg\]\:text-muted-foreground,.\[\&_svg\:not\(\[class\*\=\'text-\'\]\)\]\:text-muted-foreground,.\[\&_svg\]\:text-muted-foreground,.aria-disabled\:\[\&_\*\]\:text-muted-foreground,.dark\:text-muted-foreground,.data-selected\:text-muted-foreground,.disabled\:text-muted-foreground,.hover\:text-muted-foreground,.hover\:text-muted-foreground\/80,.in-data-disabled\:text-muted-foreground\/72,.in-data-outside\:text-muted-foreground\/72,.light\:text-muted-foreground\/80,.md\:text-muted-foreground\/60,.placeholder\:text-muted-foreground,.placeholder\:text-muted-foreground\/60,.placeholder\:text-muted-foreground\/70,.text-muted-foreground,.text-muted-foreground\!,.text-muted-foreground\/30,.text-muted-foreground\/35,.text-muted-foreground\/40,.text-muted-foreground\/45,.text-muted-foreground\/50,.text-muted-foreground\/55,.text-muted-foreground\/60,.text-muted-foreground\/65,.text-muted-foreground\/70,.text-muted-foreground\/72,.text-muted-foreground\/75,.text-muted-foreground\/80,.text-muted-foreground\/85,.text-muted-foreground\/90)) {
+	transition: color 0.22s ease, filter 0.22s ease !important;
+}
+html :is([data-draft-project-trigger], button:is(.group-hover\:underline,.hover\:underline):is(.\[\&\>svg\:not\(\[class\*\=\'text-\'\]\)\]\:text-muted-foreground,.\[\&_\[data-markdown-details-summary\]\>svg\]\:text-muted-foreground\/60,.\[\&_\[data-slot\=select-icon\]\>svg\]\:text-muted-foreground,.\[\&_svg\:not\(\[class\*\=\'text-\'\]\)\]\:text-muted-foreground,.\[\&_svg\]\:text-muted-foreground,.aria-disabled\:\[\&_\*\]\:text-muted-foreground,.dark\:text-muted-foreground,.data-selected\:text-muted-foreground,.disabled\:text-muted-foreground,.hover\:text-muted-foreground,.hover\:text-muted-foreground\/80,.in-data-disabled\:text-muted-foreground\/72,.in-data-outside\:text-muted-foreground\/72,.light\:text-muted-foreground\/80,.md\:text-muted-foreground\/60,.placeholder\:text-muted-foreground,.placeholder\:text-muted-foreground\/60,.placeholder\:text-muted-foreground\/70,.text-muted-foreground,.text-muted-foreground\!,.text-muted-foreground\/30,.text-muted-foreground\/35,.text-muted-foreground\/40,.text-muted-foreground\/45,.text-muted-foreground\/50,.text-muted-foreground\/55,.text-muted-foreground\/60,.text-muted-foreground\/65,.text-muted-foreground\/70,.text-muted-foreground\/72,.text-muted-foreground\/75,.text-muted-foreground\/80,.text-muted-foreground\/85,.text-muted-foreground\/90)):is(:hover, :focus-visible, [data-popup-open]) {
+	text-shadow: none !important;
+	filter: drop-shadow(-1px -1px 4px rgb(137 180 250 / 0.7)) drop-shadow(1px 1px 9px rgb(203 166 247 / 0.55)) !important;
+}
+
+/* 2. time-row buttons: one ring, with room */
+html body [data-timeline-root] [data-timeline-row-kind] div.justify-end:has(> p.tabular-nums[data-slot="tooltip-trigger"] + div > button) {
+	padding-block: 4px !important;
+	margin-block: 0 -4px !important;
+}
+html body [data-timeline-root] [data-timeline-row-kind] p.tabular-nums[data-slot="tooltip-trigger"] ~ div > button:hover {
+	box-shadow: none !important;
+}
+html body [data-timeline-root] [data-timeline-row-kind] p.tabular-nums[data-slot="tooltip-trigger"] ~ div > button::after {
+	inset: 0 !important;
+}
+}

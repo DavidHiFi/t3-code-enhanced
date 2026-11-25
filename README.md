@@ -25,7 +25,7 @@ Install it once. It keeps itself up to date and puts its patches back after ever
 ## Installation
 
 1. Install [T3 Code](https://github.com/pingdotgg/t3code) for your Windows user. Nightly and Beta both work.
-2. Download `T3-Code-Enhanced-v2.1.9.zip` from the [latest release](https://github.com/DavidHiFi/t3-code-enhanced/releases/latest) and unzip it anywhere.
+2. Download `T3-Code-Enhanced-v2.1.10.zip` from the [latest release](https://github.com/DavidHiFi/t3-code-enhanced/releases/latest) and unzip it anywhere.
 3. Double-click `install.cmd`. If PowerShell 7 is missing, it offers to install it with winget first.
 4. Restart T3 Code.
 
