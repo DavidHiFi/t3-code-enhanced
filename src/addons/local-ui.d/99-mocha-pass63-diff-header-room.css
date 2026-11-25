@@ -1,0 +1,61 @@
+/* Pass 63 (2026-11-26): room in the diff panel header.
+   In a narrow diff panel the left dock (Changes, the repository chip and the compare button)
+   was squeezed to a sliver while the right dock (line counts, refresh, layout buttons) kept
+   its full width. The chips inside never shrank, so the repository name ran under the line
+   counts and the buttons, and the dock's hover ring only wrapped part of it: the lone
+   lavender ring the owner saw.
+   Now the header makes room: when both docks do not fit on one line, the right dock drops
+   to a second line and sits on the right. The left dock always holds all its chips, and the
+   repository and compare chips shorten their names with "..." instead of running out.
+   Rollback: delete this file and reload T3. */
+@layer theme {
+
+html div[data-right-panel-surface-content] [data-surface-subheader]:has(> div.\@container\/diff-refs) {
+	flex-wrap: wrap !important;
+	height: auto !important;
+	min-height: 2.5rem !important;
+	row-gap: 6px !important;
+	padding-block: 2px !important;
+	align-content: center !important;
+}
+
+/* left dock: asks for the width its chips need, grows into spare room, shrinks only when
+   it has a line to itself (it is a size container, so it cannot measure its own content) */
+html div[data-right-panel-surface-content] [data-surface-subheader] > div.\@container\/diff-refs {
+	flex: 1 1 28rem !important;
+	min-width: 0 !important;
+	max-width: 100% !important;
+}
+
+/* right dock: keeps its size and stays on the right, also when it drops to the second line */
+html div[data-right-panel-surface-content] [data-surface-subheader] > div.\@container\/diff-refs ~ div.flex.shrink-0.items-center.gap-1 {
+	flex: 0 0 auto !important;
+	margin-left: auto !important;
+}
+
+/* the repository chip and the compare-target group shorten their text instead of overflowing */
+html div[data-right-panel-surface-content] [data-surface-subheader] > div.\@container\/diff-refs button[aria-label^="Repository:"] {
+	flex-shrink: 1 !important;
+	min-width: 2.5rem !important;
+	max-width: 22rem !important; /* T3 cut the name at 192px even with room to spare */
+}
+html div[data-right-panel-surface-content] [data-surface-subheader] > div.\@container\/diff-refs button[aria-label^="Repository:"] span.truncate {
+	min-width: 0 !important;
+}
+html div[data-right-panel-surface-content] [data-surface-subheader] > div.\@container\/diff-refs > div:last-child:has(button[aria-label^="Change comparison target"]) {
+	flex: 0 1 auto !important;
+	min-width: 3rem !important;
+}
+/* the short branch name before the arrow stays readable; the longer names give way first */
+html div[data-right-panel-surface-content] [data-surface-subheader] > div.\@container\/diff-refs > div:last-child > span:first-child {
+	flex-shrink: 0 !important;
+	min-width: fit-content !important;
+	max-width: 7rem !important;
+}
+html div[data-right-panel-surface-content] [data-surface-subheader] > div.\@container\/diff-refs button[aria-label^="Change comparison target"] {
+	flex-shrink: 1 !important;
+	min-width: 0 !important;
+	max-width: 100% !important;
+}
+
+}
