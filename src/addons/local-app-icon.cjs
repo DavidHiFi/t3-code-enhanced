@@ -5,6 +5,7 @@
 //   - window and taskbar button: BrowserWindow.setIcon
 //   - Start, pinned taskbar and desktop shortcuts: their icon points at ~/.t3/icons/<pick>.ico
 //   - sidebar logo: self.T3ICON (a data URL) plus <html data-t3-app-icon>, drawn by 99-pass15b.js
+//   - the loading screen's centre logo (#boot-shell-logo), while it is still up
 //   - the program file itself: rewritten by local-app-icon-swap.ps1 after T3 has fully closed,
 //     never while it runs (Electron starts its helpers from the same file). An update replaces
 //     the file, so the next close swaps it again. ~/.t3/icons/exe-state.json remembers which
@@ -31,7 +32,7 @@ const icoOf = (pick) => path.join(iconsDir, FILES[pick] + ".ico");
 function pageScript(pick) {
 	const icons = {};
 	for (const [name, file] of Object.entries(FILES)) icons[name] = "data:image/png;base64," + fs.readFileSync(path.join(iconsDir, file + "-128.png")).toString("base64");
-	return `(()=>{self.T3ICONS=${JSON.stringify(icons)};self.T3ICON=self.T3ICONS[${JSON.stringify(pick)}];document.documentElement.dataset.t3AppIcon=${JSON.stringify(pick)};window.__t3BrandIcon&&window.__t3BrandIcon.refresh();window.__t3IconPicker&&window.__t3IconPicker(${JSON.stringify(pick)});})();0`;
+	return `(()=>{self.T3ICONS=${JSON.stringify(icons)};self.T3ICON=self.T3ICONS[${JSON.stringify(pick)}];document.documentElement.dataset.t3AppIcon=${JSON.stringify(pick)};const b=document.getElementById("boot-shell-logo");if(b)b.src=self.T3ICON;window.__t3BrandIcon&&window.__t3BrandIcon.refresh();window.__t3IconPicker&&window.__t3IconPicker(${JSON.stringify(pick)});})();0`;
 }
 
 function refreshIconCache(log) {

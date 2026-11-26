@@ -1,0 +1,14 @@
+/* Pass 64 (2026-11-26): the loading screen matches the window.
+   While T3 connects, the page shows its own loading screen (#boot-shell) until the app first
+   draws. It painted the stored theme's colour as a solid sheet, so the window's frosted
+   backdrop vanished until the app appeared. It now uses the same thin tint as the chat area,
+   so the frost shows through from the first frame our layers load. The riced icon in its
+   middle is set by local-app-icon.cjs.
+   Rollback: delete this file and reload T3. */
+@layer theme {
+
+html[data-window-material]:not([data-t3local-extendedglass-off]) #boot-shell {
+	background: var(--glass-canvas, rgb(30 30 46 / 0.2)) !important;
+}
+
+}
