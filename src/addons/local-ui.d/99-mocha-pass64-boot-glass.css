@@ -1,14 +1,31 @@
-/* Pass 64 (2026-11-26): the loading screen matches the window.
+/* Pass 64 (2026-11-26, second try): the loading screen is solid dark Mocha.
    While T3 connects, the page shows its own loading screen (#boot-shell) until the app first
-   draws. It painted the stored theme's colour as a solid sheet, so the window's frosted
-   backdrop vanished until the app appeared. It now uses the same thin tint as the chat area,
-   so the frost shows through from the first frame our layers load. The riced icon in its
-   middle is set by local-app-icon.cjs.
+   draws. The first try gave it the chat area's thin tint so the window's frost would show
+   through. But Windows builds that frost only after the window appears (see keepMaterial in
+   local-main.cjs), so on a cold start the screen behind read straight through. Frost that
+   cannot be proven on that exact moment is never used: the loading screen, and its error
+   page, paint solid Mocha base. The riced icon in its middle is set by local-app-icon.cjs.
    Rollback: delete this file and reload T3. */
 @layer theme {
 
-html[data-window-material]:not([data-t3local-extendedglass-off]) #boot-shell {
-	background: var(--glass-canvas, rgb(30 30 46 / 0.2)) !important;
+html body #boot-shell,
+html[data-theme-selected] body #boot-shell {
+	background: #1e1e2e !important;
+	color: #cdd6f4 !important;
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+}
+html body #boot-error,
+html[data-theme-selected] body #boot-error {
+	--boot-error-fg: #cdd6f4 !important;
+	--boot-error-bg: #1e1e2e !important;
+	--boot-error-line: #45475a !important;
+}
+html body #boot-shell-progress {
+	color: #a6adc8 !important;
+	opacity: 1 !important;
+	font: 500 12px "FiraCode Nerd Font", "Segoe UI", system-ui, sans-serif !important;
+	margin-top: 12px !important;
 }
 
 }
