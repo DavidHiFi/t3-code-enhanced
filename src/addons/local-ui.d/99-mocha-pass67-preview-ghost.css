@@ -1,0 +1,16 @@
+/* Pass 67 (2026-11-26): no ghost of a hidden preview page behind the app.
+   With two or more preview tabs open, T3 keeps each hidden tab that is still busy drawing
+   parked full size at the top left of the window, one layer behind the whole app. Every
+   see-through surface (the sidebar, the tab bar, the empty chat) then showed that page.
+   The parked box keeps drawing, so agent captures of a hidden tab still work, but it is
+   now cut to a single near-clear pixel. The tab on screen sits on its own layer and is
+   not touched.
+   Rollback: delete this file and reload T3. */
+@layer theme {
+
+html body [data-preview-viewport][style*="z-index: -1"] {
+	opacity: 0.01 !important;
+	clip-path: inset(0 calc(100% - 1px) calc(100% - 1px) 0) !important;
+}
+
+}

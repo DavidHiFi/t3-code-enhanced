@@ -1,0 +1,25 @@
+/* Pass 68 (2026-11-26): the "new version" dot on the Enhanced update button is a dot again.
+   The button marks a waiting release with a 6px mauve dot in its top corner, drawn on
+   ::after. Pass 16 sizes every round footer button's ::after to the full 2rem (meant for
+   the progress ring), so the dot grew into a solid mauve block over the icon.
+   Rollback: delete this file and reload T3. */
+@layer theme {
+
+html body [data-slot="sidebar-footer"] [data-t3enh-update][data-state="available"] button::after {
+	content: "" !important;
+	position: absolute !important;
+	inset: 5px 5px auto auto !important;
+	width: 6px !important;
+	min-width: 6px !important;
+	max-width: 6px !important;
+	height: 6px !important;
+	padding: 0 !important;
+	border-radius: 9999px !important;
+	background: #cba6f7 !important;
+	box-shadow: 0 0 0 2px #181825 !important;
+	-webkit-mask: none !important;
+	mask: none !important;
+	pointer-events: none !important;
+}
+
+}
