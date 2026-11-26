@@ -162,7 +162,7 @@ li.t3l-shelf .t3l-shelf-btn:hover {
    The build's JS manages the pill height (8px at rest, grows on hover); pass
    15b's fixed 60px fought it. The chevrons stay pinned inside (15b), and a
    floor keeps the 20px chevrons inside even at the smallest JS heights. */
-div.absolute.top-1\/2.left-3.pointer-events-auto {
+div.absolute.top-1\/2:is(.left-3,:where([data-testid="timeline-minimap"] [style*="left:"])).pointer-events-auto {
 	min-height: 26px !important;
 }
 

@@ -95,8 +95,8 @@ div[data-workspace-titlebar-controls="true"] button:focus-visible,
 	html [data-timeline-row-kind="context-compaction"] [role="separator"] > span.relative::before {
 		animation: none !important;
 	}
-	[data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4)::before,
-	[data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4) {
+	[data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4,:where([data-testid="timeline-minimap"] [style*="left:"]))::before,
+	[data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4,:where([data-testid="timeline-minimap"] [style*="left:"])) {
 		transition: none !important;
 	}
 	.t3l-shelf-btn,

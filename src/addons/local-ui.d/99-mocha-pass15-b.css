@@ -71,20 +71,20 @@
    never neutralized it, so both chevrons sat 8px left of target, amongst the
    ticks. Both now sit centred on the pill's vertical centreline, up-chevron at
    the top edge, down-chevron at the bottom edge (their nav positions). */
-div.absolute.top-1\/2.left-3.pointer-events-auto {
+div.absolute.top-1\/2:is(.left-3,:where([data-testid="timeline-minimap"] [style*="left:"])).pointer-events-auto {
 	transition: height 0.15s ease !important;
 }
-div.absolute.top-1\/2.left-3.pointer-events-auto > span.absolute.bottom-\[calc\(100\%\+6px\)\],
-div.absolute.top-1\/2.left-3.pointer-events-auto > span.absolute:is(.data-\[position\*\=top\]\:top-\[calc\(var\(--toast-inset\)\+var\(--toast-header-offset\)\)\],.top-\[calc\(100\%\+6px\)\],.top-\[calc\(var\(--workspace-controls-top\)-env\(safe-area-inset-top\)\)\]) {
+div.absolute.top-1\/2:is(.left-3,:where([data-testid="timeline-minimap"] [style*="left:"])).pointer-events-auto > span.absolute.bottom-\[calc\(100\%\+6px\)\],
+div.absolute.top-1\/2:is(.left-3,:where([data-testid="timeline-minimap"] [style*="left:"])).pointer-events-auto > span.absolute:is(.data-\[position\*\=top\]\:top-\[calc\(var\(--toast-inset\)\+var\(--toast-header-offset\)\)\],.top-\[calc\(100\%\+6px\)\],.top-\[calc\(var\(--workspace-controls-top\)-env\(safe-area-inset-top\)\)\]) {
 	left: 50% !important;
 	translate: -50% 0 !important;
 	transform: none !important;
 }
-div.absolute.top-1\/2.left-3.pointer-events-auto > span.absolute.bottom-\[calc\(100\%\+6px\)\] {
+div.absolute.top-1\/2:is(.left-3,:where([data-testid="timeline-minimap"] [style*="left:"])).pointer-events-auto > span.absolute.bottom-\[calc\(100\%\+6px\)\] {
 	top: 2px !important;
 	bottom: auto !important;
 }
-div.absolute.top-1\/2.left-3.pointer-events-auto > span.absolute:is(.data-\[position\*\=top\]\:top-\[calc\(var\(--toast-inset\)\+var\(--toast-header-offset\)\)\],.top-\[calc\(100\%\+6px\)\],.top-\[calc\(var\(--workspace-controls-top\)-env\(safe-area-inset-top\)\)\]) {
+div.absolute.top-1\/2:is(.left-3,:where([data-testid="timeline-minimap"] [style*="left:"])).pointer-events-auto > span.absolute:is(.data-\[position\*\=top\]\:top-\[calc\(var\(--toast-inset\)\+var\(--toast-header-offset\)\)\],.top-\[calc\(100\%\+6px\)\],.top-\[calc\(var\(--workspace-controls-top\)-env\(safe-area-inset-top\)\)\]) {
 	bottom: 2px !important;
 	top: auto !important;
 }

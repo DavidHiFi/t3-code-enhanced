@@ -1,0 +1,17 @@
+/* Pass 66 (2026-11-26): the scroller dock on the right of the chat is solid.
+   A T3 update moved the scroller's side offset from a class (left-3) into an inline style
+   (left: 32px), so every rule keyed on that class stopped matching and the dock vanished.
+   Passes 4, 15-b, 16, 17, 29c and 31a now also match the inline style. While checking it,
+   the chat column's edge read straight through the dock: the scroller isolates itself, so
+   the dock's blur only sees the scroller, never the chat, and the 62% fill let the line
+   show. The dock now paints solid Mantle and asks for no blur it cannot have.
+   Rollback: delete this file and reload T3. */
+@layer theme {
+
+html body [data-testid="timeline-minimap"][data-testid="timeline-minimap"] div.top-1\/2:is(.left-3, .left-3\/4, [style*="left:"])::before {
+	background: #181825 !important;
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+}
+
+}

@@ -102,8 +102,8 @@ ul[role="tree"][aria-label="Threads"] > [data-testid="sidebar-draft-divider"] {
    left edge anchored, smooth width transition (reduced-motion: none). The
    chevrons are pinned inside the pill by 99-mocha-pass15-b.css, so the old
    hover height growth (-27px) is gone; the width covers them instead. */
-[data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4) { isolation: isolate; }
-[data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4)::before {
+[data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4,:where([data-testid="timeline-minimap"] [style*="left:"])) { isolation: isolate; }
+[data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4,:where([data-testid="timeline-minimap"] [style*="left:"]))::before {
 	content: "";
 	position: absolute;
 	z-index: -1;
@@ -119,13 +119,13 @@ ul[role="tree"][aria-label="Threads"] > [data-testid="sidebar-draft-divider"] {
 	pointer-events: none;
 	transition: top 0.2s ease, bottom 0.2s ease, width 0.18s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
-[data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4):hover::before,
-[data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4):focus-within::before {
+[data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4,:where([data-testid="timeline-minimap"] [style*="left:"])):hover::before,
+[data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4,:where([data-testid="timeline-minimap"] [style*="left:"])):focus-within::before {
 	width: 46px;
 	border-color: var(--t4-blue);
 	box-shadow: var(--t4-glow), 0 0 #0000;
 }
-[data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4):hover > [data-slot="tooltip-trigger"] { opacity: 1 !important; }
+[data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4,:where([data-testid="timeline-minimap"] [style*="left:"])):hover > [data-slot="tooltip-trigger"] { opacity: 1 !important; }
 [data-testid="timeline-minimap"] [data-minimap-strip] { background-color: rgb(166 173 200 / 0.5) !important; }
 [data-testid="timeline-minimap"] [data-minimap-strip][data-in-view="true"] { background-color: var(--t4-blue) !important; box-shadow: 0 0 6px rgb(137 180 250 / 0.6); }
 [data-testid="timeline-minimap"] button > div:is(.before\:bg-border\/45,.bg-border,.bg-border\/40,.bg-border\/60,.bg-border\/70,.bg-border\/80,.data-popup-open\:\[\&_\[data-slot\=select-icon\]\]\:before\:bg-border\/65,.group-has-\[\[data-popup-open\]\]\/details-split\:bg-border\/65,.group-hover\/details-split\:bg-border\/65,.group-hover\:bg-border,.hover\:\[\&_\[data-slot\=select-icon\]\]\:before\:bg-border\/65) { opacity: 0.6; }

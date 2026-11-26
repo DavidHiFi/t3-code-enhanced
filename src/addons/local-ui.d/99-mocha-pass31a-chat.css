@@ -44,22 +44,22 @@ html[data-window-material][data-window-material][data-window-material][data-wind
       preview. The visible pill is drawn by pass 4 at left -8px, 46px wide on hover, so its
       centre is 15px from the box's left edge. The arrows (20px buttons) now sit above and
       below the tick lines, and the pill grows 20px at each end on hover to hold them. */
-[data-testid="timeline-minimap"][data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4):is(.left-3,.left-3\/4) > span.absolute.bottom-\[calc\(100\%\+6px\)\].bottom-\[calc\(100\%\+6px\)\],
-[data-testid="timeline-minimap"][data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4):is(.left-3,.left-3\/4) > span.absolute:is(.data-\[position\*\=top\]\:top-\[calc\(var\(--toast-inset\)\+var\(--toast-header-offset\)\)\],.top-\[calc\(100\%\+6px\)\],.top-\[calc\(var\(--workspace-controls-top\)-env\(safe-area-inset-top\)\)\]):is(.data-\[position\*\=top\]\:top-\[calc\(var\(--toast-inset\)\+var\(--toast-header-offset\)\)\],.top-\[calc\(100\%\+6px\)\],.top-\[calc\(var\(--workspace-controls-top\)-env\(safe-area-inset-top\)\)\]) {
+[data-testid="timeline-minimap"][data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4,:where([data-testid="timeline-minimap"] [style*="left:"])):is(.left-3,.left-3\/4,:where([data-testid="timeline-minimap"] [style*="left:"])) > span.absolute.bottom-\[calc\(100\%\+6px\)\].bottom-\[calc\(100\%\+6px\)\],
+[data-testid="timeline-minimap"][data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4,:where([data-testid="timeline-minimap"] [style*="left:"])):is(.left-3,.left-3\/4,:where([data-testid="timeline-minimap"] [style*="left:"])) > span.absolute:is(.data-\[position\*\=top\]\:top-\[calc\(var\(--toast-inset\)\+var\(--toast-header-offset\)\)\],.top-\[calc\(100\%\+6px\)\],.top-\[calc\(var\(--workspace-controls-top\)-env\(safe-area-inset-top\)\)\]):is(.data-\[position\*\=top\]\:top-\[calc\(var\(--toast-inset\)\+var\(--toast-header-offset\)\)\],.top-\[calc\(100\%\+6px\)\],.top-\[calc\(var\(--workspace-controls-top\)-env\(safe-area-inset-top\)\)\]) {
 	left: 15px !important;
 	right: auto !important;
 	translate: -50% 0 !important;
 	transform: none !important;
 }
-[data-testid="timeline-minimap"][data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4):is(.left-3,.left-3\/4) > span.absolute.bottom-\[calc\(100\%\+6px\)\].bottom-\[calc\(100\%\+6px\)\] {
+[data-testid="timeline-minimap"][data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4,:where([data-testid="timeline-minimap"] [style*="left:"])):is(.left-3,.left-3\/4,:where([data-testid="timeline-minimap"] [style*="left:"])) > span.absolute.bottom-\[calc\(100\%\+6px\)\].bottom-\[calc\(100\%\+6px\)\] {
 	top: -25px !important;
 	bottom: auto !important;
 }
-[data-testid="timeline-minimap"][data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4):is(.left-3,.left-3\/4) > span.absolute:is(.data-\[position\*\=top\]\:top-\[calc\(var\(--toast-inset\)\+var\(--toast-header-offset\)\)\],.top-\[calc\(100\%\+6px\)\],.top-\[calc\(var\(--workspace-controls-top\)-env\(safe-area-inset-top\)\)\]):is(.data-\[position\*\=top\]\:top-\[calc\(var\(--toast-inset\)\+var\(--toast-header-offset\)\)\],.top-\[calc\(100\%\+6px\)\],.top-\[calc\(var\(--workspace-controls-top\)-env\(safe-area-inset-top\)\)\]) {
+[data-testid="timeline-minimap"][data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4,:where([data-testid="timeline-minimap"] [style*="left:"])):is(.left-3,.left-3\/4,:where([data-testid="timeline-minimap"] [style*="left:"])) > span.absolute:is(.data-\[position\*\=top\]\:top-\[calc\(var\(--toast-inset\)\+var\(--toast-header-offset\)\)\],.top-\[calc\(100\%\+6px\)\],.top-\[calc\(var\(--workspace-controls-top\)-env\(safe-area-inset-top\)\)\]):is(.data-\[position\*\=top\]\:top-\[calc\(var\(--toast-inset\)\+var\(--toast-header-offset\)\)\],.top-\[calc\(100\%\+6px\)\],.top-\[calc\(var\(--workspace-controls-top\)-env\(safe-area-inset-top\)\)\]) {
 	bottom: -25px !important;
 	top: auto !important;
 }
-[data-testid="timeline-minimap"][data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4):is(:hover, :focus-within)::before {
+[data-testid="timeline-minimap"][data-testid="timeline-minimap"] div:is(.\[\&_\[data-slot\=select-icon\]\]\:before\:top-1\/2,.pointer-coarse\:after\:top-1\/2,.sm\:top-1\/2,.top-1\/2):is(.left-3,.left-3\/4,:where([data-testid="timeline-minimap"] [style*="left:"])):is(:hover, :focus-within)::before {
 	top: -30px !important;
 	bottom: -30px !important;
 }
