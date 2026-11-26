@@ -1,0 +1,67 @@
+/* Pass 70 (2026-11-26): model chip and picker footer pills, clean edges and no pale fills.
+   1. The model chip (provider icon, model, effort) under the message box turned pale grey with a
+      lavender ring while its picker was open, and lost its edge on hover. Now: 2px #45475A edge at
+      rest, dark base fill, and the same 2px edge turns blue to mauve on hover and while open.
+   2. Picker footer pills (Standard / Fast, Ultracode, Full access) drew a faint see-through grey
+      1px-looking ring (pass 29b). Now a solid 2px #45475A edge at rest, blue to mauve on hover.
+   3. The chosen segment ("Standard" or "Fast", Ultracode when on) was a pale grey block. Now a dark
+      blue tint with blue text, so it reads as chosen without a light patch.
+   Rollback: delete this file and reload T3. */
+@layer theme {
+
+/* ---- 1. model chip ---- */
+html body button[data-chat-provider-model-picker] {
+	border: 2px solid #45475a !important;
+	border-radius: 10px !important;
+	background: #1e1e2e padding-box !important;
+	box-shadow: none !important;
+	outline: none !important;
+	transition: border-color .15s ease, background-color .15s ease, box-shadow .15s ease !important;
+}
+html body button[data-chat-provider-model-picker]:is(:hover, :focus-visible, [data-pressed], [data-popup-open], [aria-expanded="true"]) {
+	border-color: transparent !important;
+	background:
+		linear-gradient(#242436, #242436) padding-box,
+		linear-gradient(100deg, #89b4fa, #cba6f7) border-box !important;
+	box-shadow: 0 0 8px rgb(137 180 250 / .15) !important;
+	color: #cdd6f4 !important;
+}
+
+/* ---- 2. footer pills: solid 2px rest edge ---- */
+html [data-slot="popover-viewport"]:has([data-model-picker-content]) > div > div > div:last-child:not(:first-child) > div.bg-input\/40,
+html [data-slot="popover-viewport"] [data-composer-permissions-trigger] {
+	background: #181825 !important;
+}
+html :is(
+	[data-slot="popover-viewport"]:has([data-model-picker-content]) > div > div > div:last-child:not(:first-child) > div.bg-input\/40,
+	[data-slot="popover-viewport"] [data-composer-permissions-trigger]
+)::after {
+	--p29b-a: #45475a;
+	--p29b-b: #45475a;
+}
+html :is(
+	[data-slot="popover-viewport"]:has([data-model-picker-content]) > div > div > div:last-child:not(:first-child) > div.bg-input\/40:is(:hover, :focus-within, [data-audit-hover]),
+	[data-slot="popover-viewport"] [data-composer-permissions-trigger]:is(:hover, :focus-visible, [aria-expanded="true"], [data-audit-hover])
+)::after {
+	--p29b-a: #89b4fa;
+	--p29b-b: #cba6f7;
+}
+/* the segments sit inside the 2px edge, not under it */
+html [data-slot="popover-viewport"]:has([data-model-picker-content]) > div > div > div:last-child:not(:first-child) > div.bg-input\/40 {
+	padding: 3px !important;
+}
+html [data-slot="popover-viewport"]:has([data-model-picker-content]) > div > div > div:last-child:not(:first-child) > div.bg-input\/40 > button {
+	border-radius: 7px !important;
+}
+
+/* ---- 3. chosen segment: dark blue tint, no pale block ---- */
+html [data-slot="popover-viewport"]:has([data-model-picker-content]) > div > div > div:last-child:not(:first-child) > div.bg-input\/40 > button:is([data-checked], [aria-checked="true"], [aria-pressed="true"]) {
+	background: rgb(137 180 250 / .14) !important;
+	color: #89b4fa !important;
+}
+html [data-slot="popover-viewport"]:has([data-model-picker-content]) > div > div > div:last-child:not(:first-child) > div.bg-input\/40 > button:not([data-checked], [aria-checked="true"], [aria-pressed="true"]):hover {
+	background: #242436 !important;
+	color: #cdd6f4 !important;
+}
+
+}
